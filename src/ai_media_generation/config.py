@@ -7,8 +7,10 @@ class Config:
     LORA_TRAINING_GENERATIONS_JSONL = "lora-training-generations.jsonl"
     PROMPT_DIRECTORY = "prompt"
     MUSIC_DIRECTORY = "music"
+    KAGEE_DIRECTORY = "kagee"
     IMAGE_OUTPUT_DIRECTORY = "image-output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
+    KAGEE_OUTPUT_DIRECTORY = "kagee-output"
     LORA_DATASET_DIRECTORY = "lora-dataset"
 
     def __init__(self) -> None:
@@ -21,6 +23,10 @@ class Config:
         self.ace_step_filename_prefix = (
             _optional_text("ACE_STEP_FILENAME_PREFIX") or "music"
         )
+        kagee_timeout = _optional_int("KAGEE_TIMEOUT_SECONDS")
+        if kagee_timeout is not None and kagee_timeout <= 0:
+            raise ValueError("KAGEE_TIMEOUT_SECONDS must be positive.")
+        self.kagee_timeout_seconds = 1800 if kagee_timeout is None else kagee_timeout
 
     @property
     def image_output_directory(self) -> Path:
@@ -49,6 +55,14 @@ class Config:
     @property
     def music_directory(self) -> Path:
         return _directory("MUSIC_DIRECTORY", self.MUSIC_DIRECTORY)
+
+    @property
+    def kagee_directory(self) -> Path:
+        return _directory("KAGEE_DIRECTORY", self.KAGEE_DIRECTORY)
+
+    @property
+    def kagee_output_directory(self) -> Path:
+        return _directory("KAGEE_OUTPUT_DIRECTORY", self.KAGEE_OUTPUT_DIRECTORY)
 
     @property
     def art_style_json(self) -> Path:
@@ -97,6 +111,16 @@ def _optional_directory(name: str) -> Path | None:
     if path.exists() and not path.is_dir():
         raise NotADirectoryError(f"{name} is not a directory: {path}")
     return path
+
+
+def _optional_int(name: str) -> int | None:
+    text = _optional_text(name)
+    if text is None:
+        return None
+    try:
+        return int(text)
+    except ValueError as error:
+        raise ValueError(f"{name} is not an integer: {text}") from error
 
 
 def _optional_text(name: str) -> str | None:
