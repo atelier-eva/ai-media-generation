@@ -7,8 +7,10 @@ class Config:
     LORA_TRAINING_GENERATIONS_JSONL = "lora-training-generations.jsonl"
     PROMPT_DIRECTORY = "prompt"
     MUSIC_DIRECTORY = "music"
+    KAGEE_DIRECTORY = "kagee"
     IMAGE_OUTPUT_DIRECTORY = "image-output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
+    KAGEE_OUTPUT_DIRECTORY = "kagee-output"
     LORA_DATASET_DIRECTORY = "lora-dataset"
     SEE_THROUGH_SAVE_DIRECTORY = "see-through-output"
 
@@ -28,6 +30,10 @@ class Config:
         if timeout is not None and timeout <= 0:
             raise ValueError("SEE_THROUGH_TIMEOUT_SECONDS must be positive.")
         self.see_through_timeout_seconds = 1800 if timeout is None else timeout
+        kagee_timeout = _optional_int("KAGEE_TIMEOUT_SECONDS")
+        if kagee_timeout is not None and kagee_timeout <= 0:
+            raise ValueError("KAGEE_TIMEOUT_SECONDS must be positive.")
+        self.kagee_timeout_seconds = 1800 if kagee_timeout is None else kagee_timeout
 
     @property
     def image_output_directory(self) -> Path:
@@ -56,6 +62,14 @@ class Config:
     @property
     def music_directory(self) -> Path:
         return _directory("MUSIC_DIRECTORY", self.MUSIC_DIRECTORY)
+
+    @property
+    def kagee_directory(self) -> Path:
+        return _directory("KAGEE_DIRECTORY", self.KAGEE_DIRECTORY)
+
+    @property
+    def kagee_output_directory(self) -> Path:
+        return _directory("KAGEE_OUTPUT_DIRECTORY", self.KAGEE_OUTPUT_DIRECTORY)
 
     @property
     def art_style_json(self) -> Path:

@@ -10,6 +10,9 @@ from dotenv import load_dotenv
 from ai_media_generation.controller.generate_images_controller import (
     GenerateImagesController,
 )
+from ai_media_generation.controller.generate_kagee_controller import (
+    GenerateKageeController,
+)
 from ai_media_generation.controller.generate_lora_training_images_controller import (
     GenerateLoraTrainingImagesController,
 )
@@ -52,6 +55,9 @@ def _run() -> None:
     if command == "image":
         GenerateImagesController().execute(_command_parser("image"))
         return
+    if command == "kagee":
+        GenerateKageeController().execute(_command_parser("kagee"))
+        return
     if command == "music":
         GenerateMusicController().execute(_command_parser("music"))
         return
@@ -83,6 +89,10 @@ def _parser() -> ArgumentParser:
     subparsers.add_parser(
         "image",
         help="Generate images from prompt JSON specs (nested folders allowed).",
+    )
+    subparsers.add_parser(
+        "kagee",
+        help="Convert images to kagee from kagee JSON specs (nested folders allowed).",
     )
     subparsers.add_parser(
         "music",

@@ -7,6 +7,7 @@ import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 from ai_media_generation.config import Config
 from ai_media_generation.infrastructure.error import InfrastructureError
@@ -19,6 +20,10 @@ _LORA_TRAINING_IMAGE_GENERATION_API_JSON = (
 _IMAGE_CREATION_API_JSON = (
     "comfyui",
     "image-creation-api.json",
+)
+_KAGEE_CONVERSION_API_JSON = (
+    "comfyui",
+    "kagee-conversion-api.json",
 )
 
 
@@ -38,7 +43,9 @@ class ComfyUi:
         self._lora_training_template = read_resource_json(
             *_LORA_TRAINING_IMAGE_GENERATION_API_JSON
         )
-        self._template = read_resource_json(*_IMAGE_CREATION_API_JSON)
+        self._image_template = read_resource_json(*_IMAGE_CREATION_API_JSON)
+        self._kagee_template = read_resource_json(*_KAGEE_CONVERSION_API_JSON)
+        self._kagee_timeout_seconds = config.kagee_timeout_seconds
 
     def generate_lora_training_images(
         self,
@@ -77,7 +84,7 @@ class ComfyUi:
         batch_size: int = 4,
     ) -> tuple["ComfyUi.SavedImage", ...]:
         return self._queue_prompt(
-            self._workflow(
+            self._image_workflow(
                 filename_prefix,
                 width,
                 height,
@@ -90,6 +97,26 @@ class ComfyUi:
                 seed,
                 batch_size,
             )
+        )
+
+    def generate_kagee(
+        self,
+        filename_prefix: str,
+        images: tuple[Path, ...],
+        prompt: str,
+        seed: int,
+    ) -> tuple["ComfyUi.SavedImage", ...]:
+        prefix = filename_prefix.strip()
+        if not prefix:
+            raise ValueError("filename_prefix is empty.")
+        text = prompt.strip()
+        if not text:
+            raise ValueError("prompt is empty or missing.")
+        if len(images) != 1:
+            raise ValueError("multiple images are not implemented.")
+        return self._queue_prompt(
+            self._kagee_workflow(prefix, self._upload_image(images[0]), text, seed),
+            self._kagee_timeout_seconds,
         )
 
     def fetch_image(self, image: "ComfyUi.SavedImage") -> bytes:
@@ -193,8 +220,13 @@ class ComfyUi:
                 )
         return tuple(images)
 
-    def _wait_until_complete(self, prompt_id: str) -> tuple["ComfyUi.SavedImage", ...]:
-        deadline = time.monotonic() + self._POLL_TIMEOUT_SECONDS
+    def _wait_until_complete(
+        self, prompt_id: str, timeout_seconds: int | None = None
+    ) -> tuple["ComfyUi.SavedImage", ...]:
+        timeout = (
+            self._POLL_TIMEOUT_SECONDS if timeout_seconds is None else timeout_seconds
+        )
+        deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             time.sleep(self._POLL_INTERVAL_SECONDS)
             history = self._request("GET", f"/history/{prompt_id}")
@@ -210,11 +242,13 @@ class ComfyUi:
             if images:
                 return images
         raise InfrastructureError(
-            f"Timed out after {self._POLL_TIMEOUT_SECONDS}s waiting for image outputs "
+            f"Timed out after {timeout}s waiting for image outputs "
             f"from prompt_id {prompt_id}."
         )
 
-    def _queue_prompt(self, workflow: dict[str, Any]) -> tuple["ComfyUi.SavedImage", ...]:
+    def _queue_prompt(
+        self, workflow: dict[str, Any], timeout_seconds: int | None = None
+    ) -> tuple["ComfyUi.SavedImage", ...]:
         response = self._request("POST", "/prompt", {"prompt": workflow})
         node_errors = response.get("node_errors")
         if node_errors:
@@ -222,7 +256,62 @@ class ComfyUi:
         prompt_id = str(response.get("prompt_id") or "").strip()
         if not prompt_id:
             raise InfrastructureError("ComfyUI /prompt did not return prompt_id.")
-        return self._wait_until_complete(prompt_id)
+        return self._wait_until_complete(prompt_id, timeout_seconds)
+
+    def _upload_image(self, path: Path) -> str:
+        if not path.is_file():
+            raise FileNotFoundError(f"Kagee input image not found: {path}")
+        body, boundary = self._multipart_image(path)
+        request = urllib.request.Request(
+            f"{self._url}/upload/image",
+            data=body,
+            headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request) as response:
+                loaded = json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as error:
+            raise InfrastructureError(
+                f"ComfyUI /upload/image failed: {error.code}"
+            ) from error
+        except urllib.error.URLError as error:
+            raise InfrastructureError(f"ComfyUI is not reachable at {self._url}") from error
+        if not isinstance(loaded, dict):
+            raise InfrastructureError("ComfyUI /upload/image did not return an object.")
+        name = str(loaded.get("name") or "").strip()
+        if not name:
+            raise InfrastructureError("ComfyUI /upload/image did not return name.")
+        subfolder = str(loaded.get("subfolder") or "").strip().replace("\\", "/")
+        if subfolder:
+            return f"{subfolder}/{name}"
+        return name
+
+    def _multipart_image(self, path: Path) -> tuple[bytes, str]:
+        boundary = f"----ComfyUiFormBoundary{uuid4().hex}"
+        filename = path.name.replace('"', "_").replace("\r", "").replace("\n", "")
+        marker = f"--{boundary}\r\n".encode("utf-8")
+        header = (
+            f'Content-Disposition: form-data; name="image"; filename="{filename}"\r\n'
+            "Content-Type: application/octet-stream\r\n\r\n"
+        ).encode("utf-8")
+        overwrite = (
+            f"--{boundary}\r\n"
+            'Content-Disposition: form-data; name="overwrite"\r\n\r\n'
+            "true\r\n"
+        ).encode("utf-8")
+        closing = f"--{boundary}--\r\n".encode("utf-8")
+        return marker + header + path.read_bytes() + b"\r\n" + overwrite + closing, boundary
+
+    def _kagee_workflow(
+        self, filename_prefix: str, image_name: str, prompt: str, seed: int
+    ) -> dict[str, Any]:
+        workflow = copy.deepcopy(self._kagee_template)
+        workflow["9"]["inputs"]["filename_prefix"] = filename_prefix
+        workflow["41"]["inputs"]["image"] = image_name
+        workflow["170:151"]["inputs"]["prompt"] = prompt
+        workflow["170:169"]["inputs"]["seed"] = seed
+        return workflow
 
     def _lora_training_workflow(
         self,
@@ -245,7 +334,7 @@ class ComfyUi:
         workflow["7"]["inputs"]["seed"] = seed
         return workflow
 
-    def _workflow(
+    def _image_workflow(
         self,
         filename_prefix: str,
         width: int,
@@ -259,7 +348,7 @@ class ComfyUi:
         seed: int,
         batch_size: int,
     ) -> dict[str, Any]:
-        workflow = copy.deepcopy(self._template)
+        workflow = copy.deepcopy(self._image_template)
         workflow["2"]["inputs"]["ckpt_name"] = self._ckpt_name
         workflow["3"]["inputs"]["text"] = positive_prompt
         workflow["4"]["inputs"]["text"] = negative_prompt

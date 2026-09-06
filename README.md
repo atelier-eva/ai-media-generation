@@ -12,6 +12,7 @@ uv tool install git+https://github.com/atelier-eva/ai-media-generation.git
 ai-media-generation init
 ai-media-generation lora-training
 ai-media-generation image
+ai-media-generation kagee
 ai-media-generation music
 ai-media-generation report
 ai-media-generation see-through path/to/image.png
