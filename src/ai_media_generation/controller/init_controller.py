@@ -71,7 +71,7 @@ class InitController:
         print(f"Kagee directory: {kagee}")
         print(
             "Fill in the JSON, then run: "
-            "ai-media-generation lora-training, image, kagee, music, or see-through"
+            "ai-media-generation lora-training, image, kagee, music, or report"
         )
 
     def _write_env(self) -> None:
