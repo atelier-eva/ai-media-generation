@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://local.spec/animagine-lora-training/art-style.schema.json",
-  "title": "Art style (animagine-lora-training/art-style.json)",
+  "$id": "https://local.spec/animagine/lora_dataset/art-style.schema.json",
+  "title": "Art style (animagine/lora_dataset/art-style.json)",
   "description": "Art style patterns for generated prompts.",
   "type": "object",
   "additionalProperties": false,

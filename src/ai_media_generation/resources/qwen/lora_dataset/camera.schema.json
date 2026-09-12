@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://local.spec/qwen-lora-training/camera.schema.json",
-  "title": "Camera (qwen-lora-training/camera.json)",
+  "$id": "https://local.spec/qwen/lora_dataset/camera.schema.json",
+  "title": "Camera (qwen/lora_dataset/camera.json)",
   "description": "Camera angle and distance slots for Qwen-Image-Edit-2511 dataset rows. Output size follows the character reference image (VAEEncode), not this file. Not Animagine image_size or tag arrays.",
   "type": "object",
   "additionalProperties": false,

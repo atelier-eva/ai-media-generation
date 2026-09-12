@@ -3,22 +3,22 @@ from pathlib import Path
 
 
 class Config:
-    ANIMAGINE_SPEC_DIRECTORY = "prompt"
+    ANIMAGINE_SPEC_DIRECTORY = "animagine/spec"
     MUSIC_SPEC_DIRECTORY = "music"
     KAGEE_SPEC_DIRECTORY = "kagee"
-    QWEN_SPEC_DIRECTORY = "qwen"
-    ANIMAGINE_OUTPUT_DIRECTORY = "image-output"
+    QWEN_SPEC_DIRECTORY = "qwen/spec"
+    ANIMAGINE_OUTPUT_DIRECTORY = "animagine/output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     KAGEE_OUTPUT_DIRECTORY = "kagee-output"
-    QWEN_OUTPUT_DIRECTORY = "qwen-output"
-    ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY = "animagine-lora-training"
+    QWEN_OUTPUT_DIRECTORY = "qwen/output"
+    ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY = "animagine/lora_dataset"
     ANIMAGINE_LORA_TRAINING_GENERATIONS_JSONL = (
         "animagine-lora-training-generations.jsonl"
     )
-    ANIMAGINE_LORA_DATASET_DIRECTORY = "animagine-lora-dataset"
-    QWEN_LORA_TRAINING_SPEC_DIRECTORY = "qwen-lora-training"
+    ANIMAGINE_LORA_DATASET_DIRECTORY = "animagine/lora_output"
+    QWEN_LORA_TRAINING_SPEC_DIRECTORY = "qwen/lora_dataset"
     QWEN_LORA_TRAINING_GENERATIONS_JSONL = "qwen-lora-training-generations.jsonl"
-    QWEN_LORA_DATASET_DIRECTORY = "qwen-lora-dataset"
+    QWEN_LORA_DATASET_DIRECTORY = "qwen/lora_output"
 
     def __init__(self) -> None:
         self.comfy_ui_url = _text("COMFY_UI_URL").rstrip("/")

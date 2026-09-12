@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://local.spec/animagine-lora-training/generation.schema.json",
-  "title": "Generation (animagine-lora-training/generation.json)",
+  "$id": "https://local.spec/animagine/lora_dataset/generation.schema.json",
+  "title": "Generation (animagine/lora_dataset/generation.json)",
   "description": "Quality and rating tags for generated prompts. Omitted from caption_prompt.",
   "type": "object",
   "additionalProperties": false,

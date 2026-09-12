@@ -14,7 +14,7 @@ class GenerateAnimagineController:
             "files",
             nargs="*",
             help=(
-                "Prompt JSON paths under prompt/, relative, nested allowed "
+                "Prompt JSON paths under animagine/spec/, relative, nested allowed "
                 "(e.g. hero/smile.json). Omit to generate every file."
             ),
         )

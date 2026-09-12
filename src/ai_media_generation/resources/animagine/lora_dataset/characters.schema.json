@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://local.spec/animagine-lora-training/characters.schema.json",
-  "title": "Character (animagine-lora-training/characters/*.json)",
-  "description": "One character per JSON file under animagine-lora-training/characters/. Tag definitions for generated prompts.",
+  "$id": "https://local.spec/animagine/lora_dataset/characters.schema.json",
+  "title": "Character (animagine/lora_dataset/characters/*.json)",
+  "description": "One character per JSON file under animagine/lora_dataset/characters/. Tag definitions for generated prompts.",
   "type": "object",
   "additionalProperties": false,
   "required": ["name"],

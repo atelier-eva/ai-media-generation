@@ -16,6 +16,13 @@ _JSON_FILES = (
 _CHARACTERS_DIRECTORY = "characters"
 
 
+def _resource_segments(*parts: str) -> tuple[str, ...]:
+    segments: list[str] = []
+    for part in parts:
+        segments.extend(segment for segment in part.split("/") if segment)
+    return tuple(segments)
+
+
 class InitController:
     def execute(self, parser: ArgumentParser) -> None:
         parser.add_argument(
@@ -122,7 +129,9 @@ class InitController:
             raise NotADirectoryError(f"Not a directory: {destination}")
         existed = destination.exists()
         destination.mkdir(parents=True, exist_ok=True)
-        source_dir = files("ai_media_generation.resources").joinpath(*relative)
+        source_dir = files("ai_media_generation.resources").joinpath(
+            *_resource_segments(*relative)
+        )
         names = tuple(
             sorted(
                 item.name
@@ -144,7 +153,9 @@ class InitController:
         if existed and not force:
             print(f"Skipped existing: {destination}")
             return
-        source = files("ai_media_generation.resources").joinpath(*relative)
+        source = files("ai_media_generation.resources").joinpath(
+            *_resource_segments(*relative)
+        )
         destination.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
         action = "Overwrote" if existed else "Created"
         print(f"{action}: {destination}")

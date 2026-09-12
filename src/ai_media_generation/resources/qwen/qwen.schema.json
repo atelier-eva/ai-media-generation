@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://local.spec/qwen.schema.json",
-  "title": "Qwen (qwen/**/*.json)",
-  "description": "One prompt per JSON file under qwen/, including subfolders. The path relative to qwen/ without .json is the spec id. ComfyUI filename_prefix is that id (nested folders preserved). Natural-language prompt for Qwen-Image-2512; not Animagine tag arrays.",
+  "$id": "https://local.spec/qwen/qwen.schema.json",
+  "title": "Qwen (qwen/spec/**/*.json)",
+  "description": "One prompt per JSON file under qwen/spec/, including subfolders. The path relative to qwen/spec/ without .json is the spec id. ComfyUI filename_prefix is that id (nested folders preserved). Natural-language prompt for Qwen-Image-2512; not Animagine tag arrays.",
   "type": "object",
   "additionalProperties": false,
   "required": ["image_size", "prompt"],

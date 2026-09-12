@@ -11,29 +11,29 @@ from jsonschema.exceptions import ValidationError, best_match
 from ai_media_generation.config import Config
 
 _SCHEMA_RESOURCES = {
-    "prompt": ("prompt.schema.json",),
-    "qwen": ("qwen.schema.json",),
+    "prompt": ("animagine", "prompt.schema.json"),
+    "qwen": ("qwen", "qwen.schema.json"),
     "music": ("music.schema.json",),
 }
 
 _ANIMAGINE_LORA_SCHEMA_RESOURCES = {
-    "art-style.json": ("animagine-lora-training", "art-style.schema.json"),
-    "camera.json": ("animagine-lora-training", "camera.schema.json"),
-    "characters": ("animagine-lora-training", "characters.schema.json"),
-    "expression.json": ("animagine-lora-training", "expression.schema.json"),
-    "generation.json": ("animagine-lora-training", "generation.schema.json"),
-    "pose.json": ("animagine-lora-training", "pose.schema.json"),
-    "scene.json": ("animagine-lora-training", "scene.schema.json"),
+    "art-style.json": ("animagine", "lora_dataset", "art-style.schema.json"),
+    "camera.json": ("animagine", "lora_dataset", "camera.schema.json"),
+    "characters": ("animagine", "lora_dataset", "characters.schema.json"),
+    "expression.json": ("animagine", "lora_dataset", "expression.schema.json"),
+    "generation.json": ("animagine", "lora_dataset", "generation.schema.json"),
+    "pose.json": ("animagine", "lora_dataset", "pose.schema.json"),
+    "scene.json": ("animagine", "lora_dataset", "scene.schema.json"),
 }
 
 _QWEN_LORA_SCHEMA_RESOURCES = {
-    "art-style.json": ("qwen-lora-training", "art-style.schema.json"),
-    "camera.json": ("qwen-lora-training", "camera.schema.json"),
-    "characters": ("qwen-lora-training", "characters.schema.json"),
-    "expression.json": ("qwen-lora-training", "expression.schema.json"),
-    "generation.json": ("qwen-lora-training", "generation.schema.json"),
-    "pose.json": ("qwen-lora-training", "pose.schema.json"),
-    "scene.json": ("qwen-lora-training", "scene.schema.json"),
+    "art-style.json": ("qwen", "lora_dataset", "art-style.schema.json"),
+    "camera.json": ("qwen", "lora_dataset", "camera.schema.json"),
+    "characters": ("qwen", "lora_dataset", "characters.schema.json"),
+    "expression.json": ("qwen", "lora_dataset", "expression.schema.json"),
+    "generation.json": ("qwen", "lora_dataset", "generation.schema.json"),
+    "pose.json": ("qwen", "lora_dataset", "pose.schema.json"),
+    "scene.json": ("qwen", "lora_dataset", "scene.schema.json"),
 }
 
 
@@ -125,14 +125,19 @@ def _schema_resource(path: Path) -> tuple[str, ...] | None:
 
 
 def _schema_resource_by_path(path: Path) -> tuple[str, ...] | None:
-    if "qwen-lora-training" in path.parts:
-        if "characters" in path.parts:
+    parts = path.parts
+    if "qwen" in parts and "lora_dataset" in parts:
+        if "characters" in parts:
             return _QWEN_LORA_SCHEMA_RESOURCES["characters"]
         return _QWEN_LORA_SCHEMA_RESOURCES.get(path.name)
-    if "animagine-lora-training" in path.parts:
-        if "characters" in path.parts:
+    if "animagine" in parts and "lora_dataset" in parts:
+        if "characters" in parts:
             return _ANIMAGINE_LORA_SCHEMA_RESOURCES["characters"]
         return _ANIMAGINE_LORA_SCHEMA_RESOURCES.get(path.name)
+    if "qwen" in parts and "spec" in parts:
+        return _SCHEMA_RESOURCES["qwen"]
+    if "animagine" in parts and "spec" in parts:
+        return _SCHEMA_RESOURCES["prompt"]
     return _SCHEMA_RESOURCES.get(path.name)
 
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://local.spec/qwen-lora-training/generation.schema.json",
-  "title": "Generation (qwen-lora-training/generation.json)",
+  "$id": "https://local.spec/qwen/lora_dataset/generation.schema.json",
+  "title": "Generation (qwen/lora_dataset/generation.json)",
   "description": "Shared edit prefix and optional negative for Qwen-Image-Edit-2511 dataset rows. prompt is a complete sentence prepended to the ComfyUI edit instruction only; omitted from caption.txt. Axis slots are assembled after it as a second sentence. Not Animagine quality/rating tags.",
   "type": "object",
   "additionalProperties": false,

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://local.spec/prompt.schema.json",
-  "title": "Prompt (prompt/**/*.json)",
-  "description": "One prompt per JSON file under prompt/, including subfolders. The path relative to prompt/ without .json is the spec id. ComfyUI filename_prefix is that id (nested folders preserved). Specified-prompt image generation; not cartesian LoRA training rows.",
+  "$id": "https://local.spec/animagine/prompt.schema.json",
+  "title": "Prompt (animagine/spec/**/*.json)",
+  "description": "One prompt per JSON file under animagine/spec/, including subfolders. The path relative to animagine/spec/ without .json is the spec id. ComfyUI filename_prefix is that id (nested folders preserved). Specified-prompt image generation; not cartesian LoRA training rows.",
   "type": "object",
   "additionalProperties": false,
   "required": ["image_size", "positive", "negative"],

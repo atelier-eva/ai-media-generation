@@ -1,25 +1,21 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://local.spec/animagine-lora-training/pose.schema.json",
-  "title": "Pose (animagine-lora-training/pose.json)",
-  "description": "Pose patterns and camera skip rules for generated prompts.",
+  "$id": "https://local.spec/qwen/lora_dataset/expression.schema.json",
+  "title": "Expression (qwen/lora_dataset/expression.json)",
+  "description": "Expression slots and camera skip rules for Qwen-Image-Edit-2511 dataset rows. Empty or omitted patterns emit one row without an expression slot.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "skip_camera": {
       "$ref": "#/$defs/skip_camera",
-      "description": "When angle or distance name matches (OR), emit one row per character without pose tags instead of iterating patterns."
+      "description": "When angle or distance name matches (OR), emit one row per character without an expression slot instead of iterating patterns."
     },
     "patterns": {
       "type": "array",
-      "items": { "$ref": "#/$defs/named_tag_set" }
+      "items": { "$ref": "#/$defs/named_prompt" }
     }
   },
   "$defs": {
-    "tags": {
-      "type": "array",
-      "items": { "type": "string", "minLength": 1 }
-    },
     "skip_camera": {
       "type": "object",
       "additionalProperties": false,
@@ -36,18 +32,21 @@
         }
       }
     },
-    "named_tag_set": {
+    "named_prompt": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name"],
+      "required": ["name", "prompt"],
       "properties": {
         "name": {
           "type": "string",
           "minLength": 1,
-          "description": "Stable identifier; used in filename_prefix. When positive is omitted or empty, name is the sole positive tag."
+          "description": "Stable identifier; used in filename_prefix."
         },
-        "positive": { "$ref": "#/$defs/tags" },
-        "negative": { "$ref": "#/$defs/tags" }
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short natural-language slot joined into the edit instruction and caption. Not a full sentence and not Danbooru tags (e.g. with a slight smile)."
+        }
       }
     }
   }

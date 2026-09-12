@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://local.spec/qwen-lora-training/characters.schema.json",
-  "title": "Character (qwen-lora-training/characters/*.json)",
-  "description": "One character per JSON file under qwen-lora-training/characters/. Appearance comes from the reference image, not tag arrays. Used as image1 for Qwen-Image-Edit-2511.",
+  "$id": "https://local.spec/qwen/lora_dataset/characters.schema.json",
+  "title": "Character (qwen/lora_dataset/characters/*.json)",
+  "description": "One character per JSON file under qwen/lora_dataset/characters/. Appearance comes from the reference image, not tag arrays. Used as image1 for Qwen-Image-Edit-2511.",
   "type": "object",
   "additionalProperties": false,
   "required": ["name", "images"],

@@ -14,7 +14,7 @@ class GenerateQwenController:
             "files",
             nargs="*",
             help=(
-                "Qwen JSON paths under qwen/, relative, nested allowed "
+                "Qwen JSON paths under qwen/spec/, relative, nested allowed "
                 "(e.g. hero/smile.json). Omit to generate every file."
             ),
         )
