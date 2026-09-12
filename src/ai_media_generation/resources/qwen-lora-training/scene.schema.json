@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/qwen-lora-training/scene.schema.json",
   "title": "Scene (qwen-lora-training/scene.json)",
-  "description": "Background and lighting edit instructions for Qwen-Image-Edit-2511 dataset rows. Empty or omitted patterns emit one row without that axis.",
+  "description": "Background and lighting slots for Qwen-Image-Edit-2511 dataset rows. Empty or omitted patterns emit one row without that axis.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -43,7 +43,7 @@
         "prompt": {
           "type": "string",
           "minLength": 1,
-          "description": "Natural-language edit instruction for this scene axis. Not Danbooru tags."
+          "description": "Short natural-language slot joined into the edit instruction and caption. Not a full sentence and not Danbooru tags (e.g. in an indoor kitchen, under soft daylight)."
         }
       }
     }

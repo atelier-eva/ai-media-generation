@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/qwen-lora-training/pose.schema.json",
   "title": "Pose (qwen-lora-training/pose.json)",
-  "description": "Pose edit instructions and camera skip rules for Qwen-Image-Edit-2511 dataset rows. Empty or omitted patterns emit one row without a pose instruction.",
+  "description": "Pose slots and camera skip rules for Qwen-Image-Edit-2511 dataset rows. Empty or omitted patterns emit one row without a pose slot.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "skip_camera": {
       "$ref": "#/$defs/skip_camera",
-      "description": "When angle or distance name matches (OR), emit one row per character without pose instructions instead of iterating patterns."
+      "description": "When angle or distance name matches (OR), emit one row per character without a pose slot instead of iterating patterns."
     },
     "patterns": {
       "type": "array",
@@ -45,7 +45,7 @@
         "prompt": {
           "type": "string",
           "minLength": 1,
-          "description": "Natural-language edit instruction for this pose. Not Danbooru tags."
+          "description": "Short natural-language slot joined into the edit instruction and caption. Not a full sentence and not Danbooru tags (e.g. standing with arms relaxed)."
         }
       }
     }

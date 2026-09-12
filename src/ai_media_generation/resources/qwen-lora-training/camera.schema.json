@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/qwen-lora-training/camera.schema.json",
   "title": "Camera (qwen-lora-training/camera.json)",
-  "description": "Camera angle and distance edit instructions for Qwen-Image-Edit-2511 dataset rows. Output size follows the character reference image (VAEEncode), not this file. Not Animagine image_size or tag arrays.",
+  "description": "Camera angle and distance slots for Qwen-Image-Edit-2511 dataset rows. Output size follows the character reference image (VAEEncode), not this file. Not Animagine image_size or tag arrays.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -29,7 +29,7 @@
         "prompt": {
           "type": "string",
           "minLength": 1,
-          "description": "Natural-language edit instruction for this camera axis (e.g. front view, close-up). Not Danbooru tags."
+          "description": "Short natural-language slot joined into the edit instruction and caption. Not a full sentence and not Danbooru tags (e.g. from the front, in a close-up)."
         }
       }
     }

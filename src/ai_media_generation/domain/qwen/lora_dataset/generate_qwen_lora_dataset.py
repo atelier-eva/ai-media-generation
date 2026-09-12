@@ -4,6 +4,7 @@ from ai_media_generation.domain.qwen.lora_dataset.generate_qwen_lora_dataset_out
     GenerateQwenLoraDatasetOutput,
     QwenLoraDatasetRow,
 )
+from ai_media_generation.domain.qwen.lora_dataset.generation import Generation
 from ai_media_generation.domain.qwen.lora_dataset.named_prompt import NamedPrompt
 from ai_media_generation.domain.qwen.lora_dataset.pose import Pose
 from ai_media_generation.domain.qwen.lora_dataset.shoot import Shoot
@@ -44,7 +45,7 @@ class GenerateQwenLoraDataset:
         background: NamedPrompt | None,
         lighting: NamedPrompt | None,
     ) -> str:
-        caption = self._join(
+        caption = self._paragraph(
             subject.name,
             camera.angle.prompt,
             camera.distance.prompt,
@@ -63,7 +64,7 @@ class GenerateQwenLoraDataset:
 
     def _edit_prompt(
         self,
-        shoot: Shoot,
+        generation: Generation,
         camera: Camera,
         expression: Expression | None,
         pose: Pose | None,
@@ -71,15 +72,17 @@ class GenerateQwenLoraDataset:
         background: NamedPrompt | None,
         lighting: NamedPrompt | None,
     ) -> str:
-        prompt = self._join(
-            shoot.generation.prompt,
-            camera.angle.prompt,
-            camera.distance.prompt,
-            expression.prompt if expression else "",
-            pose.prompt if pose else "",
-            art_style.prompt if art_style else "",
-            background.prompt if background else "",
-            lighting.prompt if lighting else "",
+        prompt = self._sentences(
+            generation.prompt,
+            self._paragraph(
+                camera.angle.prompt,
+                camera.distance.prompt,
+                expression.prompt if expression else "",
+                pose.prompt if pose else "",
+                art_style.prompt if art_style else "",
+                background.prompt if background else "",
+                lighting.prompt if lighting else "",
+            ),
         )
         if not prompt:
             raise ValueError(
@@ -107,8 +110,26 @@ class GenerateQwenLoraDataset:
             return patterns
         return (None,)
 
-    def _join(self, *parts: str) -> str:
-        return ", ".join(part.strip() for part in parts if part.strip())
+    def _paragraph(self, *parts: str) -> str:
+        return " ".join(slot for slot in (self._slot(part) for part in parts) if slot)
+
+    def _sentences(self, *parts: str) -> str:
+        return " ".join(
+            sentence
+            for sentence in (self._sentence(part) for part in parts)
+            if sentence
+        )
+
+    def _sentence(self, part: str) -> str:
+        text = self._slot(part)
+        if not text:
+            return ""
+        if text[0].islower():
+            text = text[0].upper() + text[1:]
+        return f"{text}."
+
+    def _slot(self, part: str) -> str:
+        return " ".join(part.split()).rstrip(".,;:")
 
     def _to_row(
         self,
@@ -132,7 +153,7 @@ class GenerateQwenLoraDataset:
             background_name=background.name if background else None,
             lighting_name=lighting.name if lighting else None,
             edit_prompt=self._edit_prompt(
-                shoot,
+                shoot.generation,
                 camera,
                 expression,
                 pose,

@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/qwen-lora-training/expression.schema.json",
   "title": "Expression (qwen-lora-training/expression.json)",
-  "description": "Expression edit instructions and camera skip rules for Qwen-Image-Edit-2511 dataset rows. Empty or omitted patterns emit one row without an expression instruction.",
+  "description": "Expression slots and camera skip rules for Qwen-Image-Edit-2511 dataset rows. Empty or omitted patterns emit one row without an expression slot.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "skip_camera": {
       "$ref": "#/$defs/skip_camera",
-      "description": "When angle or distance name matches (OR), emit one row per character without expression instructions instead of iterating patterns."
+      "description": "When angle or distance name matches (OR), emit one row per character without an expression slot instead of iterating patterns."
     },
     "patterns": {
       "type": "array",
@@ -45,7 +45,7 @@
         "prompt": {
           "type": "string",
           "minLength": 1,
-          "description": "Natural-language edit instruction for this expression. Not Danbooru tags."
+          "description": "Short natural-language slot joined into the edit instruction and caption. Not a full sentence and not Danbooru tags (e.g. with a slight smile)."
         }
       }
     }
