@@ -3,13 +3,20 @@ from sys import argv
 
 from ai_media_generation.config import Config
 from ai_media_generation.domain.qwen.spec.get_qwen_specs import GetQwenSpecs
+from ai_media_generation.domain.qwen.spec.get_qwen_specs_output import QwenSpecDto
 from ai_media_generation.infrastructure.comfy_ui import ComfyUi
+from ai_media_generation.infrastructure.remote_session import (
+    RemoteSession,
+    add_remote_arguments,
+    require_remote_flags,
+)
 
 
 class GenerateQwenController:
     def execute(self, parser: ArgumentParser) -> None:
         parser.add_argument("--base-seed", type=int, default=0)
         parser.add_argument("--batch-size", type=int, default=4)
+        add_remote_arguments(parser)
         parser.add_argument(
             "files",
             nargs="*",
@@ -19,16 +26,31 @@ class GenerateQwenController:
             ),
         )
         args = parser.parse_args(argv[2:])
+        require_remote_flags(parser, args)
         specs = GetQwenSpecs().execute(self._qwen_ids(args.files)).dtos
         if not specs:
             raise ValueError("No qwen JSON to generate.")
         print(f"Processing {len(specs)} qwen JSON file(s).")
+        session = RemoteSession(stop=args.stop)
+        try:
+            if args.remote:
+                session.open()
+            self._generate(specs, args.base_seed, args.batch_size)
+        finally:
+            session.close()
+
+    def _generate(
+        self,
+        specs: tuple[QwenSpecDto, ...],
+        base_seed: int,
+        batch_size: int,
+    ) -> None:
         config = Config()
         directory = config.qwen_output_directory
         comfy_ui = ComfyUi()
         for index, spec in enumerate(specs):
             filename_prefix = spec.id
-            seed = args.base_seed + index
+            seed = base_seed + index
             print(f"[{index + 1}/{len(specs)}] {filename_prefix} seed={seed}")
             images = comfy_ui.generate_qwen(
                 filename_prefix,
@@ -37,7 +59,7 @@ class GenerateQwenController:
                 spec.prompt,
                 spec.negative,
                 seed,
-                args.batch_size,
+                batch_size,
             )
             written = comfy_ui.write_images(images, directory)
             if written:

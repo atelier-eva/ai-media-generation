@@ -13,6 +13,11 @@ from ai_media_generation.infrastructure.comfy_ui import ComfyUi
 from ai_media_generation.infrastructure.qwen_lora_training_generation_log import (
     QwenLoraTrainingGenerationLog,
 )
+from ai_media_generation.infrastructure.remote_session import (
+    RemoteSession,
+    add_remote_arguments,
+    require_remote_flags,
+)
 from ai_media_generation.repository.qwen.lora_dataset.shoot_repository import (
     ShootRepository,
 )
@@ -38,10 +43,27 @@ class GenerateQwenLoraTrainingImagesController:
             default=0,
             help="1-based last dataset row to generate (inclusive). 0 means the last row.",
         )
+        add_remote_arguments(parser)
         args = parser.parse_args(argv[2:])
+        require_remote_flags(parser, args)
         rows = GenerateQwenLoraDataset().execute(ShootRepository().find()).rows
         start, end = self._row_range(parser, args.from_row, args.to_row, rows)
         print(f"Processing rows {start + 1}..{end} of {len(rows)}.")
+        session = RemoteSession(stop=args.stop)
+        try:
+            if args.remote:
+                session.open()
+            self._generate(rows, start, end, args.base_seed)
+        finally:
+            session.close()
+
+    def _generate(
+        self,
+        rows: tuple[QwenLoraDatasetRow, ...],
+        start: int,
+        end: int,
+        base_seed: int,
+    ) -> None:
         config = Config()
         prefix = config.qwen_lora_filename_prefix
         directory = config.qwen_lora_dataset_directory
@@ -51,7 +73,7 @@ class GenerateQwenLoraTrainingImagesController:
             row = rows[index]
             filename_prefix = self._filename_prefix(row, index + 1, prefix)
             fields = self._row_fields(row)
-            seed = args.base_seed + (index - start)
+            seed = base_seed + (index - start)
             if log.contains(**fields, seed=seed):
                 print(f"[{index + 1}/{end}] {filename_prefix} skip seed={seed}")
                 continue

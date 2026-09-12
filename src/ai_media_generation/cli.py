@@ -26,6 +26,10 @@ from ai_media_generation.controller.generate_qwen_lora_training_images_controlle
     GenerateQwenLoraTrainingImagesController,
 )
 from ai_media_generation.controller.init_controller import InitController
+from ai_media_generation.controller.pod_connect_controller import PodConnectController
+from ai_media_generation.controller.pod_start_controller import PodStartController
+from ai_media_generation.controller.pod_status_controller import PodStatusController
+from ai_media_generation.controller.pod_stop_controller import PodStopController
 from ai_media_generation.controller.report_animagine_lora_training_patterns_controller import (
     ReportAnimagineLoraTrainingPatternsController,
 )
@@ -75,6 +79,18 @@ def _run() -> None:
         return
     if command == "music":
         GenerateMusicController().execute(_command_parser("music"))
+        return
+    if command == "pod-connect":
+        PodConnectController().execute(_command_parser("pod-connect"))
+        return
+    if command == "pod-start":
+        PodStartController().execute(_command_parser("pod-start"))
+        return
+    if command == "pod-status":
+        PodStatusController().execute(_command_parser("pod-status"))
+        return
+    if command == "pod-stop":
+        PodStopController().execute(_command_parser("pod-stop"))
         return
     if command == "report":
         ReportAnimagineLoraTrainingPatternsController().execute(
@@ -131,6 +147,22 @@ def _parser() -> ArgumentParser:
     subparsers.add_parser(
         "init",
         help="Create input JSON templates.",
+    )
+    subparsers.add_parser(
+        "pod-connect",
+        help="Forward localhost:8188 to the running pod over Direct SSH.",
+    )
+    subparsers.add_parser(
+        "pod-start",
+        help="Start the RunPod pod and wait until RUNNING.",
+    )
+    subparsers.add_parser(
+        "pod-status",
+        help="Show RunPod pod status and Direct SSH from RUNPOD_POD_ID.",
+    )
+    subparsers.add_parser(
+        "pod-stop",
+        help="Stop the RunPod pod and wait until EXITED.",
     )
     subparsers.add_parser(
         "report",

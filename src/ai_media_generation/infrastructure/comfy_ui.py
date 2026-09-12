@@ -35,6 +35,23 @@ _QWEN_LORA_TRAINING_IMAGE_GENERATION_API_JSON = (
 )
 
 
+def wait_until_reachable(url: str, timeout_seconds: int) -> None:
+    deadline = time.monotonic() + timeout_seconds
+    while time.monotonic() < deadline:
+        request = urllib.request.Request(f"{url}/queue", method="GET")
+        try:
+            with urllib.request.urlopen(request, timeout=2) as response:
+                response.read()
+            return
+        except urllib.error.HTTPError:
+            return
+        except (TimeoutError, urllib.error.URLError, OSError):
+            time.sleep(2)
+    raise InfrastructureError(
+        f"Timed out after {timeout_seconds}s waiting for ComfyUI at {url}."
+    )
+
+
 class ComfyUi:
     _POLL_INTERVAL_SECONDS = 2
     _POLL_TIMEOUT_SECONDS = 600
