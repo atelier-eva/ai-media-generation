@@ -25,7 +25,7 @@ class GenerateAnimagineController:
         print(f"Processing {len(specs)} prompt JSON file(s).")
         config = Config()
         directory = config.animagine_output_directory
-        comfy_ui = ComfyUi()
+        comfy_ui = ComfyUi(config.comfy_ui_url)
         for index, spec in enumerate(specs):
             filename_prefix = spec.id
             seed = args.base_seed + index

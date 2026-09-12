@@ -21,8 +21,6 @@ class Config:
     QWEN_LORA_DATASET_DIRECTORY = "qwen/lora_output"
 
     def __init__(self) -> None:
-        self.comfy_ui_url = _text("COMFY_UI_URL").rstrip("/")
-        self.comfy_ui_ckpt_name = _text("ANIMAGINE_CKPT_NAME")
         self.animagine_lora_filename_prefix = (
             _optional_text("ANIMAGINE_LORA_FILENAME_PREFIX") or "animagine-lora"
         )
@@ -49,6 +47,36 @@ class Config:
         self.qwen_lora_timeout_seconds = (
             1800 if qwen_lora_timeout is None else qwen_lora_timeout
         )
+        runpod_timeout = _optional_int("RUNPOD_TIMEOUT_SECONDS")
+        if runpod_timeout is not None and runpod_timeout <= 0:
+            raise ValueError("RUNPOD_TIMEOUT_SECONDS must be positive.")
+        self.runpod_timeout_seconds = 600 if runpod_timeout is None else runpod_timeout
+
+    @property
+    def comfy_ui_url(self) -> str:
+        return _text("COMFY_UI_URL").rstrip("/")
+
+    @property
+    def comfy_ui_ckpt_name(self) -> str:
+        return _text("ANIMAGINE_CKPT_NAME")
+
+    @property
+    def runpod_api_key(self) -> str:
+        return _text("RUNPOD_API_KEY")
+
+    @property
+    def runpod_pod_id(self) -> str:
+        return _text("RUNPOD_POD_ID")
+
+    @property
+    def runpod_ssh_identity(self) -> Path | None:
+        text = _optional_text("RUNPOD_SSH_IDENTITY")
+        if text is None:
+            return None
+        path = Path(text).expanduser().resolve()
+        if not path.is_file():
+            raise FileNotFoundError(f"RUNPOD_SSH_IDENTITY is not a file: {path}")
+        return path
 
     @property
     def animagine_output_directory(self) -> Path:

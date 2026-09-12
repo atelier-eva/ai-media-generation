@@ -43,7 +43,7 @@ class GenerateAnimagineLoraTrainingImagesController:
         config = Config()
         prefix = config.animagine_lora_filename_prefix
         directory = config.animagine_lora_dataset_directory
-        comfy_ui = ComfyUi()
+        comfy_ui = ComfyUi(config.comfy_ui_url)
         log = AnimagineLoraTrainingGenerationLog()
         for index in range(start, end):
             pattern = patterns[index]
