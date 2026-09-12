@@ -2,11 +2,12 @@ import shutil
 import socket
 import subprocess
 import time
+from dataclasses import dataclass
 from pathlib import Path
 from threading import Thread
 
+from ai_media_generation.config import Config
 from ai_media_generation.infrastructure.error import InfrastructureError
-from ai_media_generation.infrastructure.runpod import RunPod
 
 
 class SshTunnel:
@@ -17,8 +18,14 @@ class SshTunnel:
     _LISTEN_TIMEOUT_SECONDS = 30
     _POLL_INTERVAL_SECONDS = 0.2
 
+    @dataclass(frozen=True)
+    class Endpoint:
+        host: str
+        port: int
+        username: str
+
     def __init__(
-        self, ssh: RunPod.DirectSsh, identity: Path | None = None
+        self, ssh: "SshTunnel.Endpoint", identity: Path | None = None
     ) -> None:
         self._ssh = ssh
         self._identity = identity
@@ -29,6 +36,18 @@ class SshTunnel:
     @classmethod
     def local_url(cls) -> str:
         return f"http://{cls._LOCAL_HOST}:{cls._LOCAL_PORT}"
+
+    @classmethod
+    def open(cls, ssh: "SshTunnel.Endpoint") -> "SshTunnel":
+        tunnel = cls(ssh, Config().runpod_ssh_identity)
+        print(f"Forwarding {tunnel.url} -> 127.0.0.1:8188")
+        try:
+            tunnel.start()
+            tunnel.wait_until_listening()
+        except BaseException:
+            tunnel.close()
+            raise
+        return tunnel
 
     @property
     def url(self) -> str:

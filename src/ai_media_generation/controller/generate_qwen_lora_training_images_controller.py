@@ -3,6 +3,7 @@ from re import sub
 from sys import argv
 
 from ai_media_generation.config import Config
+from ai_media_generation.controller.helper import add_remote_arguments
 from ai_media_generation.domain.qwen.lora_dataset.generate_qwen_lora_dataset import (
     GenerateQwenLoraDataset,
 )
@@ -13,11 +14,8 @@ from ai_media_generation.infrastructure.comfy_ui import ComfyUi
 from ai_media_generation.infrastructure.qwen_lora_training_generation_log import (
     QwenLoraTrainingGenerationLog,
 )
-from ai_media_generation.infrastructure.remote_session import (
-    RemoteSession,
-    add_remote_arguments,
-    require_remote_flags,
-)
+from ai_media_generation.infrastructure.runpod import RunPod, write_pod
+from ai_media_generation.infrastructure.ssh_tunnel import SshTunnel
 from ai_media_generation.repository.qwen.lora_dataset.shoot_repository import (
     ShootRepository,
 )
@@ -45,17 +43,23 @@ class GenerateQwenLoraTrainingImagesController:
         )
         add_remote_arguments(parser)
         args = parser.parse_args(argv[2:])
-        require_remote_flags(parser, args)
         rows = GenerateQwenLoraDataset().execute(ShootRepository().find()).rows
         start, end = self._row_range(parser, args.from_row, args.to_row, rows)
         print(f"Processing rows {start + 1}..{end} of {len(rows)}.")
-        session = RemoteSession(stop=args.stop)
+        tunnel: SshTunnel | None = None
         try:
             if args.remote:
-                session.open()
-            self._generate(rows, start, end, args.base_seed)
+                pod, ssh = RunPod().require_direct_ssh()
+                write_pod(pod)
+                tunnel = SshTunnel.open(ssh)
+                ComfyUi.wait_until_reachable(
+                    tunnel.url, Config().runpod_timeout_seconds
+                )
+            url = tunnel.url if tunnel is not None else Config().comfy_ui_url
+            self._generate(rows, start, end, args.base_seed, url)
         finally:
-            session.close()
+            if tunnel is not None:
+                tunnel.close()
 
     def _generate(
         self,
@@ -63,11 +67,12 @@ class GenerateQwenLoraTrainingImagesController:
         start: int,
         end: int,
         base_seed: int,
+        url: str,
     ) -> None:
         config = Config()
         prefix = config.qwen_lora_filename_prefix
         directory = config.qwen_lora_dataset_directory
-        comfy_ui = ComfyUi()
+        comfy_ui = ComfyUi(url)
         log = QwenLoraTrainingGenerationLog()
         for index in range(start, end):
             row = rows[index]

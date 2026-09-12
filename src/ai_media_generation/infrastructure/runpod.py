@@ -7,6 +7,7 @@ from typing import Any
 
 from ai_media_generation.config import Config
 from ai_media_generation.infrastructure.error import InfrastructureError
+from ai_media_generation.infrastructure.ssh_tunnel import SshTunnel
 
 
 class RunPod:
@@ -17,17 +18,11 @@ class RunPod:
     _STARTING = frozenset({"PROVISIONING", "STARTING"})
 
     @dataclass(frozen=True)
-    class DirectSsh:
-        host: str
-        port: int
-        username: str
-
-    @dataclass(frozen=True)
     class Pod:
         id: str
         name: str
         status: str
-        direct_ssh: "RunPod.DirectSsh | None"
+        direct_ssh: SshTunnel.Endpoint | None
 
     def __init__(self) -> None:
         config = Config()
@@ -37,6 +32,20 @@ class RunPod:
 
     def get_pod(self) -> "RunPod.Pod":
         return self._to_pod(self._request("GET", f"/pods/{self._pod_id}"))
+
+    def require_direct_ssh(self) -> tuple["RunPod.Pod", SshTunnel.Endpoint]:
+        pod = self.get_pod()
+        if pod.status != "RUNNING":
+            raise InfrastructureError(
+                f"RunPod pod status is {pod.status}. "
+                "Run: ai-media-generation pod-start"
+            )
+        if pod.direct_ssh is None:
+            raise InfrastructureError(
+                "Direct SSH is unavailable. "
+                "Expose 22/tcp on the pod and wait until it is RUNNING."
+            )
+        return pod, pod.direct_ssh
 
     def start_pod(self) -> "RunPod.Pod":
         pod = self.get_pod()
@@ -145,7 +154,7 @@ class RunPod:
             direct_ssh=self._direct_ssh(data.get("ssh")),
         )
 
-    def _direct_ssh(self, value: Any) -> "RunPod.DirectSsh | None":
+    def _direct_ssh(self, value: Any) -> SshTunnel.Endpoint | None:
         if value is None:
             return None
         if not isinstance(value, dict):
@@ -160,7 +169,7 @@ class RunPod:
         port = self._port(raw.get("port"))
         if not host or not username or port is None:
             raise InfrastructureError("RunPod pod ssh.direct is incomplete.")
-        return RunPod.DirectSsh(host=host, port=port, username=username)
+        return SshTunnel.Endpoint(host=host, port=port, username=username)
 
     def _port(self, value: Any) -> int | None:
         if value is None or isinstance(value, bool):

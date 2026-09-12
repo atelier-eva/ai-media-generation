@@ -24,7 +24,7 @@ class GenerateKageeController:
         print(f"Processing {len(specs)} kagee JSON file(s).")
         config = Config()
         directory = config.kagee_output_directory
-        comfy_ui = ComfyUi()
+        comfy_ui = ComfyUi(config.comfy_ui_url)
         for index, spec in enumerate(specs):
             filename_prefix = spec.id
             seed = spec.seed if spec.seed is not None else args.base_seed + index
