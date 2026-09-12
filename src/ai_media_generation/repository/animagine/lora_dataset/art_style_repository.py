@@ -1,7 +1,7 @@
 from typing import Any
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.art_style.art_style import ArtStyle
+from ai_media_generation.domain.animagine.lora_dataset.art_style.art_style import ArtStyle
 from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 

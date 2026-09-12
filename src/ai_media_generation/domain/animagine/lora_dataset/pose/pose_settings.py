@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from ai_media_generation.domain.camera.camera import Camera
-from ai_media_generation.domain.pose.pose import Pose
+from ai_media_generation.domain.animagine.lora_dataset.camera.camera import Camera
+from ai_media_generation.domain.animagine.lora_dataset.pose.pose import Pose
 
 
 @dataclass

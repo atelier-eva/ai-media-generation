@@ -2,11 +2,11 @@ from pathlib import Path
 from typing import Any
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.subject.feature.subject_feature import (
+from ai_media_generation.domain.animagine.lora_dataset.subject.feature.subject_feature import (
     SubjectFeature,
     SubjectFeaturePolarity,
 )
-from ai_media_generation.domain.subject.subject import Subject
+from ai_media_generation.domain.animagine.lora_dataset.subject.subject import Subject
 from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 

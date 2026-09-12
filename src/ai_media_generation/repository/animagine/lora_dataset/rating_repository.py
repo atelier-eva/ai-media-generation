@@ -1,7 +1,7 @@
 from typing import Any
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.rating.content_rating import ContentRating
+from ai_media_generation.domain.animagine.lora_dataset.rating.content_rating import ContentRating
 from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 

@@ -1,10 +1,10 @@
 from typing import Any
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.camera.angle.camera_angle import CameraAngle
-from ai_media_generation.domain.camera.camera import Camera
-from ai_media_generation.domain.camera.distance.camera_distance import CameraDistance
-from ai_media_generation.domain.camera.frame.camera_frame import CameraFrame
+from ai_media_generation.domain.animagine.lora_dataset.camera.angle.camera_angle import CameraAngle
+from ai_media_generation.domain.animagine.lora_dataset.camera.camera import Camera
+from ai_media_generation.domain.animagine.lora_dataset.camera.distance.camera_distance import CameraDistance
+from ai_media_generation.domain.animagine.lora_dataset.camera.frame.camera_frame import CameraFrame
 from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 

@@ -1,16 +1,16 @@
-from ai_media_generation.domain.art_style.art_style import ArtStyle
-from ai_media_generation.domain.camera.camera import Camera
-from ai_media_generation.domain.expression.expression import Expression
-from ai_media_generation.domain.pose.pose import Pose
-from ai_media_generation.domain.scene.background.scene_background import SceneBackground
-from ai_media_generation.domain.scene.lighting.scene_lighting import SceneLighting
-from ai_media_generation.domain.shoot.generate_shoot_patterns_output import (
+from ai_media_generation.domain.animagine.lora_dataset.art_style.art_style import ArtStyle
+from ai_media_generation.domain.animagine.lora_dataset.camera.camera import Camera
+from ai_media_generation.domain.animagine.lora_dataset.expression.expression import Expression
+from ai_media_generation.domain.animagine.lora_dataset.pose.pose import Pose
+from ai_media_generation.domain.animagine.lora_dataset.scene.background.scene_background import SceneBackground
+from ai_media_generation.domain.animagine.lora_dataset.scene.lighting.scene_lighting import SceneLighting
+from ai_media_generation.domain.animagine.lora_dataset.shoot.generate_shoot_patterns_output import (
     GenerateShootPatternsOutput,
 )
-from ai_media_generation.domain.shoot.shoot import Shoot
-from ai_media_generation.domain.subject.feature.subject_feature import SubjectFeature
-from ai_media_generation.domain.subject.subject import Subject
-from ai_media_generation.repository.shoot_repository import ShootRepository
+from ai_media_generation.domain.animagine.lora_dataset.shoot.shoot import Shoot
+from ai_media_generation.domain.animagine.lora_dataset.subject.feature.subject_feature import SubjectFeature
+from ai_media_generation.domain.animagine.lora_dataset.subject.subject import Subject
+from ai_media_generation.repository.animagine.lora_dataset.shoot_repository import ShootRepository
 
 
 class GenerateShootPatterns:

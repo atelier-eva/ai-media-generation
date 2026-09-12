@@ -1,8 +1,8 @@
 from typing import Any
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.expression.expression import Expression
-from ai_media_generation.domain.expression.expression_settings import ExpressionSettings
+from ai_media_generation.domain.animagine.lora_dataset.expression.expression import Expression
+from ai_media_generation.domain.animagine.lora_dataset.expression.expression_settings import ExpressionSettings
 from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ai_media_generation.domain.camera.frame.camera_frame import CameraFrame
+from ai_media_generation.domain.animagine.lora_dataset.camera.frame.camera_frame import CameraFrame
 
 
 @dataclass

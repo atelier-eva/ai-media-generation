@@ -1,10 +1,10 @@
 from typing import Any
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.scene.background.scene_background import (
+from ai_media_generation.domain.animagine.lora_dataset.scene.background.scene_background import (
     SceneBackground,
 )
-from ai_media_generation.domain.scene.lighting.scene_lighting import SceneLighting
+from ai_media_generation.domain.animagine.lora_dataset.scene.lighting.scene_lighting import SceneLighting
 from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 

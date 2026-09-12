@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from ai_media_generation.domain.camera.camera import Camera
+from ai_media_generation.domain.animagine.lora_dataset.camera.camera import Camera
 
 
 class SubjectFeaturePolarity(Enum):

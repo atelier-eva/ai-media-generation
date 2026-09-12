@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from ai_media_generation.domain.camera.camera import Camera
-from ai_media_generation.domain.subject.feature.subject_feature import (
+from ai_media_generation.domain.animagine.lora_dataset.camera.camera import Camera
+from ai_media_generation.domain.animagine.lora_dataset.subject.feature.subject_feature import (
     SubjectFeature,
     SubjectFeaturePolarity,
 )

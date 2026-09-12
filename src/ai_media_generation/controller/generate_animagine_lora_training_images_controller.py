@@ -3,10 +3,10 @@ from re import sub
 from sys import argv
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.shoot.generate_shoot_patterns import (
+from ai_media_generation.domain.animagine.lora_dataset.shoot.generate_shoot_patterns import (
     GenerateShootPatterns,
 )
-from ai_media_generation.domain.shoot.generate_shoot_patterns_output import (
+from ai_media_generation.domain.animagine.lora_dataset.shoot.generate_shoot_patterns_output import (
     GenerateShootPatternsOutput,
 )
 from ai_media_generation.infrastructure.comfy_ui import ComfyUi
