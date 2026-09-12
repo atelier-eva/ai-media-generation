@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ai_media_generation.domain.image_spec.prompt import Prompt
+from ai_media_generation.domain.animagine.spec.prompt import Prompt
 
 
 @dataclass

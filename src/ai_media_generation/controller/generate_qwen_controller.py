@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from sys import argv
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.qwen_spec.get_qwen_specs import GetQwenSpecs
+from ai_media_generation.domain.qwen.spec.get_qwen_specs import GetQwenSpecs
 from ai_media_generation.infrastructure.comfy_ui import ComfyUi
 
 

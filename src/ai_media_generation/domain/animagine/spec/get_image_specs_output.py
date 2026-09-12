@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ai_media_generation.domain.image_spec.image_spec import ImageSpec
+from ai_media_generation.domain.animagine.spec.image_spec import ImageSpec
 
 
 @dataclass

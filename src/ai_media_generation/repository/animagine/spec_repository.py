@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import Any
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.image_spec.image_spec import ImageSpec
-from ai_media_generation.domain.image_spec.prompt import Prompt
+from ai_media_generation.domain.animagine.spec.image_spec import ImageSpec
+from ai_media_generation.domain.animagine.spec.prompt import Prompt
 from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 

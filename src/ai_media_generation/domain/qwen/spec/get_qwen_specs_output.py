@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ai_media_generation.domain.qwen_spec.qwen_spec import QwenSpec
+from ai_media_generation.domain.qwen.spec.qwen_spec import QwenSpec
 
 
 @dataclass

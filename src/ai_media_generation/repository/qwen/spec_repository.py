@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.qwen_spec.qwen_spec import QwenSpec
+from ai_media_generation.domain.qwen.spec.qwen_spec import QwenSpec
 from ai_media_generation.repository.json_io import read_json
 
 
