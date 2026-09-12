@@ -47,6 +47,10 @@
       "url": "./src/ai_media_generation/resources/prompt.schema.json"
     },
     {
+      "fileMatch": ["**/qwen/*.json", "**/qwen/**/*.json"],
+      "url": "./src/ai_media_generation/resources/qwen.schema.json"
+    },
+    {
       "fileMatch": ["**/scene.json"],
       "url": "./src/ai_media_generation/resources/lora-training/scene.schema.json"
     }

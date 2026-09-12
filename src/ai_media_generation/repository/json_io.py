@@ -19,6 +19,7 @@ _SCHEMA_RESOURCES = {
     "music": ("music.schema.json",),
     "pose.json": ("lora-training", "pose.schema.json"),
     "prompt": ("prompt.schema.json",),
+    "qwen": ("qwen.schema.json",),
     "scene.json": ("lora-training", "scene.schema.json"),
 }
 
@@ -81,6 +82,7 @@ def _schema_resource(path: Path) -> tuple[str, ...] | None:
     for key, directory in (
         ("prompt", lambda: config.prompt_directory),
         ("music", lambda: config.music_directory),
+        ("qwen", lambda: config.qwen_directory),
         ("characters", lambda: config.characters_directory),
     ):
         root = _directory_or_none(directory)

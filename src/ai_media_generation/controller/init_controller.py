@@ -27,6 +27,7 @@ class InitController:
                 f"Prompt templates go in {Config.PROMPT_DIRECTORY}/. "
                 f"Music templates go in {Config.MUSIC_DIRECTORY}/. "
                 f"Kagee templates go in {Config.KAGEE_DIRECTORY}/. "
+                f"Qwen templates go in {Config.QWEN_DIRECTORY}/. "
                 "Defaults to the current directory."
             ),
         )
@@ -45,6 +46,7 @@ class InitController:
         prompt = path / Config.PROMPT_DIRECTORY
         music = path / Config.MUSIC_DIRECTORY
         kagee = path / Config.KAGEE_DIRECTORY
+        qwen = path / Config.QWEN_DIRECTORY
         lora_training.mkdir(parents=True, exist_ok=True)
         for name in _JSON_FILES:
             self._write_json(lora_training / name, args.force)
@@ -64,14 +66,20 @@ class InitController:
             kagee,
             args.force,
         )
+        self._write_directory(
+            (Config.QWEN_DIRECTORY,),
+            qwen,
+            args.force,
+        )
         self._write_env()
         print(f"LoRA training directory: {lora_training}")
         print(f"Prompt directory: {prompt}")
         print(f"Music directory: {music}")
         print(f"Kagee directory: {kagee}")
+        print(f"Qwen directory: {qwen}")
         print(
             "Fill in the JSON, then run: "
-            "ai-media-generation lora-training, image, kagee, music, or report"
+            "ai-media-generation lora-training, animagine, qwen, kagee, music, or report"
         )
 
     def _write_env(self) -> None:

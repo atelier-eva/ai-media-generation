@@ -8,9 +8,11 @@ class Config:
     PROMPT_DIRECTORY = "prompt"
     MUSIC_DIRECTORY = "music"
     KAGEE_DIRECTORY = "kagee"
+    QWEN_DIRECTORY = "qwen"
     IMAGE_OUTPUT_DIRECTORY = "image-output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     KAGEE_OUTPUT_DIRECTORY = "kagee-output"
+    QWEN_OUTPUT_DIRECTORY = "qwen-output"
     LORA_DATASET_DIRECTORY = "lora-dataset"
 
     def __init__(self) -> None:
@@ -27,6 +29,10 @@ class Config:
         if kagee_timeout is not None and kagee_timeout <= 0:
             raise ValueError("KAGEE_TIMEOUT_SECONDS must be positive.")
         self.kagee_timeout_seconds = 1800 if kagee_timeout is None else kagee_timeout
+        qwen_timeout = _optional_int("QWEN_TIMEOUT_SECONDS")
+        if qwen_timeout is not None and qwen_timeout <= 0:
+            raise ValueError("QWEN_TIMEOUT_SECONDS must be positive.")
+        self.qwen_timeout_seconds = 1800 if qwen_timeout is None else qwen_timeout
 
     @property
     def image_output_directory(self) -> Path:
@@ -63,6 +69,14 @@ class Config:
     @property
     def kagee_output_directory(self) -> Path:
         return _directory("KAGEE_OUTPUT_DIRECTORY", self.KAGEE_OUTPUT_DIRECTORY)
+
+    @property
+    def qwen_directory(self) -> Path:
+        return _directory("QWEN_DIRECTORY", self.QWEN_DIRECTORY)
+
+    @property
+    def qwen_output_directory(self) -> Path:
+        return _directory("QWEN_OUTPUT_DIRECTORY", self.QWEN_OUTPUT_DIRECTORY)
 
     @property
     def art_style_json(self) -> Path:
