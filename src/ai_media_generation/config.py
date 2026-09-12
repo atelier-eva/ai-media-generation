@@ -13,6 +13,9 @@ class Config:
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     KAGEE_OUTPUT_DIRECTORY = "kagee-output"
     QWEN_OUTPUT_DIRECTORY = "qwen-output"
+    QWEN_LORA_TRAINING_SPEC_DIRECTORY = "qwen-lora-training"
+    QWEN_LORA_TRAINING_GENERATIONS_JSONL = "qwen-lora-training-generations.jsonl"
+    QWEN_LORA_DATASET_DIRECTORY = "qwen-lora-dataset"
     LORA_DATASET_DIRECTORY = "lora-dataset"
 
     def __init__(self) -> None:
@@ -33,6 +36,15 @@ class Config:
         if qwen_timeout is not None and qwen_timeout <= 0:
             raise ValueError("QWEN_TIMEOUT_SECONDS must be positive.")
         self.qwen_timeout_seconds = 1800 if qwen_timeout is None else qwen_timeout
+        self.qwen_lora_filename_prefix = (
+            _optional_text("QWEN_LORA_FILENAME_PREFIX") or "qwen-lora"
+        )
+        qwen_lora_timeout = _optional_int("QWEN_LORA_TIMEOUT_SECONDS")
+        if qwen_lora_timeout is not None and qwen_lora_timeout <= 0:
+            raise ValueError("QWEN_LORA_TIMEOUT_SECONDS must be positive.")
+        self.qwen_lora_timeout_seconds = (
+            1800 if qwen_lora_timeout is None else qwen_lora_timeout
+        )
 
     @property
     def animagine_output_directory(self) -> Path:
@@ -77,6 +89,54 @@ class Config:
     @property
     def qwen_output_directory(self) -> Path:
         return _directory("QWEN_OUTPUT_DIRECTORY", self.QWEN_OUTPUT_DIRECTORY)
+
+    @property
+    def qwen_lora_training_spec_directory(self) -> Path:
+        return _directory(
+            "QWEN_LORA_TRAINING_SPEC_DIRECTORY",
+            self.QWEN_LORA_TRAINING_SPEC_DIRECTORY,
+        )
+
+    @property
+    def qwen_lora_dataset_directory(self) -> Path:
+        return _directory(
+            "QWEN_LORA_DATASET_DIRECTORY",
+            self.QWEN_LORA_DATASET_DIRECTORY,
+        )
+
+    @property
+    def qwen_lora_training_generations_jsonl(self) -> Path:
+        return (
+            self.qwen_lora_dataset_directory / self.QWEN_LORA_TRAINING_GENERATIONS_JSONL
+        )
+
+    @property
+    def qwen_lora_training_art_style_json(self) -> Path:
+        return self.qwen_lora_training_spec_directory / "art-style.json"
+
+    @property
+    def qwen_lora_training_camera_json(self) -> Path:
+        return self.qwen_lora_training_spec_directory / "camera.json"
+
+    @property
+    def qwen_lora_training_characters_directory(self) -> Path:
+        return self.qwen_lora_training_spec_directory / "characters"
+
+    @property
+    def qwen_lora_training_expression_json(self) -> Path:
+        return self.qwen_lora_training_spec_directory / "expression.json"
+
+    @property
+    def qwen_lora_training_generation_json(self) -> Path:
+        return self.qwen_lora_training_spec_directory / "generation.json"
+
+    @property
+    def qwen_lora_training_pose_json(self) -> Path:
+        return self.qwen_lora_training_spec_directory / "pose.json"
+
+    @property
+    def qwen_lora_training_scene_json(self) -> Path:
+        return self.qwen_lora_training_spec_directory / "scene.json"
 
     @property
     def art_style_json(self) -> Path:

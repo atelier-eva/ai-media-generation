@@ -29,6 +29,10 @@ _QWEN_IMAGE_CREATION_API_JSON = (
     "comfyui",
     "image_qwen_Image_2512.json",
 )
+_QWEN_LORA_TRAINING_IMAGE_GENERATION_API_JSON = (
+    "comfyui",
+    "qwen-lora-training-image-generation-api.json",
+)
 
 
 class ComfyUi:
@@ -52,6 +56,10 @@ class ComfyUi:
         self._kagee_timeout_seconds = config.kagee_timeout_seconds
         self._qwen_template = read_resource_json(*_QWEN_IMAGE_CREATION_API_JSON)
         self._qwen_timeout_seconds = config.qwen_timeout_seconds
+        self._qwen_lora_training_template = read_resource_json(
+            *_QWEN_LORA_TRAINING_IMAGE_GENERATION_API_JSON
+        )
+        self._qwen_lora_timeout_seconds = config.qwen_lora_timeout_seconds
 
     def generate_lora_training_images(
         self,
@@ -123,6 +131,31 @@ class ComfyUi:
         return self._queue_prompt(
             self._kagee_workflow(prefix, self._upload_image(images[0]), text, seed),
             self._kagee_timeout_seconds,
+        )
+
+    def generate_qwen_lora_training_images(
+        self,
+        filename_prefix: str,
+        image: Path,
+        prompt: str,
+        seed: int,
+        negative: str = "",
+    ) -> tuple["ComfyUi.SavedImage", ...]:
+        prefix = filename_prefix.strip()
+        if not prefix:
+            raise ValueError("filename_prefix is empty.")
+        text = prompt.strip()
+        if not text:
+            raise ValueError("prompt is empty or missing.")
+        return self._queue_prompt(
+            self._qwen_lora_training_workflow(
+                prefix,
+                self._upload_image(image),
+                text,
+                seed,
+                negative.strip(),
+            ),
+            self._qwen_lora_timeout_seconds,
         )
 
     def generate_qwen(
@@ -366,6 +399,23 @@ class ComfyUi:
         workflow["41"]["inputs"]["image"] = image_name
         workflow["170:151"]["inputs"]["prompt"] = prompt
         workflow["170:169"]["inputs"]["seed"] = seed
+        return workflow
+
+    def _qwen_lora_training_workflow(
+        self,
+        filename_prefix: str,
+        image_name: str,
+        prompt: str,
+        seed: int,
+        negative: str,
+    ) -> dict[str, Any]:
+        workflow = copy.deepcopy(self._qwen_lora_training_template)
+        workflow["9"]["inputs"]["filename_prefix"] = filename_prefix
+        workflow["41"]["inputs"]["image"] = image_name
+        workflow["170:151"]["inputs"]["prompt"] = prompt
+        workflow["170:169"]["inputs"]["seed"] = seed
+        if negative:
+            workflow["170:149"]["inputs"]["prompt"] = negative
         return workflow
 
     def _lora_training_workflow(

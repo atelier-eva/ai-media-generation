@@ -26,6 +26,7 @@ class InitController:
                 f"LoRA training spec templates go in {Config.LORA_TRAINING_SPEC_DIRECTORY}/. "
                 f"Animagine spec templates go in {Config.ANIMAGINE_SPEC_DIRECTORY}/. "
                 f"Qwen spec templates go in {Config.QWEN_SPEC_DIRECTORY}/. "
+                f"Qwen LoRA training spec templates go in {Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY}/. "
                 f"Kagee spec templates go in {Config.KAGEE_SPEC_DIRECTORY}/. "
                 f"Music spec templates go in {Config.MUSIC_SPEC_DIRECTORY}/. "
                 "Defaults to the current directory."
@@ -45,6 +46,7 @@ class InitController:
         lora_training = path / Config.LORA_TRAINING_SPEC_DIRECTORY
         animagine = path / Config.ANIMAGINE_SPEC_DIRECTORY
         qwen = path / Config.QWEN_SPEC_DIRECTORY
+        qwen_lora_training = path / Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY
         kagee = path / Config.KAGEE_SPEC_DIRECTORY
         music = path / Config.MUSIC_SPEC_DIRECTORY
         lora_training.mkdir(parents=True, exist_ok=True)
@@ -61,6 +63,18 @@ class InitController:
             qwen,
             args.force,
         )
+        qwen_lora_training.mkdir(parents=True, exist_ok=True)
+        for name in _JSON_FILES:
+            self._write_resource(
+                (Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY, name),
+                qwen_lora_training / name,
+                args.force,
+            )
+        self._write_directory(
+            (Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY, _CHARACTERS_DIRECTORY),
+            qwen_lora_training / _CHARACTERS_DIRECTORY,
+            args.force,
+        )
         self._write_directory(
             (Config.KAGEE_SPEC_DIRECTORY,),
             kagee,
@@ -75,11 +89,13 @@ class InitController:
         print(f"LoRA training spec directory: {lora_training}")
         print(f"Animagine spec directory: {animagine}")
         print(f"Qwen spec directory: {qwen}")
+        print(f"Qwen LoRA training spec directory: {qwen_lora_training}")
         print(f"Kagee spec directory: {kagee}")
         print(f"Music spec directory: {music}")
         print(
             "Fill in the JSON, then run: "
-            "ai-media-generation lora-training, animagine, qwen, kagee, music, or report"
+            "ai-media-generation lora-training, animagine, qwen, "
+            "qwen-lora-training, kagee, music, or report"
         )
 
     def _write_env(self) -> None:

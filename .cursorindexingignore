@@ -13,6 +13,7 @@ outputs/
 image-output/
 music-output/
 lora-dataset/
+qwen-lora-dataset/
 *.gif
 *.png
 *.jpg
