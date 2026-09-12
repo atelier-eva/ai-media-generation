@@ -15,32 +15,60 @@
   },
   "json.schemas": [
     {
-      "fileMatch": ["**/art-style.json"],
+      "fileMatch": ["**/lora-training/art-style.json"],
       "url": "./src/ai_media_generation/resources/lora-training/art-style.schema.json"
     },
     {
-      "fileMatch": ["**/camera.json"],
+      "fileMatch": ["**/lora-training/camera.json"],
       "url": "./src/ai_media_generation/resources/lora-training/camera.schema.json"
     },
     {
-      "fileMatch": ["**/characters/*.json"],
+      "fileMatch": ["**/lora-training/characters/*.json"],
       "url": "./src/ai_media_generation/resources/lora-training/characters.schema.json"
     },
     {
-      "fileMatch": ["**/expression.json"],
+      "fileMatch": ["**/lora-training/expression.json"],
       "url": "./src/ai_media_generation/resources/lora-training/expression.schema.json"
     },
     {
-      "fileMatch": ["**/generation.json"],
+      "fileMatch": ["**/lora-training/generation.json"],
       "url": "./src/ai_media_generation/resources/lora-training/generation.schema.json"
     },
     {
-      "fileMatch": ["**/pose.json"],
+      "fileMatch": ["**/lora-training/pose.json"],
       "url": "./src/ai_media_generation/resources/lora-training/pose.schema.json"
     },
     {
-      "fileMatch": ["**/scene.json"],
+      "fileMatch": ["**/lora-training/scene.json"],
       "url": "./src/ai_media_generation/resources/lora-training/scene.schema.json"
+    },
+    {
+      "fileMatch": ["**/qwen-lora-training/art-style.json"],
+      "url": "./src/ai_media_generation/resources/qwen-lora-training/art-style.schema.json"
+    },
+    {
+      "fileMatch": ["**/qwen-lora-training/camera.json"],
+      "url": "./src/ai_media_generation/resources/qwen-lora-training/camera.schema.json"
+    },
+    {
+      "fileMatch": ["**/qwen-lora-training/characters/*.json"],
+      "url": "./src/ai_media_generation/resources/qwen-lora-training/characters.schema.json"
+    },
+    {
+      "fileMatch": ["**/qwen-lora-training/expression.json"],
+      "url": "./src/ai_media_generation/resources/qwen-lora-training/expression.schema.json"
+    },
+    {
+      "fileMatch": ["**/qwen-lora-training/generation.json"],
+      "url": "./src/ai_media_generation/resources/qwen-lora-training/generation.schema.json"
+    },
+    {
+      "fileMatch": ["**/qwen-lora-training/pose.json"],
+      "url": "./src/ai_media_generation/resources/qwen-lora-training/pose.schema.json"
+    },
+    {
+      "fileMatch": ["**/qwen-lora-training/scene.json"],
+      "url": "./src/ai_media_generation/resources/qwen-lora-training/scene.schema.json"
     },
     {
       "fileMatch": ["**/prompt/*.json", "**/prompt/**/*.json"],

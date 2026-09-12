@@ -13,6 +13,7 @@ ai-media-generation init
 ai-media-generation lora-training
 ai-media-generation animagine
 ai-media-generation qwen
+ai-media-generation qwen-lora-training
 ai-media-generation kagee
 ai-media-generation music
 ai-media-generation report

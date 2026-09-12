@@ -23,6 +23,16 @@ _SCHEMA_RESOURCES = {
     "music": ("music.schema.json",),
 }
 
+_QWEN_LORA_SCHEMA_RESOURCES = {
+    "art-style.json": ("qwen-lora-training", "art-style.schema.json"),
+    "camera.json": ("qwen-lora-training", "camera.schema.json"),
+    "characters": ("qwen-lora-training", "characters.schema.json"),
+    "expression.json": ("qwen-lora-training", "expression.schema.json"),
+    "generation.json": ("qwen-lora-training", "generation.schema.json"),
+    "pose.json": ("qwen-lora-training", "pose.schema.json"),
+    "scene.json": ("qwen-lora-training", "scene.schema.json"),
+}
+
 
 def read_json(path: Path) -> dict[str, Any]:
     return _read_json(path.expanduser().resolve())
@@ -78,7 +88,15 @@ def _schema_resource(path: Path) -> tuple[str, ...] | None:
     try:
         config = Config()
     except ValueError:
-        return _SCHEMA_RESOURCES.get(path.name)
+        return _schema_resource_by_path(path)
+    qwen_lora_characters = _directory_or_none(
+        lambda: config.qwen_lora_training_characters_directory
+    )
+    if qwen_lora_characters is not None and path.is_relative_to(qwen_lora_characters):
+        return _QWEN_LORA_SCHEMA_RESOURCES["characters"]
+    qwen_lora = _directory_or_none(lambda: config.qwen_lora_training_spec_directory)
+    if qwen_lora is not None and path.is_relative_to(qwen_lora):
+        return _QWEN_LORA_SCHEMA_RESOURCES.get(path.name)
     for key, directory in (
         ("prompt", lambda: config.animagine_spec_directory),
         ("qwen", lambda: config.qwen_spec_directory),
@@ -88,6 +106,14 @@ def _schema_resource(path: Path) -> tuple[str, ...] | None:
         root = _directory_or_none(directory)
         if root is not None and path.is_relative_to(root):
             return _SCHEMA_RESOURCES[key]
+    return _schema_resource_by_path(path)
+
+
+def _schema_resource_by_path(path: Path) -> tuple[str, ...] | None:
+    if "qwen-lora-training" in path.parts:
+        if "characters" in path.parts:
+            return _QWEN_LORA_SCHEMA_RESOURCES["characters"]
+        return _QWEN_LORA_SCHEMA_RESOURCES.get(path.name)
     return _SCHEMA_RESOURCES.get(path.name)
 
 

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/qwen-lora-training/art-style.schema.json",
+  "title": "Art style (qwen-lora-training/art-style.json)",
+  "description": "Art style slots for Qwen-Image-Edit-2511 dataset rows. Empty or omitted patterns emit one row without an art style slot.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "patterns": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/named_prompt" },
+      "description": "One generated row per pattern, after pose."
+    }
+  },
+  "$defs": {
+    "named_prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "prompt"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier; used in filename_prefix."
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short natural-language slot joined into the edit instruction and caption. Not a full sentence and not Danbooru tags (e.g. as an anime illustration)."
+        }
+      }
+    }
+  }
+}

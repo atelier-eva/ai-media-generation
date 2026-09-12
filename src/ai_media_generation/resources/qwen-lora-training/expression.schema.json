@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/qwen-lora-training/expression.schema.json",
+  "title": "Expression (qwen-lora-training/expression.json)",
+  "description": "Expression slots and camera skip rules for Qwen-Image-Edit-2511 dataset rows. Empty or omitted patterns emit one row without an expression slot.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "skip_camera": {
+      "$ref": "#/$defs/skip_camera",
+      "description": "When angle or distance name matches (OR), emit one row per character without an expression slot instead of iterating patterns."
+    },
+    "patterns": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/named_prompt" }
+    }
+  },
+  "$defs": {
+    "skip_camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "angle": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "camera.angle[].name values in camera.json"
+        },
+        "distance": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "camera.distance[].name values in camera.json"
+        }
+      }
+    },
+    "named_prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "prompt"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier; used in filename_prefix."
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short natural-language slot joined into the edit instruction and caption. Not a full sentence and not Danbooru tags (e.g. with a slight smile)."
+        }
+      }
+    }
+  }
+}
