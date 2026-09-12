@@ -351,8 +351,7 @@ class ComfyUi:
         workflow = copy.deepcopy(self._qwen_template)
         workflow["60"]["inputs"]["filename_prefix"] = filename_prefix
         workflow["238:227"]["inputs"]["text"] = prompt
-        if negative:
-            workflow["238:228"]["inputs"]["text"] = negative
+        workflow["238:228"]["inputs"]["text"] = negative or " "
         workflow["238:232"]["inputs"]["width"] = width
         workflow["238:232"]["inputs"]["height"] = height
         workflow["238:232"]["inputs"]["batch_size"] = batch_size

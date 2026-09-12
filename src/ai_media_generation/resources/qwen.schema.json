@@ -34,7 +34,7 @@
     "negative": {
       "type": "string",
       "minLength": 1,
-      "description": "Optional negative prompt. Natural language. Omit when unused. Has little effect when CFG is 1."
+      "description": "Optional negative prompt. Natural language. The Qwen-Image-2512 official default is in example.json. Omit when unused. Has little effect when CFG is 1."
     }
   }
 }
