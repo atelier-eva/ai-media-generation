@@ -16,10 +16,11 @@ _SCHEMA_RESOURCES = {
     "characters": ("lora-training", "characters.schema.json"),
     "expression.json": ("lora-training", "expression.schema.json"),
     "generation.json": ("lora-training", "generation.schema.json"),
-    "music": ("music.schema.json",),
     "pose.json": ("lora-training", "pose.schema.json"),
-    "prompt": ("prompt.schema.json",),
     "scene.json": ("lora-training", "scene.schema.json"),
+    "prompt": ("prompt.schema.json",),
+    "qwen": ("qwen.schema.json",),
+    "music": ("music.schema.json",),
 }
 
 
@@ -79,8 +80,9 @@ def _schema_resource(path: Path) -> tuple[str, ...] | None:
     except ValueError:
         return _SCHEMA_RESOURCES.get(path.name)
     for key, directory in (
-        ("prompt", lambda: config.prompt_directory),
-        ("music", lambda: config.music_directory),
+        ("prompt", lambda: config.animagine_spec_directory),
+        ("qwen", lambda: config.qwen_spec_directory),
+        ("music", lambda: config.music_spec_directory),
         ("characters", lambda: config.characters_directory),
     ):
         root = _directory_or_none(directory)

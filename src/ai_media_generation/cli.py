@@ -7,8 +7,8 @@ from sys import argv, stderr
 
 from dotenv import load_dotenv
 
-from ai_media_generation.controller.generate_images_controller import (
-    GenerateImagesController,
+from ai_media_generation.controller.generate_animagine_controller import (
+    GenerateAnimagineController,
 )
 from ai_media_generation.controller.generate_kagee_controller import (
     GenerateKageeController,
@@ -18,6 +18,9 @@ from ai_media_generation.controller.generate_lora_training_images_controller imp
 )
 from ai_media_generation.controller.generate_music_controller import (
     GenerateMusicController,
+)
+from ai_media_generation.controller.generate_qwen_controller import (
+    GenerateQwenController,
 )
 from ai_media_generation.controller.init_controller import InitController
 from ai_media_generation.controller.report_lora_training_patterns_controller import (
@@ -51,8 +54,11 @@ def _run() -> None:
     if command == "lora-training":
         GenerateLoraTrainingImagesController().execute(_command_parser("lora-training"))
         return
-    if command == "image":
-        GenerateImagesController().execute(_command_parser("image"))
+    if command == "animagine":
+        GenerateAnimagineController().execute(_command_parser("animagine"))
+        return
+    if command == "qwen":
+        GenerateQwenController().execute(_command_parser("qwen"))
         return
     if command == "kagee":
         GenerateKageeController().execute(_command_parser("kagee"))
@@ -91,8 +97,12 @@ def _parser() -> ArgumentParser:
         help="Generate LoRA training images.",
     )
     subparsers.add_parser(
-        "image",
-        help="Generate images from prompt JSON specs (nested folders allowed).",
+        "animagine",
+        help="Generate images from prompt JSON specs with Animagine XL 4.0 (nested folders allowed).",
+    )
+    subparsers.add_parser(
+        "qwen",
+        help="Generate images from qwen JSON specs with Qwen-Image-2512 (nested folders allowed).",
     )
     subparsers.add_parser(
         "kagee",

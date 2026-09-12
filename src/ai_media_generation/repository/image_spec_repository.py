@@ -44,7 +44,7 @@ class ImageSpecRepository:
         return path.resolve().relative_to(directory).with_suffix("").as_posix()
 
     def _prompt_directory(self) -> Path:
-        directory = Config().prompt_directory
+        directory = Config().animagine_spec_directory
         if not directory.exists():
             raise FileNotFoundError(f"Prompt directory not found: {directory}")
         if not directory.is_dir():

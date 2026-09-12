@@ -25,6 +25,10 @@ _KAGEE_CONVERSION_API_JSON = (
     "comfyui",
     "kagee-conversion-api.json",
 )
+_QWEN_IMAGE_CREATION_API_JSON = (
+    "comfyui",
+    "image_qwen_Image_2512.json",
+)
 
 
 class ComfyUi:
@@ -46,6 +50,8 @@ class ComfyUi:
         self._image_template = read_resource_json(*_IMAGE_CREATION_API_JSON)
         self._kagee_template = read_resource_json(*_KAGEE_CONVERSION_API_JSON)
         self._kagee_timeout_seconds = config.kagee_timeout_seconds
+        self._qwen_template = read_resource_json(*_QWEN_IMAGE_CREATION_API_JSON)
+        self._qwen_timeout_seconds = config.qwen_timeout_seconds
 
     def generate_lora_training_images(
         self,
@@ -117,6 +123,35 @@ class ComfyUi:
         return self._queue_prompt(
             self._kagee_workflow(prefix, self._upload_image(images[0]), text, seed),
             self._kagee_timeout_seconds,
+        )
+
+    def generate_qwen(
+        self,
+        filename_prefix: str,
+        width: int,
+        height: int,
+        prompt: str,
+        negative: str,
+        seed: int,
+        batch_size: int = 4,
+    ) -> tuple["ComfyUi.SavedImage", ...]:
+        prefix = filename_prefix.strip()
+        if not prefix:
+            raise ValueError("filename_prefix is empty.")
+        text = prompt.strip()
+        if not text:
+            raise ValueError("prompt is empty or missing.")
+        return self._queue_prompt(
+            self._qwen_workflow(
+                prefix,
+                width,
+                height,
+                text,
+                negative.strip(),
+                seed,
+                batch_size,
+            ),
+            self._qwen_timeout_seconds,
         )
 
     def fetch_image(self, image: "ComfyUi.SavedImage") -> bytes:
@@ -302,6 +337,26 @@ class ComfyUi:
         ).encode("utf-8")
         closing = f"--{boundary}--\r\n".encode("utf-8")
         return marker + header + path.read_bytes() + b"\r\n" + overwrite + closing, boundary
+
+    def _qwen_workflow(
+        self,
+        filename_prefix: str,
+        width: int,
+        height: int,
+        prompt: str,
+        negative: str,
+        seed: int,
+        batch_size: int,
+    ) -> dict[str, Any]:
+        workflow = copy.deepcopy(self._qwen_template)
+        workflow["60"]["inputs"]["filename_prefix"] = filename_prefix
+        workflow["238:227"]["inputs"]["text"] = prompt
+        workflow["238:228"]["inputs"]["text"] = negative or " "
+        workflow["238:232"]["inputs"]["width"] = width
+        workflow["238:232"]["inputs"]["height"] = height
+        workflow["238:232"]["inputs"]["batch_size"] = batch_size
+        workflow["238:230"]["inputs"]["seed"] = seed
+        return workflow
 
     def _kagee_workflow(
         self, filename_prefix: str, image_name: str, prompt: str, seed: int

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/qwen.schema.json",
+  "title": "Qwen (qwen/**/*.json)",
+  "description": "One prompt per JSON file under qwen/, including subfolders. The path relative to qwen/ without .json is the spec id. ComfyUI filename_prefix is that id (nested folders preserved). Natural-language prompt for Qwen-Image-2512; not Animagine tag arrays.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["image_size", "prompt"],
+  "properties": {
+    "image_size": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "integer" },
+        "height": { "type": "integer" }
+      },
+      "enum": [
+        { "width": 1328, "height": 1328 },
+        { "width": 1664, "height": 928 },
+        { "width": 928, "height": 1664 },
+        { "width": 1472, "height": 1104 },
+        { "width": 1104, "height": 1472 },
+        { "width": 1584, "height": 1056 },
+        { "width": 1056, "height": 1584 }
+      ],
+      "description": "Output dimensions (width x height). Qwen-Image-2512 official sizes: 1:1 1328x1328, 16:9 1664x928, 9:16 928x1664, 4:3 1472x1104, 3:4 1104x1472, 3:2 1584x1056, 2:3 1056x1584."
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Positive prompt sent to ComfyUI. Prose, not tag arrays."
+    },
+    "negative": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional negative prompt. Natural language. The Qwen-Image-2512 official default is in example.json. Omit when unused. Has little effect when CFG is 1."
+    }
+  }
+}
