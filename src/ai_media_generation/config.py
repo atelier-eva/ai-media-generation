@@ -3,13 +3,13 @@ from pathlib import Path
 
 
 class Config:
-    LORA_TRAINING_DIRECTORY = "lora-training"
+    LORA_TRAINING_SPEC_DIRECTORY = "lora-training"
     LORA_TRAINING_GENERATIONS_JSONL = "lora-training-generations.jsonl"
-    PROMPT_DIRECTORY = "prompt"
-    MUSIC_DIRECTORY = "music"
-    KAGEE_DIRECTORY = "kagee"
-    QWEN_DIRECTORY = "qwen"
-    IMAGE_OUTPUT_DIRECTORY = "image-output"
+    ANIMAGINE_SPEC_DIRECTORY = "prompt"
+    MUSIC_SPEC_DIRECTORY = "music"
+    KAGEE_SPEC_DIRECTORY = "kagee"
+    QWEN_SPEC_DIRECTORY = "qwen"
+    ANIMAGINE_OUTPUT_DIRECTORY = "image-output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     KAGEE_OUTPUT_DIRECTORY = "kagee-output"
     QWEN_OUTPUT_DIRECTORY = "qwen-output"
@@ -17,8 +17,8 @@ class Config:
 
     def __init__(self) -> None:
         self.comfy_ui_url = _text("COMFY_UI_URL").rstrip("/")
-        self.comfy_ui_ckpt_name = _text("COMFY_UI_CKPT_NAME")
-        self.comfy_ui_filename_prefix = _text("COMFY_UI_FILENAME_PREFIX")
+        self.comfy_ui_ckpt_name = _text("ANIMAGINE_CKPT_NAME")
+        self.comfy_ui_filename_prefix = _text("LORA_FILENAME_PREFIX")
         ace_step_url = _optional_text("ACE_STEP_URL")
         self.ace_step_url = ace_step_url.rstrip("/") if ace_step_url else None
         self.ace_step_api_key = _optional_text("ACE_STEP_API_KEY")
@@ -35,8 +35,8 @@ class Config:
         self.qwen_timeout_seconds = 1800 if qwen_timeout is None else qwen_timeout
 
     @property
-    def image_output_directory(self) -> Path:
-        return _directory("IMAGE_OUTPUT_DIRECTORY", self.IMAGE_OUTPUT_DIRECTORY)
+    def animagine_output_directory(self) -> Path:
+        return _directory("ANIMAGINE_OUTPUT_DIRECTORY", self.ANIMAGINE_OUTPUT_DIRECTORY)
 
     @property
     def music_output_directory(self) -> Path:
@@ -51,28 +51,28 @@ class Config:
         return self.lora_dataset_directory / self.LORA_TRAINING_GENERATIONS_JSONL
 
     @property
-    def lora_training_directory(self) -> Path:
-        return _directory("LORA_TRAINING_DIRECTORY", self.LORA_TRAINING_DIRECTORY)
+    def lora_training_spec_directory(self) -> Path:
+        return _directory("LORA_TRAINING_SPEC_DIRECTORY", self.LORA_TRAINING_SPEC_DIRECTORY)
 
     @property
-    def prompt_directory(self) -> Path:
-        return _directory("PROMPT_DIRECTORY", self.PROMPT_DIRECTORY)
+    def animagine_spec_directory(self) -> Path:
+        return _directory("ANIMAGINE_SPEC_DIRECTORY", self.ANIMAGINE_SPEC_DIRECTORY)
 
     @property
-    def music_directory(self) -> Path:
-        return _directory("MUSIC_DIRECTORY", self.MUSIC_DIRECTORY)
+    def music_spec_directory(self) -> Path:
+        return _directory("MUSIC_SPEC_DIRECTORY", self.MUSIC_SPEC_DIRECTORY)
 
     @property
-    def kagee_directory(self) -> Path:
-        return _directory("KAGEE_DIRECTORY", self.KAGEE_DIRECTORY)
+    def kagee_spec_directory(self) -> Path:
+        return _directory("KAGEE_SPEC_DIRECTORY", self.KAGEE_SPEC_DIRECTORY)
 
     @property
     def kagee_output_directory(self) -> Path:
         return _directory("KAGEE_OUTPUT_DIRECTORY", self.KAGEE_OUTPUT_DIRECTORY)
 
     @property
-    def qwen_directory(self) -> Path:
-        return _directory("QWEN_DIRECTORY", self.QWEN_DIRECTORY)
+    def qwen_spec_directory(self) -> Path:
+        return _directory("QWEN_SPEC_DIRECTORY", self.QWEN_SPEC_DIRECTORY)
 
     @property
     def qwen_output_directory(self) -> Path:
@@ -80,31 +80,31 @@ class Config:
 
     @property
     def art_style_json(self) -> Path:
-        return self.lora_training_directory / "art-style.json"
+        return self.lora_training_spec_directory / "art-style.json"
 
     @property
     def camera_json(self) -> Path:
-        return self.lora_training_directory / "camera.json"
+        return self.lora_training_spec_directory / "camera.json"
 
     @property
     def characters_directory(self) -> Path:
-        return self.lora_training_directory / "characters"
+        return self.lora_training_spec_directory / "characters"
 
     @property
     def expression_json(self) -> Path:
-        return self.lora_training_directory / "expression.json"
+        return self.lora_training_spec_directory / "expression.json"
 
     @property
     def generation_json(self) -> Path:
-        return self.lora_training_directory / "generation.json"
+        return self.lora_training_spec_directory / "generation.json"
 
     @property
     def pose_json(self) -> Path:
-        return self.lora_training_directory / "pose.json"
+        return self.lora_training_spec_directory / "pose.json"
 
     @property
     def scene_json(self) -> Path:
-        return self.lora_training_directory / "scene.json"
+        return self.lora_training_spec_directory / "scene.json"
 
 
 def _directory(name: str, default: str) -> Path:

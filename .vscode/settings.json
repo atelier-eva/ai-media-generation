@@ -35,12 +35,12 @@
       "url": "./src/ai_media_generation/resources/lora-training/generation.schema.json"
     },
     {
-      "fileMatch": ["**/music/*.json"],
-      "url": "./src/ai_media_generation/resources/music.schema.json"
-    },
-    {
       "fileMatch": ["**/pose.json"],
       "url": "./src/ai_media_generation/resources/lora-training/pose.schema.json"
+    },
+    {
+      "fileMatch": ["**/scene.json"],
+      "url": "./src/ai_media_generation/resources/lora-training/scene.schema.json"
     },
     {
       "fileMatch": ["**/prompt/*.json", "**/prompt/**/*.json"],
@@ -51,8 +51,8 @@
       "url": "./src/ai_media_generation/resources/qwen.schema.json"
     },
     {
-      "fileMatch": ["**/scene.json"],
-      "url": "./src/ai_media_generation/resources/lora-training/scene.schema.json"
+      "fileMatch": ["**/music/*.json"],
+      "url": "./src/ai_media_generation/resources/music.schema.json"
     }
   ],
   "search.exclude": {

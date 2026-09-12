@@ -21,7 +21,7 @@ class MusicSpecRepository:
         return paths
 
     def _music_directory(self) -> Path:
-        directory = Config().music_directory
+        directory = Config().music_spec_directory
         if not directory.exists():
             raise FileNotFoundError(f"Music directory not found: {directory}")
         if not directory.is_dir():

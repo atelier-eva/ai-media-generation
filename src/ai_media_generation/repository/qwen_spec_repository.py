@@ -43,7 +43,7 @@ class QwenSpecRepository:
         return path.resolve().relative_to(directory).with_suffix("").as_posix()
 
     def _qwen_directory(self) -> Path:
-        directory = Config().qwen_directory
+        directory = Config().qwen_spec_directory
         if not directory.exists():
             raise FileNotFoundError(f"Qwen directory not found: {directory}")
         if not directory.is_dir():

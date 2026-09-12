@@ -44,7 +44,7 @@ class KageeSpecRepository:
         return path.resolve().relative_to(directory).with_suffix("").as_posix()
 
     def _kagee_directory(self) -> Path:
-        directory = Config().kagee_directory
+        directory = Config().kagee_spec_directory
         if not directory.exists():
             raise FileNotFoundError(f"Kagee directory not found: {directory}")
         if not directory.is_dir():

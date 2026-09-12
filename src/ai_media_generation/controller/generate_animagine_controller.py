@@ -24,7 +24,7 @@ class GenerateAnimagineController:
             raise ValueError("No prompt JSON to generate.")
         print(f"Processing {len(specs)} prompt JSON file(s).")
         config = Config()
-        directory = config.image_output_directory
+        directory = config.animagine_output_directory
         comfy_ui = ComfyUi()
         for index, spec in enumerate(specs):
             filename_prefix = spec.id
