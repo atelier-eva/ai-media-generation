@@ -13,9 +13,9 @@ from ai_media_generation.config import Config
 from ai_media_generation.infrastructure.error import InfrastructureError
 from ai_media_generation.repository.json_io import read_resource_json
 
-_LORA_TRAINING_IMAGE_GENERATION_API_JSON = (
+_ANIMAGINE_LORA_TRAINING_IMAGE_GENERATION_API_JSON = (
     "comfyui",
-    "lora-training-image-generation-api.json",
+    "animagine-lora-training-image-generation-api.json",
 )
 _IMAGE_CREATION_API_JSON = (
     "comfyui",
@@ -48,8 +48,8 @@ class ComfyUi:
         config = Config()
         self._url = config.comfy_ui_url
         self._ckpt_name = config.comfy_ui_ckpt_name
-        self._lora_training_template = read_resource_json(
-            *_LORA_TRAINING_IMAGE_GENERATION_API_JSON
+        self._animagine_lora_training_template = read_resource_json(
+            *_ANIMAGINE_LORA_TRAINING_IMAGE_GENERATION_API_JSON
         )
         self._image_template = read_resource_json(*_IMAGE_CREATION_API_JSON)
         self._kagee_template = read_resource_json(*_KAGEE_CONVERSION_API_JSON)
@@ -61,7 +61,7 @@ class ComfyUi:
         )
         self._qwen_lora_timeout_seconds = config.qwen_lora_timeout_seconds
 
-    def generate_lora_training_images(
+    def generate_animagine_lora_training_images(
         self,
         filename_prefix: str,
         width: int,
@@ -72,7 +72,7 @@ class ComfyUi:
         batch_size: int = 4,
     ) -> tuple["ComfyUi.SavedImage", ...]:
         return self._queue_prompt(
-            self._lora_training_workflow(
+            self._animagine_lora_training_workflow(
                 filename_prefix,
                 width,
                 height,
@@ -418,7 +418,7 @@ class ComfyUi:
             workflow["170:149"]["inputs"]["prompt"] = negative
         return workflow
 
-    def _lora_training_workflow(
+    def _animagine_lora_training_workflow(
         self,
         filename_prefix: str,
         width: int,
@@ -428,7 +428,7 @@ class ComfyUi:
         seed: int,
         batch_size: int,
     ) -> dict[str, Any]:
-        workflow = copy.deepcopy(self._lora_training_template)
+        workflow = copy.deepcopy(self._animagine_lora_training_template)
         workflow["2"]["inputs"]["ckpt_name"] = self._ckpt_name
         workflow["3"]["inputs"]["text"] = positive_prompt
         workflow["4"]["inputs"]["text"] = negative_prompt

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/animagine/lora_dataset/pose.schema.json",
+  "title": "Pose (animagine/lora_dataset/pose.json)",
+  "description": "Pose patterns and camera skip rules for generated prompts.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "skip_camera": {
+      "$ref": "#/$defs/skip_camera",
+      "description": "When angle or distance name matches (OR), emit one row per character without pose tags instead of iterating patterns."
+    },
+    "patterns": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/named_tag_set" }
+    }
+  },
+  "$defs": {
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "skip_camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "angle": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "camera.angle[].name values in camera.json"
+        },
+        "distance": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "camera.distance[].name values in camera.json"
+        }
+      }
+    },
+    "named_tag_set": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier; used in filename_prefix. When positive is omitted or empty, name is the sole positive tag."
+        },
+        "positive": { "$ref": "#/$defs/tags" },
+        "negative": { "$ref": "#/$defs/tags" }
+      }
+    }
+  }
+}

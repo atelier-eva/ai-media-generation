@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from sys import argv
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.qwen_spec.get_qwen_specs import GetQwenSpecs
+from ai_media_generation.domain.qwen.spec.get_qwen_specs import GetQwenSpecs
 from ai_media_generation.infrastructure.comfy_ui import ComfyUi
 
 
@@ -14,7 +14,7 @@ class GenerateQwenController:
             "files",
             nargs="*",
             help=(
-                "Qwen JSON paths under qwen/, relative, nested allowed "
+                "Qwen JSON paths under qwen/spec/, relative, nested allowed "
                 "(e.g. hero/smile.json). Omit to generate every file."
             ),
         )

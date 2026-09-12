@@ -11,26 +11,29 @@ from jsonschema.exceptions import ValidationError, best_match
 from ai_media_generation.config import Config
 
 _SCHEMA_RESOURCES = {
-    "art-style.json": ("lora-training", "art-style.schema.json"),
-    "camera.json": ("lora-training", "camera.schema.json"),
-    "characters": ("lora-training", "characters.schema.json"),
-    "expression.json": ("lora-training", "expression.schema.json"),
-    "generation.json": ("lora-training", "generation.schema.json"),
-    "pose.json": ("lora-training", "pose.schema.json"),
-    "scene.json": ("lora-training", "scene.schema.json"),
-    "prompt": ("prompt.schema.json",),
-    "qwen": ("qwen.schema.json",),
+    "prompt": ("animagine", "prompt.schema.json"),
+    "qwen": ("qwen", "qwen.schema.json"),
     "music": ("music.schema.json",),
 }
 
+_ANIMAGINE_LORA_SCHEMA_RESOURCES = {
+    "art-style.json": ("animagine", "lora_dataset", "art-style.schema.json"),
+    "camera.json": ("animagine", "lora_dataset", "camera.schema.json"),
+    "characters": ("animagine", "lora_dataset", "characters.schema.json"),
+    "expression.json": ("animagine", "lora_dataset", "expression.schema.json"),
+    "generation.json": ("animagine", "lora_dataset", "generation.schema.json"),
+    "pose.json": ("animagine", "lora_dataset", "pose.schema.json"),
+    "scene.json": ("animagine", "lora_dataset", "scene.schema.json"),
+}
+
 _QWEN_LORA_SCHEMA_RESOURCES = {
-    "art-style.json": ("qwen-lora-training", "art-style.schema.json"),
-    "camera.json": ("qwen-lora-training", "camera.schema.json"),
-    "characters": ("qwen-lora-training", "characters.schema.json"),
-    "expression.json": ("qwen-lora-training", "expression.schema.json"),
-    "generation.json": ("qwen-lora-training", "generation.schema.json"),
-    "pose.json": ("qwen-lora-training", "pose.schema.json"),
-    "scene.json": ("qwen-lora-training", "scene.schema.json"),
+    "art-style.json": ("qwen", "lora_dataset", "art-style.schema.json"),
+    "camera.json": ("qwen", "lora_dataset", "camera.schema.json"),
+    "characters": ("qwen", "lora_dataset", "characters.schema.json"),
+    "expression.json": ("qwen", "lora_dataset", "expression.schema.json"),
+    "generation.json": ("qwen", "lora_dataset", "generation.schema.json"),
+    "pose.json": ("qwen", "lora_dataset", "pose.schema.json"),
+    "scene.json": ("qwen", "lora_dataset", "scene.schema.json"),
 }
 
 
@@ -97,11 +100,23 @@ def _schema_resource(path: Path) -> tuple[str, ...] | None:
     qwen_lora = _directory_or_none(lambda: config.qwen_lora_training_spec_directory)
     if qwen_lora is not None and path.is_relative_to(qwen_lora):
         return _QWEN_LORA_SCHEMA_RESOURCES.get(path.name)
+    animagine_lora_characters = _directory_or_none(
+        lambda: config.animagine_lora_training_characters_directory
+    )
+    if (
+        animagine_lora_characters is not None
+        and path.is_relative_to(animagine_lora_characters)
+    ):
+        return _ANIMAGINE_LORA_SCHEMA_RESOURCES["characters"]
+    animagine_lora = _directory_or_none(
+        lambda: config.animagine_lora_training_spec_directory
+    )
+    if animagine_lora is not None and path.is_relative_to(animagine_lora):
+        return _ANIMAGINE_LORA_SCHEMA_RESOURCES.get(path.name)
     for key, directory in (
         ("prompt", lambda: config.animagine_spec_directory),
         ("qwen", lambda: config.qwen_spec_directory),
         ("music", lambda: config.music_spec_directory),
-        ("characters", lambda: config.characters_directory),
     ):
         root = _directory_or_none(directory)
         if root is not None and path.is_relative_to(root):
@@ -110,10 +125,19 @@ def _schema_resource(path: Path) -> tuple[str, ...] | None:
 
 
 def _schema_resource_by_path(path: Path) -> tuple[str, ...] | None:
-    if "qwen-lora-training" in path.parts:
-        if "characters" in path.parts:
+    parts = path.parts
+    if "qwen" in parts and "lora_dataset" in parts:
+        if "characters" in parts:
             return _QWEN_LORA_SCHEMA_RESOURCES["characters"]
         return _QWEN_LORA_SCHEMA_RESOURCES.get(path.name)
+    if "animagine" in parts and "lora_dataset" in parts:
+        if "characters" in parts:
+            return _ANIMAGINE_LORA_SCHEMA_RESOURCES["characters"]
+        return _ANIMAGINE_LORA_SCHEMA_RESOURCES.get(path.name)
+    if "qwen" in parts and "spec" in parts:
+        return _SCHEMA_RESOURCES["qwen"]
+    if "animagine" in parts and "spec" in parts:
+        return _SCHEMA_RESOURCES["prompt"]
     return _SCHEMA_RESOURCES.get(path.name)
 
 

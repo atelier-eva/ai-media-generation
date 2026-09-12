@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/animagine/lora_dataset/generation.schema.json",
+  "title": "Generation (animagine/lora_dataset/generation.json)",
+  "description": "Quality and rating tags for generated prompts. Omitted from caption_prompt.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "quality": { "$ref": "#/$defs/tag_set" },
+    "rating": { "$ref": "#/$defs/tag_set" }
+  },
+  "$defs": {
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "tag_set": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positive": { "$ref": "#/$defs/tags" },
+        "negative": { "$ref": "#/$defs/tags" }
+      }
+    }
+  }
+}

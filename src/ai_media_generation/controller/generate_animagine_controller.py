@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from sys import argv
 
 from ai_media_generation.config import Config
-from ai_media_generation.domain.image_spec.get_image_specs import GetImageSpecs
+from ai_media_generation.domain.animagine.spec.get_image_specs import GetImageSpecs
 from ai_media_generation.infrastructure.comfy_ui import ComfyUi
 
 
@@ -14,7 +14,7 @@ class GenerateAnimagineController:
             "files",
             nargs="*",
             help=(
-                "Prompt JSON paths under prompt/, relative, nested allowed "
+                "Prompt JSON paths under animagine/spec/, relative, nested allowed "
                 "(e.g. hero/smile.json). Omit to generate every file."
             ),
         )

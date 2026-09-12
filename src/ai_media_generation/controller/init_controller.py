@@ -16,6 +16,13 @@ _JSON_FILES = (
 _CHARACTERS_DIRECTORY = "characters"
 
 
+def _resource_segments(*parts: str) -> tuple[str, ...]:
+    segments: list[str] = []
+    for part in parts:
+        segments.extend(segment for segment in part.split("/") if segment)
+    return tuple(segments)
+
+
 class InitController:
     def execute(self, parser: ArgumentParser) -> None:
         parser.add_argument(
@@ -23,7 +30,7 @@ class InitController:
             default=".",
             help=(
                 "Parent directory for feature input folders. "
-                f"LoRA training spec templates go in {Config.LORA_TRAINING_SPEC_DIRECTORY}/. "
+                f"Animagine LoRA training spec templates go in {Config.ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY}/. "
                 f"Animagine spec templates go in {Config.ANIMAGINE_SPEC_DIRECTORY}/. "
                 f"Qwen spec templates go in {Config.QWEN_SPEC_DIRECTORY}/. "
                 f"Qwen LoRA training spec templates go in {Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY}/. "
@@ -43,16 +50,24 @@ class InitController:
             raise ValueError("--directory is empty.")
         path = Path(text).expanduser().resolve()
         path.mkdir(parents=True, exist_ok=True)
-        lora_training = path / Config.LORA_TRAINING_SPEC_DIRECTORY
+        animagine_lora_training = path / Config.ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY
         animagine = path / Config.ANIMAGINE_SPEC_DIRECTORY
         qwen = path / Config.QWEN_SPEC_DIRECTORY
         qwen_lora_training = path / Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY
         kagee = path / Config.KAGEE_SPEC_DIRECTORY
         music = path / Config.MUSIC_SPEC_DIRECTORY
-        lora_training.mkdir(parents=True, exist_ok=True)
+        animagine_lora_training.mkdir(parents=True, exist_ok=True)
         for name in _JSON_FILES:
-            self._write_json(lora_training / name, args.force)
-        self._write_characters(lora_training / _CHARACTERS_DIRECTORY, args.force)
+            self._write_resource(
+                (Config.ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY, name),
+                animagine_lora_training / name,
+                args.force,
+            )
+        self._write_directory(
+            (Config.ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY, _CHARACTERS_DIRECTORY),
+            animagine_lora_training / _CHARACTERS_DIRECTORY,
+            args.force,
+        )
         self._write_directory(
             (Config.ANIMAGINE_SPEC_DIRECTORY,),
             animagine,
@@ -86,7 +101,7 @@ class InitController:
             args.force,
         )
         self._write_env()
-        print(f"LoRA training spec directory: {lora_training}")
+        print(f"Animagine LoRA training spec directory: {animagine_lora_training}")
         print(f"Animagine spec directory: {animagine}")
         print(f"Qwen spec directory: {qwen}")
         print(f"Qwen LoRA training spec directory: {qwen_lora_training}")
@@ -94,7 +109,7 @@ class InitController:
         print(f"Music spec directory: {music}")
         print(
             "Fill in the JSON, then run: "
-            "ai-media-generation lora-training, animagine, qwen, "
+            "ai-media-generation animagine-lora-training, animagine, qwen, "
             "qwen-lora-training, kagee, music, or report"
         )
 
@@ -107,13 +122,6 @@ class InitController:
         env_path.write_text(example.read_text(encoding="utf-8"), encoding="utf-8")
         print(f"Created: {env_path.resolve()}")
 
-    def _write_characters(self, destination: Path, force: bool) -> None:
-        self._write_directory(
-            (Config.LORA_TRAINING_SPEC_DIRECTORY, destination.name),
-            destination,
-            force,
-        )
-
     def _write_directory(
         self, relative: tuple[str, ...], destination: Path, force: bool
     ) -> None:
@@ -121,7 +129,9 @@ class InitController:
             raise NotADirectoryError(f"Not a directory: {destination}")
         existed = destination.exists()
         destination.mkdir(parents=True, exist_ok=True)
-        source_dir = files("ai_media_generation.resources").joinpath(*relative)
+        source_dir = files("ai_media_generation.resources").joinpath(
+            *_resource_segments(*relative)
+        )
         names = tuple(
             sorted(
                 item.name
@@ -136,13 +146,6 @@ class InitController:
         for name in names:
             self._write_resource((*relative, name), destination / name, force)
 
-    def _write_json(self, destination: Path, force: bool) -> None:
-        self._write_resource(
-            (Config.LORA_TRAINING_SPEC_DIRECTORY, destination.name),
-            destination,
-            force,
-        )
-
     def _write_resource(
         self, relative: tuple[str, ...], destination: Path, force: bool
     ) -> None:
@@ -150,7 +153,9 @@ class InitController:
         if existed and not force:
             print(f"Skipped existing: {destination}")
             return
-        source = files("ai_media_generation.resources").joinpath(*relative)
+        source = files("ai_media_generation.resources").joinpath(
+            *_resource_segments(*relative)
+        )
         destination.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
         action = "Overwrote" if existed else "Created"
         print(f"{action}: {destination}")

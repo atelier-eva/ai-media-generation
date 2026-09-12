@@ -10,11 +10,11 @@ from dotenv import load_dotenv
 from ai_media_generation.controller.generate_animagine_controller import (
     GenerateAnimagineController,
 )
+from ai_media_generation.controller.generate_animagine_lora_training_images_controller import (
+    GenerateAnimagineLoraTrainingImagesController,
+)
 from ai_media_generation.controller.generate_kagee_controller import (
     GenerateKageeController,
-)
-from ai_media_generation.controller.generate_lora_training_images_controller import (
-    GenerateLoraTrainingImagesController,
 )
 from ai_media_generation.controller.generate_music_controller import (
     GenerateMusicController,
@@ -26,8 +26,8 @@ from ai_media_generation.controller.generate_qwen_lora_training_images_controlle
     GenerateQwenLoraTrainingImagesController,
 )
 from ai_media_generation.controller.init_controller import InitController
-from ai_media_generation.controller.report_lora_training_patterns_controller import (
-    ReportLoraTrainingPatternsController,
+from ai_media_generation.controller.report_animagine_lora_training_patterns_controller import (
+    ReportAnimagineLoraTrainingPatternsController,
 )
 from ai_media_generation.infrastructure.error import InfrastructureError
 
@@ -54,8 +54,10 @@ def _run() -> None:
     if command == "init":
         InitController().execute(_command_parser("init"))
         return
-    if command == "lora-training":
-        GenerateLoraTrainingImagesController().execute(_command_parser("lora-training"))
+    if command == "animagine-lora-training":
+        GenerateAnimagineLoraTrainingImagesController().execute(
+            _command_parser("animagine-lora-training")
+        )
         return
     if command == "animagine":
         GenerateAnimagineController().execute(_command_parser("animagine"))
@@ -75,7 +77,9 @@ def _run() -> None:
         GenerateMusicController().execute(_command_parser("music"))
         return
     if command == "report":
-        ReportLoraTrainingPatternsController().execute(_command_parser("report"))
+        ReportAnimagineLoraTrainingPatternsController().execute(
+            _command_parser("report")
+        )
         return
     if command == "see-through":
         print(
@@ -101,8 +105,8 @@ def _parser() -> ArgumentParser:
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser(
-        "lora-training",
-        help="Generate LoRA training images.",
+        "animagine-lora-training",
+        help="Generate LoRA training images with Animagine XL 4.0.",
     )
     subparsers.add_parser(
         "animagine",
@@ -130,6 +134,6 @@ def _parser() -> ArgumentParser:
     )
     subparsers.add_parser(
         "report",
-        help="Write LoRA training pattern rows to CSV.",
+        help="Write Animagine LoRA training pattern rows to CSV.",
     )
     return parser

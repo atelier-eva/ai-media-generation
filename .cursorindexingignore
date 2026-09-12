@@ -10,10 +10,11 @@ uv.lock
 # Generated images and local run output
 output/
 outputs/
-image-output/
+animagine/output/
+animagine/lora_output/
+qwen/output/
+qwen/lora_output/
 music-output/
-lora-dataset/
-qwen-lora-dataset/
 *.gif
 *.png
 *.jpg

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/animagine/lora_dataset/art-style.schema.json",
+  "title": "Art style (animagine/lora_dataset/art-style.json)",
+  "description": "Art style patterns for generated prompts.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "patterns": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/named_tag_set" },
+      "description": "One generated row per pattern, after pose. Empty or omitted emits one row without art style tags. positive is used in positive_prompt and caption_prompt; negative is used in negative_prompt only."
+    }
+  },
+  "$defs": {
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "named_tag_set": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier; used in filename_prefix. When positive is omitted or empty, name is the sole positive tag."
+        },
+        "positive": { "$ref": "#/$defs/tags" },
+        "negative": { "$ref": "#/$defs/tags" }
+      }
+    }
+  }
+}
