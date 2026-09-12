@@ -3,8 +3,6 @@ from pathlib import Path
 
 
 class Config:
-    LORA_TRAINING_SPEC_DIRECTORY = "lora-training"
-    LORA_TRAINING_GENERATIONS_JSONL = "lora-training-generations.jsonl"
     ANIMAGINE_SPEC_DIRECTORY = "prompt"
     MUSIC_SPEC_DIRECTORY = "music"
     KAGEE_SPEC_DIRECTORY = "kagee"
@@ -13,15 +11,21 @@ class Config:
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     KAGEE_OUTPUT_DIRECTORY = "kagee-output"
     QWEN_OUTPUT_DIRECTORY = "qwen-output"
+    ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY = "animagine-lora-training"
+    ANIMAGINE_LORA_TRAINING_GENERATIONS_JSONL = (
+        "animagine-lora-training-generations.jsonl"
+    )
+    ANIMAGINE_LORA_DATASET_DIRECTORY = "animagine-lora-dataset"
     QWEN_LORA_TRAINING_SPEC_DIRECTORY = "qwen-lora-training"
     QWEN_LORA_TRAINING_GENERATIONS_JSONL = "qwen-lora-training-generations.jsonl"
     QWEN_LORA_DATASET_DIRECTORY = "qwen-lora-dataset"
-    LORA_DATASET_DIRECTORY = "lora-dataset"
 
     def __init__(self) -> None:
         self.comfy_ui_url = _text("COMFY_UI_URL").rstrip("/")
         self.comfy_ui_ckpt_name = _text("ANIMAGINE_CKPT_NAME")
-        self.comfy_ui_filename_prefix = _text("LORA_FILENAME_PREFIX")
+        self.animagine_lora_filename_prefix = (
+            _optional_text("ANIMAGINE_LORA_FILENAME_PREFIX") or "animagine-lora"
+        )
         ace_step_url = _optional_text("ACE_STEP_URL")
         self.ace_step_url = ace_step_url.rstrip("/") if ace_step_url else None
         self.ace_step_api_key = _optional_text("ACE_STEP_API_KEY")
@@ -55,16 +59,25 @@ class Config:
         return _directory("MUSIC_OUTPUT_DIRECTORY", self.MUSIC_OUTPUT_DIRECTORY)
 
     @property
-    def lora_dataset_directory(self) -> Path:
-        return _directory("LORA_DATASET_DIRECTORY", self.LORA_DATASET_DIRECTORY)
+    def animagine_lora_dataset_directory(self) -> Path:
+        return _directory(
+            "ANIMAGINE_LORA_DATASET_DIRECTORY",
+            self.ANIMAGINE_LORA_DATASET_DIRECTORY,
+        )
 
     @property
-    def lora_training_generations_jsonl(self) -> Path:
-        return self.lora_dataset_directory / self.LORA_TRAINING_GENERATIONS_JSONL
+    def animagine_lora_training_generations_jsonl(self) -> Path:
+        return (
+            self.animagine_lora_dataset_directory
+            / self.ANIMAGINE_LORA_TRAINING_GENERATIONS_JSONL
+        )
 
     @property
-    def lora_training_spec_directory(self) -> Path:
-        return _directory("LORA_TRAINING_SPEC_DIRECTORY", self.LORA_TRAINING_SPEC_DIRECTORY)
+    def animagine_lora_training_spec_directory(self) -> Path:
+        return _directory(
+            "ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY",
+            self.ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY,
+        )
 
     @property
     def animagine_spec_directory(self) -> Path:
@@ -139,32 +152,32 @@ class Config:
         return self.qwen_lora_training_spec_directory / "scene.json"
 
     @property
-    def art_style_json(self) -> Path:
-        return self.lora_training_spec_directory / "art-style.json"
+    def animagine_lora_training_art_style_json(self) -> Path:
+        return self.animagine_lora_training_spec_directory / "art-style.json"
 
     @property
-    def camera_json(self) -> Path:
-        return self.lora_training_spec_directory / "camera.json"
+    def animagine_lora_training_camera_json(self) -> Path:
+        return self.animagine_lora_training_spec_directory / "camera.json"
 
     @property
-    def characters_directory(self) -> Path:
-        return self.lora_training_spec_directory / "characters"
+    def animagine_lora_training_characters_directory(self) -> Path:
+        return self.animagine_lora_training_spec_directory / "characters"
 
     @property
-    def expression_json(self) -> Path:
-        return self.lora_training_spec_directory / "expression.json"
+    def animagine_lora_training_expression_json(self) -> Path:
+        return self.animagine_lora_training_spec_directory / "expression.json"
 
     @property
-    def generation_json(self) -> Path:
-        return self.lora_training_spec_directory / "generation.json"
+    def animagine_lora_training_generation_json(self) -> Path:
+        return self.animagine_lora_training_spec_directory / "generation.json"
 
     @property
-    def pose_json(self) -> Path:
-        return self.lora_training_spec_directory / "pose.json"
+    def animagine_lora_training_pose_json(self) -> Path:
+        return self.animagine_lora_training_spec_directory / "pose.json"
 
     @property
-    def scene_json(self) -> Path:
-        return self.lora_training_spec_directory / "scene.json"
+    def animagine_lora_training_scene_json(self) -> Path:
+        return self.animagine_lora_training_spec_directory / "scene.json"
 
 
 def _directory(name: str, default: str) -> Path:

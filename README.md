@@ -10,7 +10,7 @@ uv tool install git+https://github.com/atelier-eva/ai-media-generation.git
 
 ```bash
 ai-media-generation init
-ai-media-generation lora-training
+ai-media-generation animagine-lora-training
 ai-media-generation animagine
 ai-media-generation qwen
 ai-media-generation qwen-lora-training

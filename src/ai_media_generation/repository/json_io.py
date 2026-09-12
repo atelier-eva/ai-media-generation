@@ -11,16 +11,19 @@ from jsonschema.exceptions import ValidationError, best_match
 from ai_media_generation.config import Config
 
 _SCHEMA_RESOURCES = {
-    "art-style.json": ("lora-training", "art-style.schema.json"),
-    "camera.json": ("lora-training", "camera.schema.json"),
-    "characters": ("lora-training", "characters.schema.json"),
-    "expression.json": ("lora-training", "expression.schema.json"),
-    "generation.json": ("lora-training", "generation.schema.json"),
-    "pose.json": ("lora-training", "pose.schema.json"),
-    "scene.json": ("lora-training", "scene.schema.json"),
     "prompt": ("prompt.schema.json",),
     "qwen": ("qwen.schema.json",),
     "music": ("music.schema.json",),
+}
+
+_ANIMAGINE_LORA_SCHEMA_RESOURCES = {
+    "art-style.json": ("animagine-lora-training", "art-style.schema.json"),
+    "camera.json": ("animagine-lora-training", "camera.schema.json"),
+    "characters": ("animagine-lora-training", "characters.schema.json"),
+    "expression.json": ("animagine-lora-training", "expression.schema.json"),
+    "generation.json": ("animagine-lora-training", "generation.schema.json"),
+    "pose.json": ("animagine-lora-training", "pose.schema.json"),
+    "scene.json": ("animagine-lora-training", "scene.schema.json"),
 }
 
 _QWEN_LORA_SCHEMA_RESOURCES = {
@@ -97,11 +100,23 @@ def _schema_resource(path: Path) -> tuple[str, ...] | None:
     qwen_lora = _directory_or_none(lambda: config.qwen_lora_training_spec_directory)
     if qwen_lora is not None and path.is_relative_to(qwen_lora):
         return _QWEN_LORA_SCHEMA_RESOURCES.get(path.name)
+    animagine_lora_characters = _directory_or_none(
+        lambda: config.animagine_lora_training_characters_directory
+    )
+    if (
+        animagine_lora_characters is not None
+        and path.is_relative_to(animagine_lora_characters)
+    ):
+        return _ANIMAGINE_LORA_SCHEMA_RESOURCES["characters"]
+    animagine_lora = _directory_or_none(
+        lambda: config.animagine_lora_training_spec_directory
+    )
+    if animagine_lora is not None and path.is_relative_to(animagine_lora):
+        return _ANIMAGINE_LORA_SCHEMA_RESOURCES.get(path.name)
     for key, directory in (
         ("prompt", lambda: config.animagine_spec_directory),
         ("qwen", lambda: config.qwen_spec_directory),
         ("music", lambda: config.music_spec_directory),
-        ("characters", lambda: config.characters_directory),
     ):
         root = _directory_or_none(directory)
         if root is not None and path.is_relative_to(root):
@@ -114,6 +129,10 @@ def _schema_resource_by_path(path: Path) -> tuple[str, ...] | None:
         if "characters" in path.parts:
             return _QWEN_LORA_SCHEMA_RESOURCES["characters"]
         return _QWEN_LORA_SCHEMA_RESOURCES.get(path.name)
+    if "animagine-lora-training" in path.parts:
+        if "characters" in path.parts:
+            return _ANIMAGINE_LORA_SCHEMA_RESOURCES["characters"]
+        return _ANIMAGINE_LORA_SCHEMA_RESOURCES.get(path.name)
     return _SCHEMA_RESOURCES.get(path.name)
 
 

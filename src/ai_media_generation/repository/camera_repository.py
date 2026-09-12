@@ -10,7 +10,7 @@ from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 class CameraRepository:
     def find(self) -> tuple[Camera, ...]:
-        camera = read_json(Config().camera_json)
+        camera = read_json(Config().animagine_lora_training_camera_json)
         angles = tuple(self._to_angle(item) for item in camera.get("angle") or [])
         distances = tuple(
             self._to_distance(item) for item in camera.get("distance") or []

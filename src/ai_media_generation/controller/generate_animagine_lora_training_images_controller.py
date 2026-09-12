@@ -10,12 +10,12 @@ from ai_media_generation.domain.shoot.generate_shoot_patterns_output import (
     GenerateShootPatternsOutput,
 )
 from ai_media_generation.infrastructure.comfy_ui import ComfyUi
-from ai_media_generation.infrastructure.lora_training_generation_log import (
-    LoraTrainingGenerationLog,
+from ai_media_generation.infrastructure.animagine_lora_training_generation_log import (
+    AnimagineLoraTrainingGenerationLog,
 )
 
 
-class GenerateLoraTrainingImagesController:
+class GenerateAnimagineLoraTrainingImagesController:
     def execute(self, parser: ArgumentParser) -> None:
         parser.add_argument(
             "--base-seed",
@@ -41,10 +41,10 @@ class GenerateLoraTrainingImagesController:
         start, end = self._row_range(parser, args.from_row, args.to_row, patterns)
         print(f"Processing rows {start + 1}..{end} of {len(patterns)}.")
         config = Config()
-        prefix = config.comfy_ui_filename_prefix
-        directory = config.lora_dataset_directory
+        prefix = config.animagine_lora_filename_prefix
+        directory = config.animagine_lora_dataset_directory
         comfy_ui = ComfyUi()
-        log = LoraTrainingGenerationLog()
+        log = AnimagineLoraTrainingGenerationLog()
         for index in range(start, end):
             pattern = patterns[index]
             filename_prefix = self._filename_prefix(pattern, index + 1, prefix)
@@ -54,7 +54,7 @@ class GenerateLoraTrainingImagesController:
                 print(f"[{index + 1}/{end}] {filename_prefix} skip seed={seed}")
                 continue
             print(f"[{index + 1}/{end}] {filename_prefix} seed={seed}")
-            images = comfy_ui.generate_lora_training_images(
+            images = comfy_ui.generate_animagine_lora_training_images(
                 filename_prefix,
                 pattern.width,
                 pattern.height,

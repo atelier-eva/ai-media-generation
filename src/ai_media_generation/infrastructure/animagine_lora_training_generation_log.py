@@ -22,7 +22,7 @@ _FIELDS = (
 )
 
 
-class LoraTrainingGenerationLog:
+class AnimagineLoraTrainingGenerationLog:
     @dataclass(frozen=True)
     class _Record:
         subject: str
@@ -56,7 +56,7 @@ class LoraTrainingGenerationLog:
             )
 
     def __init__(self) -> None:
-        self._path = Config().lora_training_generations_jsonl
+        self._path = Config().animagine_lora_training_generations_jsonl
 
     def append(
         self,
@@ -220,7 +220,7 @@ class LoraTrainingGenerationLog:
             lines = path.read_text(encoding="utf-8").splitlines()
         except OSError as error:
             raise self._error(str(error)) from error
-        records: list[LoraTrainingGenerationLog._Record] = []
+        records: list[AnimagineLoraTrainingGenerationLog._Record] = []
         for line_number, line in enumerate(lines, start=1):
             if not line.strip():
                 continue

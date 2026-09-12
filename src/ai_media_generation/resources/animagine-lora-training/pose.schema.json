@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://local.spec/expression.schema.json",
-  "title": "Expression (expression.json)",
-  "description": "Expression patterns and camera skip rules for generated prompts.",
+  "$id": "https://local.spec/animagine-lora-training/pose.schema.json",
+  "title": "Pose (animagine-lora-training/pose.json)",
+  "description": "Pose patterns and camera skip rules for generated prompts.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "skip_camera": {
       "$ref": "#/$defs/skip_camera",
-      "description": "When angle or distance name matches (OR), emit one row per character without expression tags instead of iterating patterns."
+      "description": "When angle or distance name matches (OR), emit one row per character without pose tags instead of iterating patterns."
     },
     "patterns": {
       "type": "array",

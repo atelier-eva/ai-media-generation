@@ -28,6 +28,6 @@ class ShootRepository:
         )
 
     def _scene(self) -> tuple[tuple[SceneBackground, ...], tuple[SceneLighting, ...]]:
-        if not Config().scene_json.is_file():
+        if not Config().animagine_lora_training_scene_json.is_file():
             return ((), ())
         return SceneRepository().find()

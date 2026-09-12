@@ -10,7 +10,7 @@ from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 class SceneRepository:
     def find(self) -> tuple[tuple[SceneBackground, ...], tuple[SceneLighting, ...]]:
-        data = read_json(Config().scene_json)
+        data = read_json(Config().animagine_lora_training_scene_json)
         background = data.get("background") or {}
         lighting = data.get("lighting") or {}
         return (

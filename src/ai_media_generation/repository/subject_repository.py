@@ -12,7 +12,7 @@ from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 class SubjectRepository:
     def find(self) -> tuple[Subject, ...]:
-        directory = Config().characters_directory
+        directory = Config().animagine_lora_training_characters_directory
         subjects: list[Subject] = []
         names: dict[str, Path] = {}
         for path in self._json_paths(directory):

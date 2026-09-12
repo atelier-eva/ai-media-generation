@@ -15,32 +15,32 @@
   },
   "json.schemas": [
     {
-      "fileMatch": ["**/lora-training/art-style.json"],
-      "url": "./src/ai_media_generation/resources/lora-training/art-style.schema.json"
+      "fileMatch": ["**/animagine-lora-training/art-style.json"],
+      "url": "./src/ai_media_generation/resources/animagine-lora-training/art-style.schema.json"
     },
     {
-      "fileMatch": ["**/lora-training/camera.json"],
-      "url": "./src/ai_media_generation/resources/lora-training/camera.schema.json"
+      "fileMatch": ["**/animagine-lora-training/camera.json"],
+      "url": "./src/ai_media_generation/resources/animagine-lora-training/camera.schema.json"
     },
     {
-      "fileMatch": ["**/lora-training/characters/*.json"],
-      "url": "./src/ai_media_generation/resources/lora-training/characters.schema.json"
+      "fileMatch": ["**/animagine-lora-training/characters/*.json"],
+      "url": "./src/ai_media_generation/resources/animagine-lora-training/characters.schema.json"
     },
     {
-      "fileMatch": ["**/lora-training/expression.json"],
-      "url": "./src/ai_media_generation/resources/lora-training/expression.schema.json"
+      "fileMatch": ["**/animagine-lora-training/expression.json"],
+      "url": "./src/ai_media_generation/resources/animagine-lora-training/expression.schema.json"
     },
     {
-      "fileMatch": ["**/lora-training/generation.json"],
-      "url": "./src/ai_media_generation/resources/lora-training/generation.schema.json"
+      "fileMatch": ["**/animagine-lora-training/generation.json"],
+      "url": "./src/ai_media_generation/resources/animagine-lora-training/generation.schema.json"
     },
     {
-      "fileMatch": ["**/lora-training/pose.json"],
-      "url": "./src/ai_media_generation/resources/lora-training/pose.schema.json"
+      "fileMatch": ["**/animagine-lora-training/pose.json"],
+      "url": "./src/ai_media_generation/resources/animagine-lora-training/pose.schema.json"
     },
     {
-      "fileMatch": ["**/lora-training/scene.json"],
-      "url": "./src/ai_media_generation/resources/lora-training/scene.schema.json"
+      "fileMatch": ["**/animagine-lora-training/scene.json"],
+      "url": "./src/ai_media_generation/resources/animagine-lora-training/scene.schema.json"
     },
     {
       "fileMatch": ["**/qwen-lora-training/art-style.json"],

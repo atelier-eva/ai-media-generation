@@ -8,7 +8,7 @@ from ai_media_generation.repository.json_io import read_json, to_string_tuple
 
 class ExpressionRepository:
     def find(self) -> ExpressionSettings:
-        expression = read_json(Config().expression_json)
+        expression = read_json(Config().animagine_lora_training_expression_json)
         skip = expression.get("skip_camera") or {}
         return ExpressionSettings(
             patterns=tuple(
