@@ -12,6 +12,7 @@ from ai_media_generation.infrastructure.ssh_tunnel import SshTunnel
 
 class RunPod:
     _URL = "https://api.runpod.io/v2"
+    _USER_AGENT = "ai-media-generation"
     _POLL_INTERVAL_SECONDS = 2
     _STARTABLE = frozenset({"EXITED", "ERROR"})
     _STOPPABLE = frozenset({"RUNNING", "PROVISIONING", "STARTING"})
@@ -100,7 +101,10 @@ class RunPod:
         self, method: str, path: str, body: dict[str, Any] | None = None
     ) -> dict[str, Any]:
         data = None
-        headers = {"Authorization": f"Bearer {self._api_key}"}
+        headers = {
+            "Authorization": f"Bearer {self._api_key}",
+            "User-Agent": self._USER_AGENT,
+        }
         if body is not None:
             data = json.dumps(body).encode("utf-8")
             headers["Content-Type"] = "application/json; charset=utf-8"
