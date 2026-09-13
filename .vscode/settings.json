@@ -79,6 +79,10 @@
       "url": "./src/ai_media_generation/resources/qwen/qwen.schema.json"
     },
     {
+      "fileMatch": ["**/qwen/edit/spec/*.json", "**/qwen/edit/spec/**/*.json"],
+      "url": "./src/ai_media_generation/resources/qwen/edit/qwen-edit.schema.json"
+    },
+    {
       "fileMatch": ["**/music/*.json"],
       "url": "./src/ai_media_generation/resources/music.schema.json"
     }

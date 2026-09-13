@@ -22,6 +22,9 @@ from ai_media_generation.controller.generate_music_controller import (
 from ai_media_generation.controller.generate_qwen_controller import (
     GenerateQwenController,
 )
+from ai_media_generation.controller.generate_qwen_edit_controller import (
+    GenerateQwenEditController,
+)
 from ai_media_generation.controller.generate_qwen_lora_training_images_controller import (
     GenerateQwenLoraTrainingImagesController,
 )
@@ -71,6 +74,9 @@ def _run() -> None:
         return
     if command == "qwen":
         GenerateQwenController().execute(_command_parser("qwen"))
+        return
+    if command == "qwen-edit":
+        GenerateQwenEditController().execute(_command_parser("qwen-edit"))
         return
     if command == "qwen-lora-training":
         GenerateQwenLoraTrainingImagesController().execute(
@@ -137,6 +143,10 @@ def _parser() -> ArgumentParser:
     subparsers.add_parser(
         "qwen",
         help="Generate images from qwen JSON specs with Qwen-Image-2512 (nested folders allowed).",
+    )
+    subparsers.add_parser(
+        "qwen-edit",
+        help="Generate illustrations from qwen-edit JSON specs with Qwen-Image-Edit-2511 (nested folders allowed).",
     )
     subparsers.add_parser(
         "qwen-lora-training",

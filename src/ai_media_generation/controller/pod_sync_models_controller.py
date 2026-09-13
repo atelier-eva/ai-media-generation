@@ -141,9 +141,9 @@ class PodSyncModelsController:
             dest="profiles",
             metavar="NAME",
             help=(
-                "Only models for this command (qwen, qwen-lora-training, "
-                "kagee, animagine, animagine-lora-training). Repeatable. "
-                "Omit to sync every model."
+                "Only models for this command (qwen, qwen-edit, "
+                "qwen-lora-training, kagee, animagine, animagine-lora-training). "
+                "Repeatable. Omit to sync every model."
             ),
         )
         args = parser.parse_args(argv[2:])

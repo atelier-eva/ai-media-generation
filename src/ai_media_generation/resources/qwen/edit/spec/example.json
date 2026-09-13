@@ -1,0 +1,4 @@
+{
+  "images": ["example.png"],
+  "prompt": "Keep the person's identity, face, and body from the reference image. Illustration of the same person standing in a quiet street, natural light."
+}

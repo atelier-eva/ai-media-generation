@@ -130,6 +130,7 @@ class ComfyUi:
         self._kagee_timeout_seconds = config.kagee_timeout_seconds
         self._qwen_template = read_resource_json(*_QWEN_IMAGE_CREATION_API_JSON)
         self._qwen_timeout_seconds = config.qwen_timeout_seconds
+        self._qwen_edit_timeout_seconds = config.qwen_edit_timeout_seconds
         self._qwen_lora_training_template = read_resource_json(
             *_QWEN_LORA_TRAINING_IMAGE_GENERATION_API_JSON
         )
@@ -230,6 +231,31 @@ class ComfyUi:
                 negative.strip(),
             ),
             self._qwen_lora_timeout_seconds,
+        )
+
+    def generate_qwen_edit(
+        self,
+        filename_prefix: str,
+        image: Path,
+        prompt: str,
+        seed: int,
+        negative: str = "",
+    ) -> tuple["ComfyUi.SavedImage", ...]:
+        prefix = filename_prefix.strip()
+        if not prefix:
+            raise ValueError("filename_prefix is empty.")
+        text = prompt.strip()
+        if not text:
+            raise ValueError("prompt is empty or missing.")
+        return self._queue_prompt(
+            self._qwen_lora_training_workflow(
+                prefix,
+                self._upload_image(image),
+                text,
+                seed,
+                negative.strip(),
+            ),
+            self._qwen_edit_timeout_seconds,
         )
 
     def generate_qwen(
