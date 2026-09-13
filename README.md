@@ -19,6 +19,7 @@ ai-media-generation qwen-edit --remote
 ai-media-generation qwen-lora-training
 ai-media-generation qwen-lora-training --remote
 ai-media-generation kagee
+ai-media-generation kagee --remote
 ai-media-generation music
 ai-media-generation pod-connect
 ai-media-generation pod-start
