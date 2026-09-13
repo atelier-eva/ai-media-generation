@@ -4,7 +4,11 @@ from typing import Any
 from ai_media_generation.config import Config
 from ai_media_generation.domain.animagine.spec.image_spec import ImageSpec
 from ai_media_generation.domain.animagine.spec.prompt import Prompt
-from ai_media_generation.repository.json_io import read_json, to_string_tuple
+from ai_media_generation.repository.json_io import (
+    ANIMAGINE_PROMPT_SCHEMA,
+    read_json,
+    to_string_tuple,
+)
 
 
 class ImageSpecRepository:
@@ -12,7 +16,10 @@ class ImageSpecRepository:
         directory = self._prompt_directory()
         paths = self._paths_for(directory, ids) if ids else self._json_paths(directory)
         return tuple(
-            self._to_image_spec(read_json(path), self._id_for(directory, path))
+            self._to_image_spec(
+                read_json(path, ANIMAGINE_PROMPT_SCHEMA),
+                self._id_for(directory, path),
+            )
             for path in paths
         )
 

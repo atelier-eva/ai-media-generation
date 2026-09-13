@@ -5,12 +5,19 @@ from ai_media_generation.domain.animagine.lora_dataset.scene.background.scene_ba
     SceneBackground,
 )
 from ai_media_generation.domain.animagine.lora_dataset.scene.lighting.scene_lighting import SceneLighting
-from ai_media_generation.repository.json_io import read_json, to_string_tuple
+from ai_media_generation.repository.json_io import (
+    ANIMAGINE_LORA_SCHEMAS,
+    read_json,
+    to_string_tuple,
+)
 
 
 class SceneRepository:
     def find(self) -> tuple[tuple[SceneBackground, ...], tuple[SceneLighting, ...]]:
-        data = read_json(Config().animagine_lora_training_scene_json)
+        data = read_json(
+            Config().animagine_lora_training_scene_json,
+            ANIMAGINE_LORA_SCHEMAS["scene.json"],
+        )
         background = data.get("background") or {}
         lighting = data.get("lighting") or {}
         return (

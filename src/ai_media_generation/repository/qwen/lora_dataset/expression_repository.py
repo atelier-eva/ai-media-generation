@@ -5,12 +5,19 @@ from ai_media_generation.domain.qwen.lora_dataset.expression import Expression
 from ai_media_generation.domain.qwen.lora_dataset.expression_settings import (
     ExpressionSettings,
 )
-from ai_media_generation.repository.json_io import read_json, to_string_tuple
+from ai_media_generation.repository.json_io import (
+    QWEN_LORA_SCHEMAS,
+    read_json,
+    to_string_tuple,
+)
 
 
 class ExpressionRepository:
     def find(self) -> ExpressionSettings:
-        expression = read_json(Config().qwen_lora_training_expression_json)
+        expression = read_json(
+            Config().qwen_lora_training_expression_json,
+            QWEN_LORA_SCHEMAS["expression.json"],
+        )
         skip = expression.get("skip_camera") or {}
         return ExpressionSettings(
             patterns=tuple(

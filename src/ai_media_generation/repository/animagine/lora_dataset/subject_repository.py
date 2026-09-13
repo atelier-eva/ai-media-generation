@@ -7,7 +7,11 @@ from ai_media_generation.domain.animagine.lora_dataset.subject.feature.subject_f
     SubjectFeaturePolarity,
 )
 from ai_media_generation.domain.animagine.lora_dataset.subject.subject import Subject
-from ai_media_generation.repository.json_io import read_json, to_string_tuple
+from ai_media_generation.repository.json_io import (
+    ANIMAGINE_LORA_SCHEMAS,
+    read_json,
+    to_string_tuple,
+)
 
 
 class SubjectRepository:
@@ -16,7 +20,9 @@ class SubjectRepository:
         subjects: list[Subject] = []
         names: dict[str, Path] = {}
         for path in self._json_paths(directory):
-            subject = self._to_subject(read_json(path))
+            subject = self._to_subject(
+                read_json(path, ANIMAGINE_LORA_SCHEMAS["characters"])
+            )
             previous = names.get(subject.name)
             if previous is not None:
                 raise ValueError(

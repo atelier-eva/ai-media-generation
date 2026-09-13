@@ -3,7 +3,7 @@ from typing import Any
 
 from ai_media_generation.config import Config
 from ai_media_generation.domain.qwen.lora_dataset.subject import Subject
-from ai_media_generation.repository.json_io import read_json
+from ai_media_generation.repository.json_io import QWEN_LORA_SCHEMAS, read_json
 
 
 class SubjectRepository:
@@ -12,7 +12,9 @@ class SubjectRepository:
         subjects: list[Subject] = []
         names: dict[str, Path] = {}
         for path in self._json_paths(directory):
-            subject = self._to_subject(read_json(path))
+            subject = self._to_subject(
+                read_json(path, QWEN_LORA_SCHEMAS["characters"])
+            )
             previous = names.get(subject.name)
             if previous is not None:
                 raise ValueError(

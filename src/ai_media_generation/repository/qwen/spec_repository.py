@@ -3,7 +3,7 @@ from typing import Any
 
 from ai_media_generation.config import Config
 from ai_media_generation.domain.qwen.spec.qwen_spec import QwenSpec
-from ai_media_generation.repository.json_io import read_json
+from ai_media_generation.repository.json_io import QWEN_SPEC_SCHEMA, read_json
 
 
 class QwenSpecRepository:
@@ -11,7 +11,9 @@ class QwenSpecRepository:
         directory = self._qwen_directory()
         paths = self._paths_for(directory, ids) if ids else self._json_paths(directory)
         return tuple(
-            self._to_qwen_spec(read_json(path), self._id_for(directory, path))
+            self._to_qwen_spec(
+                read_json(path, QWEN_SPEC_SCHEMA), self._id_for(directory, path)
+            )
             for path in paths
         )
 

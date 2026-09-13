@@ -3,13 +3,16 @@ from typing import Any
 
 from ai_media_generation.config import Config
 from ai_media_generation.domain.music_spec.music_spec import MusicSpec
-from ai_media_generation.repository.json_io import read_json
+from ai_media_generation.repository.json_io import MUSIC_SCHEMA, read_json
 
 
 class MusicSpecRepository:
     def get(self, ids: tuple[str, ...] = ()) -> tuple[MusicSpec, ...]:
         paths = self._paths_for(ids) if ids else self._json_paths()
-        return tuple(self._to_music_spec(read_json(path), path.stem) for path in paths)
+        return tuple(
+            self._to_music_spec(read_json(path, MUSIC_SCHEMA), path.stem)
+            for path in paths
+        )
 
     def _json_paths(self) -> tuple[Path, ...]:
         directory = self._music_directory()
