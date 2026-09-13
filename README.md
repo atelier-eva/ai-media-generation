@@ -20,6 +20,7 @@ ai-media-generation kagee
 ai-media-generation music
 ai-media-generation pod-connect
 ai-media-generation pod-start
+ai-media-generation pod-sync-models
 ai-media-generation pod-status
 ai-media-generation pod-stop
 ai-media-generation report

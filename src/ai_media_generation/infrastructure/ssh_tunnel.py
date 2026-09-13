@@ -1,13 +1,12 @@
-import shutil
 import socket
 import subprocess
 import time
-from dataclasses import dataclass
 from pathlib import Path
 from threading import Thread
 
 from ai_media_generation.config import Config
 from ai_media_generation.infrastructure.error import InfrastructureError
+from ai_media_generation.infrastructure.ssh import Ssh
 
 
 class SshTunnel:
@@ -18,14 +17,8 @@ class SshTunnel:
     _LISTEN_TIMEOUT_SECONDS = 30
     _POLL_INTERVAL_SECONDS = 0.2
 
-    @dataclass(frozen=True)
-    class Endpoint:
-        host: str
-        port: int
-        username: str
-
     def __init__(
-        self, ssh: "SshTunnel.Endpoint", identity: Path | None = None
+        self, ssh: Ssh.Endpoint, identity: Path | None = None
     ) -> None:
         self._ssh = ssh
         self._identity = identity
@@ -38,7 +31,7 @@ class SshTunnel:
         return f"http://{cls._LOCAL_HOST}:{cls._LOCAL_PORT}"
 
     @classmethod
-    def open(cls, ssh: "SshTunnel.Endpoint") -> "SshTunnel":
+    def open(cls, ssh: Ssh.Endpoint) -> "SshTunnel":
         tunnel = cls(ssh, Config().runpod_ssh_identity)
         print(f"Forwarding {tunnel.url} -> 127.0.0.1:8188")
         try:
@@ -56,11 +49,21 @@ class SshTunnel:
     def start(self) -> None:
         if self._process is not None:
             raise InfrastructureError("SSH tunnel is already started.")
-        ssh = shutil.which("ssh")
-        if ssh is None:
-            raise InfrastructureError("ssh is not installed.")
         self._process = subprocess.Popen(
-            self._command(ssh),
+            Ssh.argv(
+                self._ssh,
+                self._identity,
+                extra=(
+                    "-N",
+                    "-o",
+                    "ExitOnForwardFailure=yes",
+                    "-L",
+                    (
+                        f"{self._LOCAL_HOST}:{self._LOCAL_PORT}:"
+                        f"{self._REMOTE_HOST}:{self._REMOTE_PORT}"
+                    ),
+                ),
+            ),
             stdout=subprocess.DEVNULL,
             stderr=subprocess.PIPE,
             start_new_session=True,
@@ -104,40 +107,6 @@ class SshTunnel:
                 process.kill()
                 process.wait()
         self._wait_for_stderr()
-
-    def _command(self, ssh: str) -> list[str]:
-        command = [
-            ssh,
-            "-N",
-            "-T",
-            "-o",
-            "BatchMode=yes",
-            "-o",
-            "ExitOnForwardFailure=yes",
-            "-o",
-            "StrictHostKeyChecking=no",
-            "-o",
-            "UserKnownHostsFile=/dev/null",
-            "-o",
-            "LogLevel=ERROR",
-            "-o",
-            "ServerAliveInterval=30",
-            "-o",
-            "ServerAliveCountMax=3",
-            "-L",
-            (
-                f"{self._LOCAL_HOST}:{self._LOCAL_PORT}:"
-                f"{self._REMOTE_HOST}:{self._REMOTE_PORT}"
-            ),
-            "-p",
-            str(self._ssh.port),
-        ]
-        if self._identity is not None:
-            command.extend(
-                ["-i", str(self._identity), "-o", "IdentitiesOnly=yes"]
-            )
-        command.append(f"{self._ssh.username}@{self._ssh.host}")
-        return command
 
     def _read_stderr(self) -> None:
         process = self._process

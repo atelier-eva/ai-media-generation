@@ -3,7 +3,7 @@ from re import sub
 from sys import argv
 
 from ai_media_generation.config import Config
-from ai_media_generation.controller.helper import add_remote_arguments
+from ai_media_generation.controller.helper import add_remote_arguments, require_remote_models
 from ai_media_generation.domain.qwen.lora_dataset.generate_qwen_lora_dataset import (
     GenerateQwenLoraDataset,
 )
@@ -55,6 +55,7 @@ class GenerateQwenLoraTrainingImagesController:
                 ComfyUi.wait_until_reachable(
                     tunnel.url, Config().runpod_timeout_seconds
                 )
+                require_remote_models(tunnel.url, "qwen-lora-training")
             url = tunnel.url if tunnel is not None else Config().comfy_ui_url
             self._generate(rows, start, end, args.base_seed, url)
         finally:

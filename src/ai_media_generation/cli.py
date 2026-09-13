@@ -30,6 +30,9 @@ from ai_media_generation.controller.pod_connect_controller import PodConnectCont
 from ai_media_generation.controller.pod_start_controller import PodStartController
 from ai_media_generation.controller.pod_status_controller import PodStatusController
 from ai_media_generation.controller.pod_stop_controller import PodStopController
+from ai_media_generation.controller.pod_sync_models_controller import (
+    PodSyncModelsController,
+)
 from ai_media_generation.controller.report_animagine_lora_training_patterns_controller import (
     ReportAnimagineLoraTrainingPatternsController,
 )
@@ -91,6 +94,9 @@ def _run() -> None:
         return
     if command == "pod-stop":
         PodStopController().execute(_command_parser("pod-stop"))
+        return
+    if command == "pod-sync-models":
+        PodSyncModelsController().execute(_command_parser("pod-sync-models"))
         return
     if command == "report":
         ReportAnimagineLoraTrainingPatternsController().execute(
@@ -163,6 +169,10 @@ def _parser() -> ArgumentParser:
     subparsers.add_parser(
         "pod-stop",
         help="Stop the RunPod pod and wait until EXITED.",
+    )
+    subparsers.add_parser(
+        "pod-sync-models",
+        help="Download required models onto the running RunPod pod.",
     )
     subparsers.add_parser(
         "report",
