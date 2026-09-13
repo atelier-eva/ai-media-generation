@@ -5,12 +5,19 @@ from ai_media_generation.domain.animagine.lora_dataset.camera.angle.camera_angle
 from ai_media_generation.domain.animagine.lora_dataset.camera.camera import Camera
 from ai_media_generation.domain.animagine.lora_dataset.camera.distance.camera_distance import CameraDistance
 from ai_media_generation.domain.animagine.lora_dataset.camera.frame.camera_frame import CameraFrame
-from ai_media_generation.repository.json_io import read_json, to_string_tuple
+from ai_media_generation.repository.json_io import (
+    ANIMAGINE_LORA_SCHEMAS,
+    read_json,
+    to_string_tuple,
+)
 
 
 class CameraRepository:
     def find(self) -> tuple[Camera, ...]:
-        camera = read_json(Config().animagine_lora_training_camera_json)
+        camera = read_json(
+            Config().animagine_lora_training_camera_json,
+            ANIMAGINE_LORA_SCHEMAS["camera.json"],
+        )
         angles = tuple(self._to_angle(item) for item in camera.get("angle") or [])
         distances = tuple(
             self._to_distance(item) for item in camera.get("distance") or []

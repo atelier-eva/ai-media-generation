@@ -2,12 +2,14 @@ from typing import Any
 
 from ai_media_generation.config import Config
 from ai_media_generation.domain.qwen.lora_dataset.named_prompt import NamedPrompt
-from ai_media_generation.repository.json_io import read_json
+from ai_media_generation.repository.json_io import QWEN_LORA_SCHEMAS, read_json
 
 
 class SceneRepository:
     def find(self) -> tuple[tuple[NamedPrompt, ...], tuple[NamedPrompt, ...]]:
-        data = read_json(Config().qwen_lora_training_scene_json)
+        data = read_json(
+            Config().qwen_lora_training_scene_json, QWEN_LORA_SCHEMAS["scene.json"]
+        )
         background = data.get("background") or {}
         lighting = data.get("lighting") or {}
         return (

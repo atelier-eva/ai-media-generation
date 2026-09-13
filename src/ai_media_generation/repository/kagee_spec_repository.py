@@ -12,7 +12,9 @@ class KageeSpecRepository:
         directory = self._kagee_directory()
         paths = self._paths_for(directory, ids) if ids else self._json_paths(directory)
         return tuple(
-            self._to_kagee_spec(read_json(path), self._id_for(directory, path))
+            self._to_kagee_spec(
+                read_json(path, None), self._id_for(directory, path)
+            )
             for path in paths
         )
 
