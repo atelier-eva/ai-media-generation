@@ -9,7 +9,7 @@
     "patterns": {
       "type": "array",
       "items": { "$ref": "#/$defs/named_prompt" },
-      "description": "One generated row per pattern, after pose."
+      "description": "One generated row per pattern, after pose in the cartesian product. Joined last in the edit instruction and caption."
     }
   },
   "$defs": {

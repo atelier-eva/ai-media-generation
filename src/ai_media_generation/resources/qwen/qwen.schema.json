@@ -29,7 +29,7 @@
     "prompt": {
       "type": "string",
       "minLength": 1,
-      "description": "Positive prompt sent to ComfyUI. Prose, not tag arrays."
+      "description": "Positive prompt sent to ComfyUI as-is. Prose, not tag arrays. example.json is a fill-in template; brace placeholders are not expanded, so replace them (or omit unused slots) before generating. Recommended order: subject, pose, setting, style, camera, lighting, atmosphere. Optional quality phrases (e.g. Ultra HD, 4K, cinematic composition) go at the end."
     },
     "negative": {
       "type": "string",
