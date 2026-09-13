@@ -17,7 +17,7 @@
     "prompt": {
       "type": "string",
       "minLength": 1,
-      "description": "Illustration instruction sent to ComfyUI. Keep identity from the reference image, then describe the desired illustration. Prose, not tag arrays."
+      "description": "Illustration instruction sent to ComfyUI as-is. Prose, not tag arrays. example.json is a fill-in template; brace placeholders are not expanded, so replace them (or omit unused change sentences) before generating. Do not restyle appearance from the reference. Optional quality phrases (e.g. Ultra HD, 4K, cinematic composition) go at the end. Placeholder values should fit the verbs (a slight smile, standing, a quiet street, from the front in a medium shot, natural light, an illustration), not LoRA slot prefixes (with/in/as)."
     },
     "negative": {
       "type": "string",

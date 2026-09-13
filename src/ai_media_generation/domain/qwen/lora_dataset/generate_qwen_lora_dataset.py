@@ -47,13 +47,13 @@ class GenerateQwenLoraDataset:
     ) -> str:
         caption = self._paragraph(
             subject.name,
-            camera.angle.prompt,
-            camera.distance.prompt,
             expression.prompt if expression else "",
             pose.prompt if pose else "",
-            art_style.prompt if art_style else "",
             background.prompt if background else "",
+            camera.angle.prompt,
+            camera.distance.prompt,
             lighting.prompt if lighting else "",
+            art_style.prompt if art_style else "",
         )
         if not caption:
             raise ValueError(
@@ -75,13 +75,13 @@ class GenerateQwenLoraDataset:
         prompt = self._sentences(
             generation.prompt,
             self._paragraph(
-                camera.angle.prompt,
-                camera.distance.prompt,
                 expression.prompt if expression else "",
                 pose.prompt if pose else "",
-                art_style.prompt if art_style else "",
                 background.prompt if background else "",
+                camera.angle.prompt,
+                camera.distance.prompt,
                 lighting.prompt if lighting else "",
+                art_style.prompt if art_style else "",
             ),
         )
         if not prompt:
