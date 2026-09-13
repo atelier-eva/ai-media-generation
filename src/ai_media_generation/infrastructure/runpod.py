@@ -7,7 +7,7 @@ from typing import Any
 
 from ai_media_generation.config import Config
 from ai_media_generation.infrastructure.error import InfrastructureError
-from ai_media_generation.infrastructure.ssh_tunnel import SshTunnel
+from ai_media_generation.infrastructure.ssh import Ssh
 
 
 class RunPod:
@@ -23,7 +23,7 @@ class RunPod:
         id: str
         name: str
         status: str
-        direct_ssh: SshTunnel.Endpoint | None
+        direct_ssh: Ssh.Endpoint | None
 
     def __init__(self) -> None:
         config = Config()
@@ -34,7 +34,7 @@ class RunPod:
     def get_pod(self) -> "RunPod.Pod":
         return self._to_pod(self._request("GET", f"/pods/{self._pod_id}"))
 
-    def require_direct_ssh(self) -> tuple["RunPod.Pod", SshTunnel.Endpoint]:
+    def require_direct_ssh(self) -> tuple["RunPod.Pod", Ssh.Endpoint]:
         pod = self.get_pod()
         if pod.status != "RUNNING":
             raise InfrastructureError(
@@ -158,7 +158,7 @@ class RunPod:
             direct_ssh=self._direct_ssh(data.get("ssh")),
         )
 
-    def _direct_ssh(self, value: Any) -> SshTunnel.Endpoint | None:
+    def _direct_ssh(self, value: Any) -> Ssh.Endpoint | None:
         if value is None:
             return None
         if not isinstance(value, dict):
@@ -173,7 +173,7 @@ class RunPod:
         port = self._port(raw.get("port"))
         if not host or not username or port is None:
             raise InfrastructureError("RunPod pod ssh.direct is incomplete.")
-        return SshTunnel.Endpoint(host=host, port=port, username=username)
+        return Ssh.Endpoint(host=host, port=port, username=username)
 
     def _port(self, value: Any) -> int | None:
         if value is None or isinstance(value, bool):

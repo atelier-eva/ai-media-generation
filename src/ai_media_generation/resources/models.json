@@ -1,0 +1,52 @@
+{
+  "models": [
+    {
+      "repo": "Comfy-Org/Qwen-Image-Edit_ComfyUI",
+      "hub_path": "split_files/diffusion_models/qwen_image_edit_2511_fp8mixed.safetensors",
+      "path": "models/diffusion_models/qwen_image_edit_2511_fp8mixed.safetensors",
+      "profiles": ["qwen-lora-training", "kagee"]
+    },
+    {
+      "repo": "Comfy-Org/Qwen-Image_ComfyUI",
+      "hub_path": "split_files/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors",
+      "path": "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors",
+      "profiles": ["qwen"]
+    },
+    {
+      "repo": "Comfy-Org/Qwen-Image_ComfyUI",
+      "hub_path": "split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "path": "models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "profiles": ["qwen", "qwen-lora-training", "kagee"]
+    },
+    {
+      "repo": "Comfy-Org/Qwen-Image_ComfyUI",
+      "hub_path": "split_files/vae/qwen_image_vae.safetensors",
+      "path": "models/vae/qwen_image_vae.safetensors",
+      "profiles": ["qwen", "qwen-lora-training", "kagee"]
+    },
+    {
+      "repo": "cagliostrolab/animagine-xl-4.0",
+      "hub_path": "animagine-xl-4.0-opt.safetensors",
+      "path": "models/checkpoints/animagine-xl-4.0-opt.safetensors",
+      "profiles": ["animagine", "animagine-lora-training"]
+    },
+    {
+      "repo": "lightx2v/Qwen-Image-2512-Lightning",
+      "hub_path": "Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
+      "path": "models/loras/Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
+      "profiles": ["qwen"]
+    },
+    {
+      "repo": "lightx2v/Qwen-Image-Edit-2511-Lightning",
+      "hub_path": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "path": "models/loras/Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "profiles": ["qwen-lora-training", "kagee"]
+    },
+    {
+      "repo": "thibaud/controlnet-openpose-sdxl-1.0",
+      "hub_path": "OpenPoseXL2.safetensors",
+      "path": "models/controlnet/OpenPoseXL2.safetensors",
+      "profiles": ["animagine"]
+    }
+  ]
+}

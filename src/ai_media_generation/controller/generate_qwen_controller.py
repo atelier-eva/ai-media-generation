@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from sys import argv
 
 from ai_media_generation.config import Config
-from ai_media_generation.controller.helper import add_remote_arguments
+from ai_media_generation.controller.helper import add_remote_arguments, require_remote_models
 from ai_media_generation.domain.qwen.spec.get_qwen_specs import GetQwenSpecs
 from ai_media_generation.domain.qwen.spec.get_qwen_specs_output import QwenSpecDto
 from ai_media_generation.infrastructure.comfy_ui import ComfyUi
@@ -37,6 +37,7 @@ class GenerateQwenController:
                 ComfyUi.wait_until_reachable(
                     tunnel.url, Config().runpod_timeout_seconds
                 )
+                require_remote_models(tunnel.url, "qwen")
             url = tunnel.url if tunnel is not None else Config().comfy_ui_url
             self._generate(specs, args.base_seed, args.batch_size, url)
         finally:

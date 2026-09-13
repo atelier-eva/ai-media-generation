@@ -65,6 +65,59 @@ class ComfyUi:
             f"Timed out after {timeout_seconds}s waiting for ComfyUI at {url}."
         )
 
+    @classmethod
+    def filenames(cls, url: str, folder: str) -> tuple[str, ...]:
+        name = folder.strip().replace("\\", "/")
+        if not name or "/" in name:
+            raise ValueError(f"Invalid ComfyUI model folder: {folder}")
+        path = f"/models/{name}"
+        loaded = cls._get_json(url, path)
+        if not isinstance(loaded, list):
+            raise InfrastructureError(f"ComfyUI {path} did not return a list.")
+        names: list[str] = []
+        for item in loaded:
+            if not isinstance(item, str):
+                raise InfrastructureError(
+                    f"ComfyUI {path} item was not a string."
+                )
+            text = item.strip().replace("\\", "/")
+            if text:
+                names.append(text)
+        return tuple(names)
+
+    @classmethod
+    def require_filenames(
+        cls,
+        url: str,
+        required: dict[str, tuple[str, ...]],
+        missing: str,
+    ) -> None:
+        absent: list[str] = []
+        for folder in sorted(required):
+            listed = frozenset(cls.filenames(url, folder))
+            for name in required[folder]:
+                if name not in listed:
+                    absent.append(name)
+        if not absent:
+            return
+        raise InfrastructureError(
+            "ComfyUI is missing " + ", ".join(absent) + ". " + missing
+        )
+
+    @classmethod
+    def _get_json(cls, url: str, path: str) -> Any:
+        url = url.rstrip("/")
+        request = urllib.request.Request(f"{url}{path}", method="GET")
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as error:
+            raise InfrastructureError(f"ComfyUI {path} failed: {error.code}") from error
+        except urllib.error.URLError as error:
+            raise InfrastructureError(f"ComfyUI is not reachable at {url}") from error
+        except json.JSONDecodeError as error:
+            raise InfrastructureError(f"ComfyUI {path} did not return JSON.") from error
+
     def __init__(self, url: str) -> None:
         config = Config()
         self._url = url.rstrip("/")

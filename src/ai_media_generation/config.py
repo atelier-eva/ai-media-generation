@@ -79,6 +79,14 @@ class Config:
         return path
 
     @property
+    def runpod_comfyui_root(self) -> str:
+        text = _optional_text("RUNPOD_COMFYUI_ROOT")
+        root = "/workspace/runpod-slim/ComfyUI" if text is None else text.rstrip("/")
+        if not root.startswith("/"):
+            raise ValueError("RUNPOD_COMFYUI_ROOT must be an absolute path.")
+        return root
+
+    @property
     def animagine_output_directory(self) -> Path:
         return _directory("ANIMAGINE_OUTPUT_DIRECTORY", self.ANIMAGINE_OUTPUT_DIRECTORY)
 
