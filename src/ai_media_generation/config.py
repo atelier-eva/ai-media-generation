@@ -7,10 +7,12 @@ class Config:
     MUSIC_SPEC_DIRECTORY = "music"
     KAGEE_SPEC_DIRECTORY = "kagee"
     QWEN_SPEC_DIRECTORY = "qwen/spec"
+    QWEN_EDIT_SPEC_DIRECTORY = "qwen/edit/spec"
     ANIMAGINE_OUTPUT_DIRECTORY = "animagine/output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     KAGEE_OUTPUT_DIRECTORY = "kagee-output"
     QWEN_OUTPUT_DIRECTORY = "qwen/output"
+    QWEN_EDIT_OUTPUT_DIRECTORY = "qwen/edit/output"
     ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY = "animagine/lora_dataset"
     ANIMAGINE_LORA_TRAINING_GENERATIONS_JSONL = (
         "animagine-lora-training-generations.jsonl"
@@ -38,6 +40,12 @@ class Config:
         if qwen_timeout is not None and qwen_timeout <= 0:
             raise ValueError("QWEN_TIMEOUT_SECONDS must be positive.")
         self.qwen_timeout_seconds = 1800 if qwen_timeout is None else qwen_timeout
+        qwen_edit_timeout = _optional_int("QWEN_EDIT_TIMEOUT_SECONDS")
+        if qwen_edit_timeout is not None and qwen_edit_timeout <= 0:
+            raise ValueError("QWEN_EDIT_TIMEOUT_SECONDS must be positive.")
+        self.qwen_edit_timeout_seconds = (
+            1800 if qwen_edit_timeout is None else qwen_edit_timeout
+        )
         self.qwen_lora_filename_prefix = (
             _optional_text("QWEN_LORA_FILENAME_PREFIX") or "qwen-lora"
         )
@@ -138,6 +146,16 @@ class Config:
     @property
     def qwen_output_directory(self) -> Path:
         return _directory("QWEN_OUTPUT_DIRECTORY", self.QWEN_OUTPUT_DIRECTORY)
+
+    @property
+    def qwen_edit_spec_directory(self) -> Path:
+        return _directory("QWEN_EDIT_SPEC_DIRECTORY", self.QWEN_EDIT_SPEC_DIRECTORY)
+
+    @property
+    def qwen_edit_output_directory(self) -> Path:
+        return _directory(
+            "QWEN_EDIT_OUTPUT_DIRECTORY", self.QWEN_EDIT_OUTPUT_DIRECTORY
+        )
 
     @property
     def qwen_lora_training_spec_directory(self) -> Path:

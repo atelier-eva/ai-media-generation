@@ -49,6 +49,7 @@ class SshTunnel:
     def start(self) -> None:
         if self._process is not None:
             raise InfrastructureError("SSH tunnel is already started.")
+        Ssh.require_identities(self._identity)
         self._process = subprocess.Popen(
             Ssh.argv(
                 self._ssh,
@@ -92,8 +93,9 @@ class SshTunnel:
             raise InfrastructureError("SSH tunnel is not started.")
         self._process.wait()
         self._wait_for_stderr()
-        detail = self._stderr.strip() or f"exit {self._process.returncode}"
-        raise InfrastructureError(f"SSH tunnel exited: {detail}")
+        code = self._process.returncode
+        detail = self._stderr.strip() or f"exit {code}"
+        raise Ssh.failed("SSH tunnel exited", detail, code)
 
     def close(self) -> None:
         process = self._process
@@ -128,4 +130,4 @@ class SshTunnel:
             return
         self._wait_for_stderr()
         detail = self._stderr.strip() or f"exit {code}"
-        raise InfrastructureError(f"SSH tunnel exited: {detail}")
+        raise Ssh.failed("SSH tunnel exited", detail, code)

@@ -33,6 +33,7 @@ class InitController:
                 f"Animagine LoRA training spec templates go in {Config.ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY}/. "
                 f"Animagine spec templates go in {Config.ANIMAGINE_SPEC_DIRECTORY}/. "
                 f"Qwen spec templates go in {Config.QWEN_SPEC_DIRECTORY}/. "
+                f"Qwen edit spec templates go in {Config.QWEN_EDIT_SPEC_DIRECTORY}/. "
                 f"Qwen LoRA training spec templates go in {Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY}/. "
                 f"Kagee spec templates go in {Config.KAGEE_SPEC_DIRECTORY}/. "
                 f"Music spec templates go in {Config.MUSIC_SPEC_DIRECTORY}/. "
@@ -53,6 +54,7 @@ class InitController:
         animagine_lora_training = path / Config.ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY
         animagine = path / Config.ANIMAGINE_SPEC_DIRECTORY
         qwen = path / Config.QWEN_SPEC_DIRECTORY
+        qwen_edit = path / Config.QWEN_EDIT_SPEC_DIRECTORY
         qwen_lora_training = path / Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY
         kagee = path / Config.KAGEE_SPEC_DIRECTORY
         music = path / Config.MUSIC_SPEC_DIRECTORY
@@ -76,6 +78,11 @@ class InitController:
         self._write_directory(
             (Config.QWEN_SPEC_DIRECTORY,),
             qwen,
+            args.force,
+        )
+        self._write_directory(
+            (Config.QWEN_EDIT_SPEC_DIRECTORY,),
+            qwen_edit,
             args.force,
         )
         qwen_lora_training.mkdir(parents=True, exist_ok=True)
@@ -104,13 +111,14 @@ class InitController:
         print(f"Animagine LoRA training spec directory: {animagine_lora_training}")
         print(f"Animagine spec directory: {animagine}")
         print(f"Qwen spec directory: {qwen}")
+        print(f"Qwen edit spec directory: {qwen_edit}")
         print(f"Qwen LoRA training spec directory: {qwen_lora_training}")
         print(f"Kagee spec directory: {kagee}")
         print(f"Music spec directory: {music}")
         print(
             "Fill in the JSON, then run: "
             "ai-media-generation animagine-lora-training, animagine, qwen, "
-            "qwen-lora-training, kagee, music, or report"
+            "qwen-edit, qwen-lora-training, kagee, music, or report"
         )
 
     def _write_env(self) -> None:
