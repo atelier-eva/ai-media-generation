@@ -13,6 +13,10 @@ from ai_media_generation.config import Config
 from ai_media_generation.infrastructure.error import InfrastructureError
 from ai_media_generation.repository.json_io import read_resource_json
 
+_ANIMA_IMAGE_CREATION_API_JSON = (
+    "comfyui",
+    "anima-image-creation-api.json",
+)
 _ANIMAGINE_LORA_TRAINING_IMAGE_GENERATION_API_JSON = (
     "comfyui",
     "animagine-lora-training-image-generation-api.json",
@@ -122,6 +126,8 @@ class ComfyUi:
         config = Config()
         self._url = url.rstrip("/")
         self._ckpt_name = config.comfy_ui_ckpt_name
+        self._anima_template = read_resource_json(*_ANIMA_IMAGE_CREATION_API_JSON)
+        self._anima_timeout_seconds = config.anima_timeout_seconds
         self._animagine_lora_training_template = read_resource_json(
             *_ANIMAGINE_LORA_TRAINING_IMAGE_GENERATION_API_JSON
         )
@@ -285,6 +291,35 @@ class ComfyUi:
                 batch_size,
             ),
             self._qwen_timeout_seconds,
+        )
+
+    def generate_anima(
+        self,
+        filename_prefix: str,
+        width: int,
+        height: int,
+        prompt: str,
+        negative: str,
+        seed: int,
+        batch_size: int = 4,
+    ) -> tuple["ComfyUi.SavedImage", ...]:
+        prefix = filename_prefix.strip()
+        if not prefix:
+            raise ValueError("filename_prefix is empty.")
+        text = prompt.strip()
+        if not text:
+            raise ValueError("prompt is empty or missing.")
+        return self._queue_prompt(
+            self._anima_workflow(
+                prefix,
+                width,
+                height,
+                text,
+                negative.strip(),
+                seed,
+                batch_size,
+            ),
+            self._anima_timeout_seconds,
         )
 
     def fetch_image(self, image: "ComfyUi.SavedImage") -> bytes:
@@ -470,6 +505,26 @@ class ComfyUi:
         ).encode("utf-8")
         closing = f"--{boundary}--\r\n".encode("utf-8")
         return marker + header + path.read_bytes() + b"\r\n" + overwrite + closing, boundary
+
+    def _anima_workflow(
+        self,
+        filename_prefix: str,
+        width: int,
+        height: int,
+        prompt: str,
+        negative: str,
+        seed: int,
+        batch_size: int,
+    ) -> dict[str, Any]:
+        workflow = copy.deepcopy(self._anima_template)
+        workflow["4"]["inputs"]["text"] = prompt
+        workflow["5"]["inputs"]["text"] = negative
+        workflow["6"]["inputs"]["width"] = width
+        workflow["6"]["inputs"]["height"] = height
+        workflow["6"]["inputs"]["batch_size"] = batch_size
+        workflow["7"]["inputs"]["seed"] = seed
+        workflow["9"]["inputs"]["filename_prefix"] = filename_prefix
+        return workflow
 
     def _qwen_workflow(
         self,
