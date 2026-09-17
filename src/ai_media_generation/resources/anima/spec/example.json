@@ -1,0 +1,8 @@
+{
+  "image_size": {
+    "width": 1024,
+    "height": 1024
+  },
+  "prompt": "masterpiece, best quality, safe, {1girl}, {Character}, {Series}, {General tags}. {Natural language description of the subject, pose, setting, lighting, and atmosphere}.",
+  "negative": "worst quality, low quality, artist name, blurry, jpeg artifacts, chromatic aberration"
+}

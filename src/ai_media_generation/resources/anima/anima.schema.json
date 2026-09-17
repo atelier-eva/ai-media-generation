@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/anima/anima.schema.json",
+  "title": "Anima (anima/spec/**/*.json)",
+  "description": "One prompt per JSON file under anima/spec/, including subfolders. The path relative to anima/spec/ without .json is the spec id. ComfyUI filename_prefix is that id (nested folders preserved). Prompt for Anima Aesthetic v1.1 (CircleStone Labs / Comfy Org). Danbooru-style tags, natural language, or a mix of both.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["image_size", "prompt"],
+  "properties": {
+    "image_size": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 512, "maximum": 1536, "multipleOf": 16 },
+        "height": { "type": "integer", "minimum": 512, "maximum": 1536, "multipleOf": 16 }
+      },
+      "description": "Output dimensions (width x height). Anima works between 512x512 and 1536x1536; each side must be a multiple of 16. Common sizes: 1:1 1024x1024, 2:3 832x1216, 3:2 1216x832, 3:4 896x1152, 4:3 1152x896, 9:16 768x1344, 16:9 1344x768."
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Positive prompt sent to ComfyUI as-is. example.json is a fill-in template; brace placeholders are not expanded, so replace them (or omit unused slots) before generating. Tags: lowercase, spaces instead of underscores, comma followed by a space. Tag order: quality/meta/year/safety, 1girl/1boy/1other, character, series, @artist, general tags. Artist tags need the @ prefix. Natural language may be mixed in anywhere; when using natural language alone, write at least two sentences. Aesthetic v1.1 does not need quality tags; masterpiece, best quality is safe to keep, but avoid score_* tags."
+    },
+    "negative": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional negative prompt. Tags or natural language. The official recommendation without score_* tags is in example.json. Omit when unused."
+    }
+  }
+}
