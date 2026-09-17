@@ -1,15 +1,18 @@
 {
-  "1": {
+  "46": {
     "inputs": {
-      "unet_name": "anima-aesthetic-v1.1.safetensors",
-      "weight_dtype": "default"
+      "filename_prefix": "",
+      "images": [
+        "60:8",
+        0
+      ]
     },
-    "class_type": "UNETLoader",
+    "class_type": "SaveImage",
     "_meta": {
-      "title": "Load Diffusion Model"
+      "title": "Save Image"
     }
   },
-  "2": {
+  "60:45": {
     "inputs": {
       "clip_name": "qwen_3_06b_base.safetensors",
       "type": "stable_diffusion",
@@ -20,7 +23,7 @@
       "title": "Load CLIP"
     }
   },
-  "3": {
+  "60:15": {
     "inputs": {
       "vae_name": "qwen_image_vae.safetensors"
     },
@@ -29,33 +32,23 @@
       "title": "Load VAE"
     }
   },
-  "4": {
+  "60:8": {
     "inputs": {
-      "text": "",
-      "clip": [
-        "2",
+      "samples": [
+        "60:19",
+        0
+      ],
+      "vae": [
+        "60:15",
         0
       ]
     },
-    "class_type": "CLIPTextEncode",
+    "class_type": "VAEDecode",
     "_meta": {
-      "title": "CLIP Text Encode (Prompt) Positive"
+      "title": "VAE Decode"
     }
   },
-  "5": {
-    "inputs": {
-      "text": "",
-      "clip": [
-        "2",
-        0
-      ]
-    },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP Text Encode (Prompt) Negative"
-    }
-  },
-  "6": {
+  "60:28": {
     "inputs": {
       "width": 1024,
       "height": 1024,
@@ -66,28 +59,41 @@
       "title": "Empty Latent Image"
     }
   },
-  "7": {
+  "60:12": {
     "inputs": {
-      "seed": 0,
+      "text": "",
+      "clip": [
+        "60:45",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Negative Prompt)"
+    }
+  },
+  "60:19": {
+    "inputs": {
+      "seed": 875817230929465,
       "steps": 30,
       "cfg": 4,
       "sampler_name": "er_sde",
       "scheduler": "simple",
       "denoise": 1,
       "model": [
-        "1",
+        "60:44",
         0
       ],
       "positive": [
-        "4",
+        "60:11",
         0
       ],
       "negative": [
-        "5",
+        "60:12",
         0
       ],
       "latent_image": [
-        "6",
+        "60:28",
         0
       ]
     },
@@ -96,33 +102,27 @@
       "title": "KSampler"
     }
   },
-  "8": {
+  "60:11": {
     "inputs": {
-      "samples": [
-        "7",
-        0
-      ],
-      "vae": [
-        "3",
+      "text": "",
+      "clip": [
+        "60:45",
         0
       ]
     },
-    "class_type": "VAEDecode",
+    "class_type": "CLIPTextEncode",
     "_meta": {
-      "title": "VAE Decode"
+      "title": "CLIP Text Encode (Positive Prompt)"
     }
   },
-  "9": {
+  "60:44": {
     "inputs": {
-      "filename_prefix": "",
-      "images": [
-        "8",
-        0
-      ]
+      "unet_name": "anima-aesthetic-v1.1.safetensors",
+      "weight_dtype": "default"
     },
-    "class_type": "SaveImage",
+    "class_type": "UNETLoader",
     "_meta": {
-      "title": "Save Image"
+      "title": "Load Diffusion Model"
     }
   }
 }
