@@ -12,7 +12,6 @@ SchemaResource = tuple[str, ...]
 ANIMAGINE_PROMPT_SCHEMA: SchemaResource = ("animagine", "prompt.schema.json")
 QWEN_SPEC_SCHEMA: SchemaResource = ("qwen", "qwen.schema.json")
 QWEN_EDIT_SPEC_SCHEMA: SchemaResource = ("qwen", "edit", "qwen-edit.schema.json")
-ANIMA_SPEC_SCHEMA: SchemaResource = ("anima", "anima.schema.json")
 MUSIC_SCHEMA: SchemaResource = ("music.schema.json",)
 
 ANIMAGINE_LORA_SCHEMAS: dict[str, SchemaResource] = {

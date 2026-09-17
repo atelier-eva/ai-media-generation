@@ -8,13 +8,11 @@ class Config:
     KAGEE_SPEC_DIRECTORY = "kagee"
     QWEN_SPEC_DIRECTORY = "qwen/spec"
     QWEN_EDIT_SPEC_DIRECTORY = "qwen/edit/spec"
-    ANIMA_SPEC_DIRECTORY = "anima/spec"
     ANIMAGINE_OUTPUT_DIRECTORY = "animagine/output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     KAGEE_OUTPUT_DIRECTORY = "kagee-output"
     QWEN_OUTPUT_DIRECTORY = "qwen/output"
     QWEN_EDIT_OUTPUT_DIRECTORY = "qwen/edit/output"
-    ANIMA_OUTPUT_DIRECTORY = "anima/output"
     ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY = "animagine/lora_dataset"
     ANIMAGINE_LORA_TRAINING_GENERATIONS_JSONL = (
         "animagine-lora-training-generations.jsonl"
@@ -57,10 +55,6 @@ class Config:
         self.qwen_lora_timeout_seconds = (
             1800 if qwen_lora_timeout is None else qwen_lora_timeout
         )
-        anima_timeout = _optional_int("ANIMA_TIMEOUT_SECONDS")
-        if anima_timeout is not None and anima_timeout <= 0:
-            raise ValueError("ANIMA_TIMEOUT_SECONDS must be positive.")
-        self.anima_timeout_seconds = 1800 if anima_timeout is None else anima_timeout
         runpod_timeout = _optional_int("RUNPOD_TIMEOUT_SECONDS")
         if runpod_timeout is not None and runpod_timeout <= 0:
             raise ValueError("RUNPOD_TIMEOUT_SECONDS must be positive.")
@@ -162,14 +156,6 @@ class Config:
         return _directory(
             "QWEN_EDIT_OUTPUT_DIRECTORY", self.QWEN_EDIT_OUTPUT_DIRECTORY
         )
-
-    @property
-    def anima_spec_directory(self) -> Path:
-        return _directory("ANIMA_SPEC_DIRECTORY", self.ANIMA_SPEC_DIRECTORY)
-
-    @property
-    def anima_output_directory(self) -> Path:
-        return _directory("ANIMA_OUTPUT_DIRECTORY", self.ANIMA_OUTPUT_DIRECTORY)
 
     @property
     def qwen_lora_training_spec_directory(self) -> Path:

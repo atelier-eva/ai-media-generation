@@ -22,19 +22,7 @@
       "repo": "Comfy-Org/Qwen-Image_ComfyUI",
       "hub_path": "split_files/vae/qwen_image_vae.safetensors",
       "path": "models/vae/qwen_image_vae.safetensors",
-      "profiles": ["qwen", "qwen-lora-training", "kagee", "qwen-edit", "anima"]
-    },
-    {
-      "repo": "circlestone-labs/Anima",
-      "hub_path": "split_files/diffusion_models/anima-aesthetic-v1.1.safetensors",
-      "path": "models/diffusion_models/anima-aesthetic-v1.1.safetensors",
-      "profiles": ["anima"]
-    },
-    {
-      "repo": "circlestone-labs/Anima",
-      "hub_path": "split_files/text_encoders/qwen_3_06b_base.safetensors",
-      "path": "models/text_encoders/qwen_3_06b_base.safetensors",
-      "profiles": ["anima"]
+      "profiles": ["qwen", "qwen-lora-training", "kagee", "qwen-edit"]
     },
     {
       "repo": "cagliostrolab/animagine-xl-4.0",
