@@ -517,13 +517,13 @@ class ComfyUi:
         batch_size: int,
     ) -> dict[str, Any]:
         workflow = copy.deepcopy(self._anima_template)
-        workflow["4"]["inputs"]["text"] = prompt
-        workflow["5"]["inputs"]["text"] = negative
-        workflow["6"]["inputs"]["width"] = width
-        workflow["6"]["inputs"]["height"] = height
-        workflow["6"]["inputs"]["batch_size"] = batch_size
-        workflow["7"]["inputs"]["seed"] = seed
-        workflow["9"]["inputs"]["filename_prefix"] = filename_prefix
+        workflow["60:11"]["inputs"]["text"] = prompt
+        workflow["60:12"]["inputs"]["text"] = negative
+        workflow["60:28"]["inputs"]["width"] = width
+        workflow["60:28"]["inputs"]["height"] = height
+        workflow["60:28"]["inputs"]["batch_size"] = batch_size
+        workflow["60:19"]["inputs"]["seed"] = seed
+        workflow["46"]["inputs"]["filename_prefix"] = filename_prefix
         return workflow
 
     def _qwen_workflow(
