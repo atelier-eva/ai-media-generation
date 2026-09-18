@@ -17,6 +17,8 @@ ai-media-generation qwen --remote
 ai-media-generation anima
 ai-media-generation anima --remote
 ai-media-generation anima-lora-report
+ai-media-generation anima-lora-training
+ai-media-generation anima-lora-training --remote
 ai-media-generation qwen-edit
 ai-media-generation qwen-edit --remote
 ai-media-generation qwen-lora-training

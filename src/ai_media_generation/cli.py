@@ -10,6 +10,9 @@ from dotenv import load_dotenv
 from ai_media_generation.controller.generate_anima_controller import (
     GenerateAnimaController,
 )
+from ai_media_generation.controller.generate_anima_lora_training_images_controller import (
+    GenerateAnimaLoraTrainingImagesController,
+)
 from ai_media_generation.controller.generate_animagine_controller import (
     GenerateAnimagineController,
 )
@@ -89,6 +92,11 @@ def _run() -> None:
             _command_parser("anima-lora-report")
         )
         return
+    if command == "anima-lora-training":
+        GenerateAnimaLoraTrainingImagesController().execute(
+            _command_parser("anima-lora-training")
+        )
+        return
     if command == "qwen-edit":
         GenerateQwenEditController().execute(_command_parser("qwen-edit"))
         return
@@ -165,6 +173,10 @@ def _parser() -> ArgumentParser:
     subparsers.add_parser(
         "anima-lora-report",
         help="Write Anima LoRA training pattern rows to CSV.",
+    )
+    subparsers.add_parser(
+        "anima-lora-training",
+        help="Generate LoRA training images with Anima Aesthetic v1.1.",
     )
     subparsers.add_parser(
         "qwen-edit",
