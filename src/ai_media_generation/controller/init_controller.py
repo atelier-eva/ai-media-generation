@@ -141,7 +141,7 @@ class InitController:
         print(
             "Fill in the JSON, then run: "
             "ai-media-generation animagine-lora-training, animagine, qwen, anima, "
-            "qwen-edit, qwen-lora-training, kagee, music, or report"
+            "anima-lora-report, qwen-edit, qwen-lora-training, kagee, music, or report"
         )
 
     def _write_env(self) -> None:

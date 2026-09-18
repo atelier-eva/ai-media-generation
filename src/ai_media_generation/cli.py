@@ -39,6 +39,9 @@ from ai_media_generation.controller.pod_stop_controller import PodStopController
 from ai_media_generation.controller.pod_sync_models_controller import (
     PodSyncModelsController,
 )
+from ai_media_generation.controller.report_anima_lora_training_patterns_controller import (
+    ReportAnimaLoraTrainingPatternsController,
+)
 from ai_media_generation.controller.report_animagine_lora_training_patterns_controller import (
     ReportAnimagineLoraTrainingPatternsController,
 )
@@ -80,6 +83,11 @@ def _run() -> None:
         return
     if command == "anima":
         GenerateAnimaController().execute(_command_parser("anima"))
+        return
+    if command == "anima-lora-report":
+        ReportAnimaLoraTrainingPatternsController().execute(
+            _command_parser("anima-lora-report")
+        )
         return
     if command == "qwen-edit":
         GenerateQwenEditController().execute(_command_parser("qwen-edit"))
@@ -153,6 +161,10 @@ def _parser() -> ArgumentParser:
     subparsers.add_parser(
         "anima",
         help="Generate images from anima JSON specs with Anima Aesthetic v1.1 (nested folders allowed).",
+    )
+    subparsers.add_parser(
+        "anima-lora-report",
+        help="Write Anima LoRA training pattern rows to CSV.",
     )
     subparsers.add_parser(
         "qwen-edit",
