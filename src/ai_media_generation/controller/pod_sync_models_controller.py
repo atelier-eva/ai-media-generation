@@ -24,16 +24,24 @@ payload = __PAYLOAD__
 dest = Path(payload["root"]) / payload["path"]
 name = dest.name
 folder = dest.parent
-if dest.is_file():
+
+def usable(path):
+    return path.is_file() and not path.is_symlink() and path.stat().st_size > 0
+
+if dest.is_symlink() or (dest.exists() and not usable(dest)):
+    dest.unlink()
+if usable(dest):
     print(f"skip {name}", flush=True)
     raise SystemExit(0)
 if folder.is_dir():
     for found in folder.rglob(name):
-        if not found.is_file():
+        if not usable(found):
             continue
         if found.resolve() == dest.resolve():
             continue
         found.replace(dest)
+        if not usable(dest):
+            raise SystemExit(f"dest is not a usable regular file: {dest}")
         print(f"moved {found} -> {dest}", flush=True)
         raise SystemExit(0)
 os.environ["HF_HOME"] = payload["hf_home"]
@@ -43,15 +51,21 @@ try:
 except ImportError:
     print("huggingface_hub is not installed on the pod.", file=sys.stderr)
     raise SystemExit(1)
-source = hf_hub_download(
-    repo_id=payload["repo"],
-    filename=payload["hub_path"],
-)
+source = Path(
+    hf_hub_download(
+        repo_id=payload["repo"],
+        filename=payload["hub_path"],
+    )
+).resolve()
+if dest.is_symlink() or dest.exists():
+    dest.unlink()
 folder.mkdir(parents=True, exist_ok=True)
 try:
     os.link(source, dest)
 except OSError:
-    shutil.copy2(source, dest)
+    shutil.copy2(source, dest, follow_symlinks=True)
+if not usable(dest):
+    raise SystemExit(f"dest is not a usable regular file: {dest}")
 print(f"downloaded {name}", flush=True)
 """
 
