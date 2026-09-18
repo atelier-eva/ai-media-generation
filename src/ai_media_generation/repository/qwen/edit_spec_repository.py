@@ -74,12 +74,12 @@ class QwenEditSpecRepository:
             raise ValueError("prompt is empty or missing.")
         return QwenEditSpec(
             id=identifier,
-            image=self._to_image(data.get("images")),
+            images=self._to_images(data.get("images")),
             prompt=prompt,
             negative=str(data.get("negative") or "").strip(),
         )
 
-    def _to_image(self, value: Any) -> Path:
+    def _to_images(self, value: Any) -> tuple[Path, ...]:
         if value is None:
             raise ValueError("images is empty or missing.")
         if not isinstance(value, list):
@@ -97,6 +97,6 @@ class QwenEditSpecRepository:
             paths.append(path)
         if not paths:
             raise ValueError("images is empty or missing.")
-        if len(paths) != 1:
-            raise ValueError("multiple images are not implemented.")
-        return paths[0]
+        if len(paths) > 3:
+            raise ValueError("at most 3 images are supported.")
+        return tuple(paths)

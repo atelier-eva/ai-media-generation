@@ -42,10 +42,10 @@ class SubjectRepository:
     def _to_subject(self, data: dict[str, Any]) -> Subject:
         return Subject(
             name=data["name"].strip(),
-            image=self._to_image(data.get("images")),
+            images=self._to_images(data.get("images")),
         )
 
-    def _to_image(self, value: Any) -> Path:
+    def _to_images(self, value: Any) -> tuple[Path, ...]:
         if value is None:
             raise ValueError("images is empty or missing.")
         if not isinstance(value, list):
@@ -65,6 +65,6 @@ class SubjectRepository:
             paths.append(path)
         if not paths:
             raise ValueError("images is empty or missing.")
-        if len(paths) != 1:
-            raise ValueError("multiple images are not implemented.")
-        return paths[0]
+        if len(paths) > 3:
+            raise ValueError("at most 3 images are supported.")
+        return tuple(paths)

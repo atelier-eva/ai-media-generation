@@ -93,8 +93,8 @@ class KageeSpecRepository:
             paths.append(path)
         if not paths:
             raise ValueError("images is empty or missing.")
-        if len(paths) != 1:
-            raise ValueError("multiple images are not implemented.")
+        if len(paths) > 3:
+            raise ValueError("at most 3 images are supported.")
         return tuple(paths)
 
     def _to_seed(self, value: Any) -> int | None:

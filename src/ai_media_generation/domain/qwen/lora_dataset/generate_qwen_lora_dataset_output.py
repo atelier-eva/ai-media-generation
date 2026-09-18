@@ -5,7 +5,7 @@ from pathlib import Path
 @dataclass
 class QwenLoraDatasetRow:
     subject_name: str
-    image: Path
+    images: tuple[Path, ...]
     angle_name: str
     distance_name: str
     expression_name: str | None

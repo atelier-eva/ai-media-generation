@@ -86,7 +86,7 @@ class GenerateQwenLoraTrainingImagesController:
             print(f"[{index + 1}/{end}] {filename_prefix} seed={seed}")
             images = comfy_ui.generate_qwen_lora_training_images(
                 filename_prefix,
-                row.image,
+                row.images,
                 row.edit_prompt,
                 seed,
                 row.negative_prompt,

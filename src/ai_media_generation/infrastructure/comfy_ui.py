@@ -42,6 +42,8 @@ _QWEN_LORA_TRAINING_IMAGE_GENERATION_API_JSON = (
 class ComfyUi:
     _POLL_INTERVAL_SECONDS = 2
     _POLL_TIMEOUT_SECONDS = 600
+    _QWEN_EDIT_MAX_IMAGES = 3
+    _QWEN_EDIT_EXTRA_IMAGE_NODES = ("42", "43")
 
     @dataclass
     class SavedImage:
@@ -207,17 +209,15 @@ class ComfyUi:
         text = prompt.strip()
         if not text:
             raise ValueError("prompt is empty or missing.")
-        if len(images) != 1:
-            raise ValueError("multiple images are not implemented.")
         return self._queue_prompt(
-            self._kagee_workflow(prefix, self._upload_image(images[0]), text, seed),
+            self._kagee_workflow(prefix, self._upload_images(images), text, seed),
             self._kagee_timeout_seconds,
         )
 
     def generate_qwen_lora_training_images(
         self,
         filename_prefix: str,
-        image: Path,
+        images: tuple[Path, ...],
         prompt: str,
         seed: int,
         negative: str = "",
@@ -231,7 +231,7 @@ class ComfyUi:
         return self._queue_prompt(
             self._qwen_lora_training_workflow(
                 prefix,
-                self._upload_image(image),
+                self._upload_images(images),
                 text,
                 seed,
                 negative.strip(),
@@ -242,7 +242,7 @@ class ComfyUi:
     def generate_qwen_edit(
         self,
         filename_prefix: str,
-        image: Path,
+        images: tuple[Path, ...],
         prompt: str,
         seed: int,
         negative: str = "",
@@ -256,7 +256,7 @@ class ComfyUi:
         return self._queue_prompt(
             self._qwen_lora_training_workflow(
                 prefix,
-                self._upload_image(image),
+                self._upload_images(images),
                 text,
                 seed,
                 negative.strip(),
@@ -461,10 +461,46 @@ class ComfyUi:
             raise InfrastructureError("ComfyUI /prompt did not return prompt_id.")
         return self._wait_until_complete(prompt_id, timeout_seconds)
 
-    def _upload_image(self, path: Path) -> str:
+    def _upload_images(self, paths: tuple[Path, ...]) -> tuple[str, ...]:
+        self._require_qwen_edit_image_count(paths)
+        used: set[str] = set()
+        names: list[str] = []
+        for path in paths:
+            filename = self._unique_upload_filename(path.name, used)
+            used.add(filename)
+            names.append(self._upload_image(path, filename))
+        return tuple(names)
+
+    def _require_qwen_edit_image_count(self, images: tuple[object, ...]) -> None:
+        if not images:
+            raise ValueError("images is empty or missing.")
+        if len(images) > self._QWEN_EDIT_MAX_IMAGES:
+            raise ValueError(
+                f"at most {self._QWEN_EDIT_MAX_IMAGES} images are supported."
+            )
+
+    def _unique_upload_filename(self, name: str, used: set[str]) -> str:
+        filename = self._upload_filename(name)
+        if filename not in used:
+            return filename
+        stem = Path(filename).stem
+        suffix = Path(filename).suffix
+        index = 2
+        while True:
+            candidate = self._upload_filename(f"{stem}_{index}{suffix}")
+            if candidate not in used:
+                return candidate
+            index += 1
+
+    def _upload_filename(self, name: str) -> str:
+        return name.replace('"', "_").replace("\r", "").replace("\n", "")
+
+    def _upload_image(self, path: Path, filename: str | None = None) -> str:
         if not path.is_file():
-            raise FileNotFoundError(f"Kagee input image not found: {path}")
-        body, boundary = self._multipart_image(path)
+            raise FileNotFoundError(f"Input image not found: {path}")
+        body, boundary = self._multipart_image(
+            path, filename if filename is not None else path.name
+        )
         request = urllib.request.Request(
             f"{self._url}/upload/image",
             data=body,
@@ -490,9 +526,9 @@ class ComfyUi:
             return f"{subfolder}/{name}"
         return name
 
-    def _multipart_image(self, path: Path) -> tuple[bytes, str]:
+    def _multipart_image(self, path: Path, filename: str) -> tuple[bytes, str]:
         boundary = f"----ComfyUiFormBoundary{uuid4().hex}"
-        filename = path.name.replace('"', "_").replace("\r", "").replace("\n", "")
+        filename = self._upload_filename(filename)
         marker = f"--{boundary}\r\n".encode("utf-8")
         header = (
             f'Content-Disposition: form-data; name="image"; filename="{filename}"\r\n'
@@ -547,11 +583,15 @@ class ComfyUi:
         return workflow
 
     def _kagee_workflow(
-        self, filename_prefix: str, image_name: str, prompt: str, seed: int
+        self,
+        filename_prefix: str,
+        image_names: tuple[str, ...],
+        prompt: str,
+        seed: int,
     ) -> dict[str, Any]:
         workflow = copy.deepcopy(self._kagee_template)
         workflow["9"]["inputs"]["filename_prefix"] = filename_prefix
-        workflow["41"]["inputs"]["image"] = image_name
+        self._bind_qwen_edit_images(workflow, image_names)
         workflow["170:151"]["inputs"]["prompt"] = prompt
         workflow["170:149"]["inputs"]["prompt"] = self._qwen_negative("")
         workflow["170:169"]["inputs"]["seed"] = seed
@@ -560,18 +600,38 @@ class ComfyUi:
     def _qwen_lora_training_workflow(
         self,
         filename_prefix: str,
-        image_name: str,
+        image_names: tuple[str, ...],
         prompt: str,
         seed: int,
         negative: str,
     ) -> dict[str, Any]:
         workflow = copy.deepcopy(self._qwen_lora_training_template)
         workflow["9"]["inputs"]["filename_prefix"] = filename_prefix
-        workflow["41"]["inputs"]["image"] = image_name
+        self._bind_qwen_edit_images(workflow, image_names)
         workflow["170:151"]["inputs"]["prompt"] = prompt
         workflow["170:169"]["inputs"]["seed"] = seed
         workflow["170:149"]["inputs"]["prompt"] = self._qwen_negative(negative)
         return workflow
+
+    def _bind_qwen_edit_images(
+        self, workflow: dict[str, Any], image_names: tuple[str, ...]
+    ) -> None:
+        self._require_qwen_edit_image_count(image_names)
+        workflow["41"]["inputs"]["image"] = image_names[0]
+        for offset, name in enumerate(image_names[1:]):
+            node_id = self._QWEN_EDIT_EXTRA_IMAGE_NODES[offset]
+            if node_id in workflow:
+                raise InfrastructureError(
+                    f"ComfyUI workflow already has node {node_id}."
+                )
+            workflow[node_id] = {
+                "class_type": "LoadImage",
+                "inputs": {"image": name},
+                "_meta": {"title": f"Load Image {offset + 2}"},
+            }
+            key = f"image{offset + 2}"
+            workflow["170:151"]["inputs"][key] = [node_id, 0]
+            workflow["170:149"]["inputs"][key] = [node_id, 0]
 
     def _qwen_negative(self, negative: str) -> str:
         return negative.strip() or " "
