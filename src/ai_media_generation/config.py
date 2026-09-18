@@ -23,6 +23,9 @@ class Config:
     QWEN_LORA_TRAINING_SPEC_DIRECTORY = "qwen/lora_dataset"
     QWEN_LORA_TRAINING_GENERATIONS_JSONL = "qwen-lora-training-generations.jsonl"
     QWEN_LORA_DATASET_DIRECTORY = "qwen/lora_output"
+    ANIMA_LORA_TRAINING_SPEC_DIRECTORY = "anima/lora_dataset"
+    ANIMA_LORA_TRAINING_GENERATIONS_JSONL = "anima-lora-training-generations.jsonl"
+    ANIMA_LORA_DATASET_DIRECTORY = "anima/lora_output"
 
     def __init__(self) -> None:
         self.animagine_lora_filename_prefix = (
@@ -61,6 +64,9 @@ class Config:
         if anima_timeout is not None and anima_timeout <= 0:
             raise ValueError("ANIMA_TIMEOUT_SECONDS must be positive.")
         self.anima_timeout_seconds = 1800 if anima_timeout is None else anima_timeout
+        self.anima_lora_filename_prefix = (
+            _optional_text("ANIMA_LORA_FILENAME_PREFIX") or "anima-lora"
+        )
         runpod_timeout = _optional_int("RUNPOD_TIMEOUT_SECONDS")
         if runpod_timeout is not None and runpod_timeout <= 0:
             raise ValueError("RUNPOD_TIMEOUT_SECONDS must be positive.")
@@ -170,6 +176,55 @@ class Config:
     @property
     def anima_output_directory(self) -> Path:
         return _directory("ANIMA_OUTPUT_DIRECTORY", self.ANIMA_OUTPUT_DIRECTORY)
+
+    @property
+    def anima_lora_training_spec_directory(self) -> Path:
+        return _directory(
+            "ANIMA_LORA_TRAINING_SPEC_DIRECTORY",
+            self.ANIMA_LORA_TRAINING_SPEC_DIRECTORY,
+        )
+
+    @property
+    def anima_lora_dataset_directory(self) -> Path:
+        return _directory(
+            "ANIMA_LORA_DATASET_DIRECTORY",
+            self.ANIMA_LORA_DATASET_DIRECTORY,
+        )
+
+    @property
+    def anima_lora_training_generations_jsonl(self) -> Path:
+        return (
+            self.anima_lora_dataset_directory
+            / self.ANIMA_LORA_TRAINING_GENERATIONS_JSONL
+        )
+
+    @property
+    def anima_lora_training_art_style_json(self) -> Path:
+        return self.anima_lora_training_spec_directory / "art-style.json"
+
+    @property
+    def anima_lora_training_camera_json(self) -> Path:
+        return self.anima_lora_training_spec_directory / "camera.json"
+
+    @property
+    def anima_lora_training_characters_directory(self) -> Path:
+        return self.anima_lora_training_spec_directory / "characters"
+
+    @property
+    def anima_lora_training_expression_json(self) -> Path:
+        return self.anima_lora_training_spec_directory / "expression.json"
+
+    @property
+    def anima_lora_training_generation_json(self) -> Path:
+        return self.anima_lora_training_spec_directory / "generation.json"
+
+    @property
+    def anima_lora_training_pose_json(self) -> Path:
+        return self.anima_lora_training_spec_directory / "pose.json"
+
+    @property
+    def anima_lora_training_scene_json(self) -> Path:
+        return self.anima_lora_training_spec_directory / "scene.json"
 
     @property
     def qwen_lora_training_spec_directory(self) -> Path:

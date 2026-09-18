@@ -60,7 +60,7 @@ class GenerateQwenEditController:
             print(f"[{index + 1}/{len(specs)}] {filename_prefix} seed={seed}")
             images = comfy_ui.generate_qwen_edit(
                 filename_prefix,
-                spec.image,
+                spec.images,
                 spec.prompt,
                 seed,
                 spec.negative,

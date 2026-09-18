@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/anima/lora_dataset/generation.schema.json",
+  "title": "Generation (anima/lora_dataset/generation.json)",
+  "description": "Quality and rating tags for Anima Aesthetic v1.1 generated prompts. Emitted first in positive_prompt (quality/meta/year/safety). Omitted from caption_prompt. Aesthetic v1.1 does not need quality tags; masterpiece, best quality is safe to keep, but avoid score_* tags.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "quality": { "$ref": "#/$defs/tag_set" },
+    "rating": { "$ref": "#/$defs/tag_set" }
+  },
+  "$defs": {
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "tag_set": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positive": { "$ref": "#/$defs/tags" },
+        "negative": { "$ref": "#/$defs/tags" }
+      }
+    }
+  }
+}

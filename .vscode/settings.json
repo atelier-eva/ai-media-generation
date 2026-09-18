@@ -71,6 +71,34 @@
       "url": "./src/ai_media_generation/resources/qwen/lora_dataset/scene.schema.json"
     },
     {
+      "fileMatch": ["**/anima/lora_dataset/art-style.json"],
+      "url": "./src/ai_media_generation/resources/anima/lora_dataset/art-style.schema.json"
+    },
+    {
+      "fileMatch": ["**/anima/lora_dataset/camera.json"],
+      "url": "./src/ai_media_generation/resources/anima/lora_dataset/camera.schema.json"
+    },
+    {
+      "fileMatch": ["**/anima/lora_dataset/characters/*.json"],
+      "url": "./src/ai_media_generation/resources/anima/lora_dataset/characters.schema.json"
+    },
+    {
+      "fileMatch": ["**/anima/lora_dataset/expression.json"],
+      "url": "./src/ai_media_generation/resources/anima/lora_dataset/expression.schema.json"
+    },
+    {
+      "fileMatch": ["**/anima/lora_dataset/generation.json"],
+      "url": "./src/ai_media_generation/resources/anima/lora_dataset/generation.schema.json"
+    },
+    {
+      "fileMatch": ["**/anima/lora_dataset/pose.json"],
+      "url": "./src/ai_media_generation/resources/anima/lora_dataset/pose.schema.json"
+    },
+    {
+      "fileMatch": ["**/anima/lora_dataset/scene.json"],
+      "url": "./src/ai_media_generation/resources/anima/lora_dataset/scene.schema.json"
+    },
+    {
       "fileMatch": ["**/animagine/spec/*.json", "**/animagine/spec/**/*.json"],
       "url": "./src/ai_media_generation/resources/animagine/prompt.schema.json"
     },

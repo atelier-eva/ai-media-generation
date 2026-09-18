@@ -7,7 +7,7 @@ from ai_media_generation.domain.qwen.edit.qwen_edit_spec import QwenEditSpec
 @dataclass
 class QwenEditSpecDto:
     id: str
-    image: Path
+    images: tuple[Path, ...]
     prompt: str
     negative: str
 
@@ -20,7 +20,7 @@ class GetQwenEditSpecsOutput:
     def _to_dto(spec: QwenEditSpec) -> QwenEditSpecDto:
         return QwenEditSpecDto(
             id=spec.id,
-            image=spec.image,
+            images=spec.images,
             prompt=spec.prompt,
             negative=spec.negative,
         )

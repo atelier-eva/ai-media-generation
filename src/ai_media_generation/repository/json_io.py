@@ -35,6 +35,16 @@ QWEN_LORA_SCHEMAS: dict[str, SchemaResource] = {
     "scene.json": ("qwen", "lora_dataset", "scene.schema.json"),
 }
 
+ANIMA_LORA_SCHEMAS: dict[str, SchemaResource] = {
+    "art-style.json": ("anima", "lora_dataset", "art-style.schema.json"),
+    "camera.json": ("anima", "lora_dataset", "camera.schema.json"),
+    "characters": ("anima", "lora_dataset", "characters.schema.json"),
+    "expression.json": ("anima", "lora_dataset", "expression.schema.json"),
+    "generation.json": ("anima", "lora_dataset", "generation.schema.json"),
+    "pose.json": ("anima", "lora_dataset", "pose.schema.json"),
+    "scene.json": ("anima", "lora_dataset", "scene.schema.json"),
+}
+
 
 def read_json(path: Path, schema: SchemaResource | None) -> dict[str, Any]:
     return _read_json(path.expanduser().resolve(), schema)

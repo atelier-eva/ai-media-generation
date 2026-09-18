@@ -10,12 +10,12 @@
     "prompt": {
       "type": "string",
       "minLength": 1,
-      "description": "Complete identity-preserving sentence for the ComfyUI edit prompt (e.g. Keep the person's identity, face, and body from the reference image.)."
+      "description": "Complete identity-preserving sentence for the ComfyUI edit prompt (e.g. Keep the person's identity, face, and body from the reference image.). When a character has more than one image, name Image 1, Image 2, and Image 3 here."
     },
     "negative": {
       "type": "string",
       "minLength": 1,
-      "description": "Optional negative prompt. Natural language. Omit when unused. Has little effect when CFG is 1."
+      "description": "Optional negative prompt. Natural language. The Qwen-Image-Edit official unused value is a single space in this file. Omit when unused; ComfyUI then receives a single space. There is no official semantic default. Has little effect when CFG is 1."
     }
   }
 }

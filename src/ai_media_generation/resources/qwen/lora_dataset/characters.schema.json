@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/qwen/lora_dataset/characters.schema.json",
   "title": "Character (qwen/lora_dataset/characters/*.json)",
-  "description": "One character per JSON file under qwen/lora_dataset/characters/. Appearance comes from the reference image, not tag arrays. Used as image1 for Qwen-Image-Edit-2511.",
+  "description": "One character per JSON file under qwen/lora_dataset/characters/. Appearance comes from the reference images, not tag arrays. Passed to Qwen-Image-Edit-2511 as Image 1 to Image 3. Output size follows the first image.",
   "type": "object",
   "additionalProperties": false,
   "required": ["name", "images"],
@@ -15,9 +15,9 @@
     "images": {
       "type": "array",
       "minItems": 1,
-      "maxItems": 1,
+      "maxItems": 3,
       "items": { "type": "string", "minLength": 1 },
-      "description": "Reference image paths. One path for now, same as kagee. Resolved relative to the process working directory when not absolute."
+      "description": "Reference image paths, one to three. Output size follows the first image. When using more than one, name their roles in generation.json prompt (Image 1, Image 2, Image 3). Resolved relative to the process working directory when not absolute."
     }
   }
 }

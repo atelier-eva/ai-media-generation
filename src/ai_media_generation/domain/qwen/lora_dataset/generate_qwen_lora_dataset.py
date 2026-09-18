@@ -144,7 +144,7 @@ class GenerateQwenLoraDataset:
     ) -> QwenLoraDatasetRow:
         return QwenLoraDatasetRow(
             subject_name=subject.name,
-            image=subject.image,
+            images=subject.images,
             angle_name=camera.angle.name,
             distance_name=camera.distance.name,
             expression_name=expression.name if expression else None,
