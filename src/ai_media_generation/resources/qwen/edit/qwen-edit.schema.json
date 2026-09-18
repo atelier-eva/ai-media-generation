@@ -17,7 +17,7 @@
     "prompt": {
       "type": "string",
       "minLength": 1,
-      "description": "Illustration instruction sent to ComfyUI as-is. Prose, not tag arrays. example.json is a fill-in template; brace placeholders are not expanded, so replace them (or omit unused change sentences) before generating. Do not restyle appearance from the reference. Optional quality phrases (e.g. Ultra HD, 4K, cinematic composition) go at the end. Placeholder values should fit the verbs (a slight smile, standing, a quiet street, from the front in a medium shot, natural light, an illustration), not LoRA slot prefixes (with/in/as)."
+      "description": "Illustration instruction sent to ComfyUI as-is. Prose, not tag arrays. example.json is a fill-in template; brace placeholders are not expanded, so replace them (or omit unused change sentences) before generating. Image 1 is the full-body reference (body proportions, clothing, hair, art style); Image 2 is the face close-up (facial features only). Keep remaining attributes, Change person attributes (expression, pose). Replace is for swapping objects, not pose. Place / Use cover scene, camera, and lighting. Do not put Do not instructions in prompt or negative; Qwen-Image-Edit has no official semantic negative, and a Do not sentence in negative can encode as the thing to avoid. Keep the art style from the reference instead of a Render as {Style} sentence when the output should match that drawing style. Optional quality phrases (e.g. Ultra HD, 4K, cinematic composition) go at the end. Placeholder values should fit the verbs (a slight smile, standing, a quiet street, a full shot from the front, natural light), not LoRA slot prefixes (with/in/as)."
     },
     "negative": {
       "type": "string",

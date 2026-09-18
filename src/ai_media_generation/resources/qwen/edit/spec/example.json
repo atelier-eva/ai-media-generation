@@ -1,5 +1,5 @@
 {
-  "images": ["example.png"],
-  "prompt": "Keep the person's identity, face, and body from the reference image. Change the expression to {Expression}. Change the pose to {Pose}. Place the scene in {Setting}. {Camera}. Use {Lighting}. Render as {Style}.",
+  "images": ["example.png", "example-face.png"],
+  "prompt": "Keep the body proportions, clothing, hair, and art style from Image 1. Keep the facial features from Image 2. Change the expression to {Expression}. Change the pose to {Pose}. Place the scene in {Setting}. Use {Camera}. Use {Lighting}.",
   "negative": " "
 }
