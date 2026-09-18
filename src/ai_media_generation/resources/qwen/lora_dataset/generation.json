@@ -1,3 +1,4 @@
 {
-  "prompt": "Keep the person's identity, face, and body from the reference image."
+  "prompt": "Keep the person's identity, face, and body from the reference image.",
+  "negative": " "
 }
