@@ -539,7 +539,7 @@ class ComfyUi:
         workflow = copy.deepcopy(self._qwen_template)
         workflow["60"]["inputs"]["filename_prefix"] = filename_prefix
         workflow["238:227"]["inputs"]["text"] = prompt
-        workflow["238:228"]["inputs"]["text"] = negative or " "
+        workflow["238:228"]["inputs"]["text"] = self._qwen_negative(negative)
         workflow["238:232"]["inputs"]["width"] = width
         workflow["238:232"]["inputs"]["height"] = height
         workflow["238:232"]["inputs"]["batch_size"] = batch_size
@@ -553,6 +553,7 @@ class ComfyUi:
         workflow["9"]["inputs"]["filename_prefix"] = filename_prefix
         workflow["41"]["inputs"]["image"] = image_name
         workflow["170:151"]["inputs"]["prompt"] = prompt
+        workflow["170:149"]["inputs"]["prompt"] = self._qwen_negative("")
         workflow["170:169"]["inputs"]["seed"] = seed
         return workflow
 
@@ -569,9 +570,11 @@ class ComfyUi:
         workflow["41"]["inputs"]["image"] = image_name
         workflow["170:151"]["inputs"]["prompt"] = prompt
         workflow["170:169"]["inputs"]["seed"] = seed
-        if negative:
-            workflow["170:149"]["inputs"]["prompt"] = negative
+        workflow["170:149"]["inputs"]["prompt"] = self._qwen_negative(negative)
         return workflow
+
+    def _qwen_negative(self, negative: str) -> str:
+        return negative.strip() or " "
 
     def _animagine_lora_training_workflow(
         self,

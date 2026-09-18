@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/anima/lora_dataset/camera.schema.json",
+  "title": "Camera (anima/lora_dataset/camera.json)",
+  "description": "Camera angle and distance tag definitions for Anima Aesthetic v1.1 LoRA dataset prompts. Tags: lowercase, spaces instead of underscores.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "angle": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/named_tag_set" }
+    },
+    "distance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "image_size"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable identifier; used in filename_prefix. When positive is omitted or empty, name is the sole positive tag."
+          },
+          "positive": { "$ref": "#/$defs/tags" },
+          "negative": { "$ref": "#/$defs/tags" },
+          "image_size": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["width", "height"],
+            "properties": {
+              "width": { "$ref": "#/$defs/image_dimension" },
+              "height": { "$ref": "#/$defs/image_dimension" }
+            },
+            "description": "Output dimensions for this camera distance (width x height). Anima works between 512x512 and 1536x1536; each side must be a multiple of 16. Common sizes: 1:1 1024x1024, 2:3 832x1216, 3:2 1216x832, 3:4 896x1152, 4:3 1152x896, 9:16 768x1344, 16:9 1344x768."
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "image_dimension": {
+      "type": "integer",
+      "minimum": 512,
+      "maximum": 1536,
+      "multipleOf": 16,
+      "description": "Anima Aesthetic v1.1 pixel length. Multiple of 16, from 512 to 1536."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "named_tag_set": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier; used in filename_prefix. When positive is omitted or empty, name is the sole positive tag."
+        },
+        "positive": { "$ref": "#/$defs/tags" },
+        "negative": { "$ref": "#/$defs/tags" }
+      }
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/anima/lora_dataset/characters.schema.json",
+  "title": "Character (anima/lora_dataset/characters/*.json)",
+  "description": "One character per JSON file under anima/lora_dataset/characters/. Tag definitions for Anima Aesthetic v1.1 LoRA dataset prompts. Tags: lowercase, spaces instead of underscores. No (tag:weight) attention syntax.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Display name used in filename_prefix and as the LoRA trigger at the start of caption_prompt"
+    },
+    "subject": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "$ref": "#/$defs/tags" }
+      ],
+      "description": "Count/subject tags such as 1girl or 1boy. Emitted after quality/rating in positive_prompt, and after name in caption_prompt."
+    },
+    "positive": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string", "minLength": 1 },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["tag"],
+            "properties": {
+              "tag": {
+                "type": "string",
+                "minLength": 1
+              },
+              "skip_camera": {
+                "$ref": "#/$defs/skip_camera",
+                "description": "When angle or distance name matches (OR), this tag is omitted."
+              }
+            }
+          }
+        ]
+      },
+      "description": "Character, series, and appearance tags. Artist tags need the @ prefix."
+    },
+    "negative": { "$ref": "#/$defs/tags" }
+  },
+  "examples": [
+    {
+      "name": "character",
+      "subject": "1girl",
+      "positive": ["blonde hair", "blue eyes"],
+      "negative": []
+    }
+  ],
+  "$defs": {
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "skip_camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "angle": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "camera.angle[].name values in camera.json"
+        },
+        "distance": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "camera.distance[].name values in camera.json"
+        }
+      }
+    }
+  }
+}

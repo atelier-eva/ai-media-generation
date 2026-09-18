@@ -15,7 +15,7 @@
     "negative": {
       "type": "string",
       "minLength": 1,
-      "description": "Optional negative prompt. Natural language. Omit when unused. Has little effect when CFG is 1."
+      "description": "Optional negative prompt. Natural language. Official unused value is a single space; omit here and ComfyUI receives that. There is no official semantic default. Has little effect when CFG is 1."
     }
   }
 }
