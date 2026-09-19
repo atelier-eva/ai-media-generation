@@ -1,10 +1,7 @@
 from argparse import ArgumentParser
 
-from ai_media_generation.controller.pod_sync_models_controller import (
-    filenames_by_folder,
-    sync_models,
-)
 from ai_media_generation.infrastructure.comfy_ui import ComfyUi
+from ai_media_generation.repository.model_repository import ModelRepository
 
 
 def add_remote_arguments(parser: ArgumentParser) -> None:
@@ -19,8 +16,9 @@ def add_remote_arguments(parser: ArgumentParser) -> None:
 
 
 def require_remote_models(url: str, profile: str) -> None:
+    repository = ModelRepository()
     ComfyUi.require_filenames(
         url,
-        filenames_by_folder(sync_models((profile,))),
+        repository.filenames_by_folder(repository.get((profile,))),
         f"Run: ai-media-generation pod-sync-models --profile {profile}",
     )

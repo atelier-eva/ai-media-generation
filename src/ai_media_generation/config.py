@@ -71,6 +71,12 @@ class Config:
         if runpod_timeout is not None and runpod_timeout <= 0:
             raise ValueError("RUNPOD_TIMEOUT_SECONDS must be positive.")
         self.runpod_timeout_seconds = 600 if runpod_timeout is None else runpod_timeout
+        precision = _optional_text("QWEN_PRECISION")
+        if precision is None:
+            precision = "fp8"
+        elif precision not in ("fp8", "bf16"):
+            raise ValueError("QWEN_PRECISION must be fp8 or bf16.")
+        self.qwen_precision = precision
 
     @property
     def comfy_ui_url(self) -> str:
