@@ -4,12 +4,28 @@
       "repo": "Comfy-Org/Qwen-Image-Edit_ComfyUI",
       "hub_path": "split_files/diffusion_models/qwen_image_edit_2511_fp8mixed.safetensors",
       "path": "models/diffusion_models/qwen_image_edit_2511_fp8mixed.safetensors",
+      "precision": "fp8",
+      "profiles": ["qwen-lora-training", "kagee", "qwen-edit"]
+    },
+    {
+      "repo": "Comfy-Org/Qwen-Image-Edit_ComfyUI",
+      "hub_path": "split_files/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
+      "path": "models/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
+      "precision": "bf16",
       "profiles": ["qwen-lora-training", "kagee", "qwen-edit"]
     },
     {
       "repo": "Comfy-Org/Qwen-Image_ComfyUI",
       "hub_path": "split_files/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors",
       "path": "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors",
+      "precision": "fp8",
+      "profiles": ["qwen"]
+    },
+    {
+      "repo": "Comfy-Org/Qwen-Image_ComfyUI",
+      "hub_path": "split_files/diffusion_models/qwen_image_2512_bf16.safetensors",
+      "path": "models/diffusion_models/qwen_image_2512_bf16.safetensors",
+      "precision": "bf16",
       "profiles": ["qwen"]
     },
     {

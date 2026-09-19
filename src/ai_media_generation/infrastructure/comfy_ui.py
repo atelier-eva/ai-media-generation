@@ -12,6 +12,7 @@ from uuid import uuid4
 from ai_media_generation.config import Config
 from ai_media_generation.infrastructure.error import InfrastructureError
 from ai_media_generation.repository.json_io import read_resource_json
+from ai_media_generation.repository.model_repository import ModelRepository
 
 _ANIMA_IMAGE_CREATION_API_JSON = (
     "comfyui",
@@ -580,6 +581,7 @@ class ComfyUi:
         workflow["238:232"]["inputs"]["height"] = height
         workflow["238:232"]["inputs"]["batch_size"] = batch_size
         workflow["238:230"]["inputs"]["seed"] = seed
+        self._bind_diffusion_model(workflow, "238:226", "qwen")
         return workflow
 
     def _kagee_workflow(
@@ -595,6 +597,7 @@ class ComfyUi:
         workflow["170:151"]["inputs"]["prompt"] = prompt
         workflow["170:149"]["inputs"]["prompt"] = self._qwen_negative("")
         workflow["170:169"]["inputs"]["seed"] = seed
+        self._bind_diffusion_model(workflow, "170:161", "kagee")
         return workflow
 
     def _qwen_lora_training_workflow(
@@ -611,6 +614,7 @@ class ComfyUi:
         workflow["170:151"]["inputs"]["prompt"] = prompt
         workflow["170:169"]["inputs"]["seed"] = seed
         workflow["170:149"]["inputs"]["prompt"] = self._qwen_negative(negative)
+        self._bind_diffusion_model(workflow, "170:161", "qwen-edit")
         return workflow
 
     def _bind_qwen_edit_images(
@@ -632,6 +636,19 @@ class ComfyUi:
             key = f"image{offset + 2}"
             workflow["170:151"]["inputs"][key] = [node_id, 0]
             workflow["170:149"]["inputs"][key] = [node_id, 0]
+
+    def _bind_diffusion_model(
+        self, workflow: dict[str, Any], node_id: str, profile: str
+    ) -> None:
+        node = workflow.get(node_id)
+        if not isinstance(node, dict):
+            raise InfrastructureError(f"ComfyUI workflow is missing node {node_id}.")
+        inputs = node.get("inputs")
+        if not isinstance(inputs, dict) or "unet_name" not in inputs:
+            raise InfrastructureError(
+                f"ComfyUI node {node_id} does not load a diffusion model."
+            )
+        inputs["unet_name"] = ModelRepository().diffusion_model_name(profile)
 
     def _qwen_negative(self, negative: str) -> str:
         return negative.strip() or " "
