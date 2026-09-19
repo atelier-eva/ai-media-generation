@@ -1,5 +1,5 @@
 {
   "images": ["example.png", "example-face.png"],
-  "prompt": "Keep the body proportions, clothing, hair, and art style from Image 1. Keep the facial features from Image 2. Change the expression to {Expression}. Change the pose to {Pose}. Place the scene in {Setting}. Use {Camera}. Use {Lighting}.",
+  "prompt": "Keep the body proportions, clothing, and hair from Image 1. Keep the facial features from Image 2. Change the expression to {Expression}. Change the pose to {Pose}. Place the scene in {Setting}. Use {Camera}. Use {Lighting}. Change the art style to {Style}.",
   "negative": " "
 }
