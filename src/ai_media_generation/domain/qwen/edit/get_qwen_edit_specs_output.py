@@ -10,6 +10,7 @@ class QwenEditSpecDto:
     images: tuple[Path, ...]
     prompt: str
     negative: str
+    seed: int | None
 
 
 class GetQwenEditSpecsOutput:
@@ -23,4 +24,5 @@ class GetQwenEditSpecsOutput:
             images=spec.images,
             prompt=spec.prompt,
             negative=spec.negative,
+            seed=spec.seed,
         )

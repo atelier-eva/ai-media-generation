@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/qwen/edit/qwen-edit.schema.json",
   "title": "Qwen edit (qwen/edit/spec/**/*.json)",
-  "description": "One illustration request per JSON file under qwen/edit/spec/, including subfolders. The path relative to qwen/edit/spec/ without .json is the spec id. ComfyUI filename_prefix is that id (nested folders preserved). Character reference image plus a natural-language instruction for Qwen-Image-Edit-2511; not Animagine tag arrays. Output size follows the first reference image; image_size is not used.",
+  "description": "One Qwen-Image-Edit-2511 request per JSON file under qwen/edit/spec/, including subfolders. The path relative to qwen/edit/spec/ without .json is the spec id. ComfyUI filename_prefix is that id (nested folders preserved). Reference image plus a natural-language instruction; not Animagine tag arrays. Output size follows the first reference image; image_size is not used.",
   "type": "object",
   "additionalProperties": false,
   "required": ["images", "prompt"],
@@ -23,6 +23,10 @@
       "type": "string",
       "minLength": 1,
       "description": "Optional negative prompt. Natural language. The Qwen-Image-Edit official unused value is a single space in example.json. Omit when unused; ComfyUI then receives a single space. There is no official semantic default. Has little effect when CFG is 1."
+    },
+    "seed": {
+      "type": "integer",
+      "description": "Optional sampler seed. When omitted, the command uses --base-seed plus the spec's index among the files being generated."
     }
   }
 }

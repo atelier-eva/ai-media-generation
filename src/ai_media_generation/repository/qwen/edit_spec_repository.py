@@ -77,6 +77,7 @@ class QwenEditSpecRepository:
             images=self._to_images(data.get("images")),
             prompt=prompt,
             negative=str(data.get("negative") or "").strip(),
+            seed=self._to_seed(data.get("seed")),
         )
 
     def _to_images(self, value: Any) -> tuple[Path, ...]:
@@ -100,3 +101,10 @@ class QwenEditSpecRepository:
         if len(paths) > 3:
             raise ValueError("at most 3 images are supported.")
         return tuple(paths)
+
+    def _to_seed(self, value: Any) -> int | None:
+        if value is None:
+            return None
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError("seed must be an integer.")
+        return value

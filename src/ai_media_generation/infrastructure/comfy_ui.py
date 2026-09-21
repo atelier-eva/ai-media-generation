@@ -26,17 +26,13 @@ _IMAGE_CREATION_API_JSON = (
     "comfyui",
     "image-creation-api.json",
 )
-_KAGEE_CONVERSION_API_JSON = (
-    "comfyui",
-    "kagee-conversion-api.json",
-)
 _QWEN_IMAGE_CREATION_API_JSON = (
     "comfyui",
     "image_qwen_Image_2512.json",
 )
-_QWEN_LORA_TRAINING_IMAGE_GENERATION_API_JSON = (
+_QWEN_IMAGE_EDIT_API_JSON = (
     "comfyui",
-    "qwen-lora-training-image-generation-api.json",
+    "qwen-image-edit-2511-api.json",
 )
 
 
@@ -135,14 +131,10 @@ class ComfyUi:
             *_ANIMAGINE_LORA_TRAINING_IMAGE_GENERATION_API_JSON
         )
         self._image_template = read_resource_json(*_IMAGE_CREATION_API_JSON)
-        self._kagee_template = read_resource_json(*_KAGEE_CONVERSION_API_JSON)
-        self._kagee_timeout_seconds = config.kagee_timeout_seconds
         self._qwen_template = read_resource_json(*_QWEN_IMAGE_CREATION_API_JSON)
         self._qwen_timeout_seconds = config.qwen_timeout_seconds
+        self._qwen_edit_template = read_resource_json(*_QWEN_IMAGE_EDIT_API_JSON)
         self._qwen_edit_timeout_seconds = config.qwen_edit_timeout_seconds
-        self._qwen_lora_training_template = read_resource_json(
-            *_QWEN_LORA_TRAINING_IMAGE_GENERATION_API_JSON
-        )
         self._qwen_lora_timeout_seconds = config.qwen_lora_timeout_seconds
 
     def generate_animagine_lora_training_images(
@@ -197,24 +189,6 @@ class ComfyUi:
             )
         )
 
-    def generate_kagee(
-        self,
-        filename_prefix: str,
-        images: tuple[Path, ...],
-        prompt: str,
-        seed: int,
-    ) -> tuple["ComfyUi.SavedImage", ...]:
-        prefix = filename_prefix.strip()
-        if not prefix:
-            raise ValueError("filename_prefix is empty.")
-        text = prompt.strip()
-        if not text:
-            raise ValueError("prompt is empty or missing.")
-        return self._queue_prompt(
-            self._kagee_workflow(prefix, self._upload_images(images), text, seed),
-            self._kagee_timeout_seconds,
-        )
-
     def generate_qwen_lora_training_images(
         self,
         filename_prefix: str,
@@ -230,12 +204,13 @@ class ComfyUi:
         if not text:
             raise ValueError("prompt is empty or missing.")
         return self._queue_prompt(
-            self._qwen_lora_training_workflow(
+            self._qwen_edit_workflow(
                 prefix,
                 self._upload_images(images),
                 text,
                 seed,
                 negative.strip(),
+                "qwen-lora-training",
             ),
             self._qwen_lora_timeout_seconds,
         )
@@ -255,12 +230,13 @@ class ComfyUi:
         if not text:
             raise ValueError("prompt is empty or missing.")
         return self._queue_prompt(
-            self._qwen_lora_training_workflow(
+            self._qwen_edit_workflow(
                 prefix,
                 self._upload_images(images),
                 text,
                 seed,
                 negative.strip(),
+                "qwen-edit",
             ),
             self._qwen_edit_timeout_seconds,
         )
@@ -584,37 +560,22 @@ class ComfyUi:
         self._bind_diffusion_model(workflow, "238:226", "qwen")
         return workflow
 
-    def _kagee_workflow(
-        self,
-        filename_prefix: str,
-        image_names: tuple[str, ...],
-        prompt: str,
-        seed: int,
-    ) -> dict[str, Any]:
-        workflow = copy.deepcopy(self._kagee_template)
-        workflow["9"]["inputs"]["filename_prefix"] = filename_prefix
-        self._bind_qwen_edit_images(workflow, image_names)
-        workflow["170:151"]["inputs"]["prompt"] = prompt
-        workflow["170:149"]["inputs"]["prompt"] = self._qwen_negative("")
-        workflow["170:169"]["inputs"]["seed"] = seed
-        self._bind_diffusion_model(workflow, "170:161", "kagee")
-        return workflow
-
-    def _qwen_lora_training_workflow(
+    def _qwen_edit_workflow(
         self,
         filename_prefix: str,
         image_names: tuple[str, ...],
         prompt: str,
         seed: int,
         negative: str,
+        profile: str,
     ) -> dict[str, Any]:
-        workflow = copy.deepcopy(self._qwen_lora_training_template)
+        workflow = copy.deepcopy(self._qwen_edit_template)
         workflow["9"]["inputs"]["filename_prefix"] = filename_prefix
         self._bind_qwen_edit_images(workflow, image_names)
         workflow["170:151"]["inputs"]["prompt"] = prompt
         workflow["170:169"]["inputs"]["seed"] = seed
         workflow["170:149"]["inputs"]["prompt"] = self._qwen_negative(negative)
-        self._bind_diffusion_model(workflow, "170:161", "qwen-edit")
+        self._bind_diffusion_model(workflow, "170:161", profile)
         return workflow
 
     def _bind_qwen_edit_images(

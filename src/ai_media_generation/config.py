@@ -5,13 +5,11 @@ from pathlib import Path
 class Config:
     ANIMAGINE_SPEC_DIRECTORY = "animagine/spec"
     MUSIC_SPEC_DIRECTORY = "music"
-    KAGEE_SPEC_DIRECTORY = "kagee"
     QWEN_SPEC_DIRECTORY = "qwen/spec"
     QWEN_EDIT_SPEC_DIRECTORY = "qwen/edit/spec"
     ANIMA_SPEC_DIRECTORY = "anima/spec"
     ANIMAGINE_OUTPUT_DIRECTORY = "animagine/output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
-    KAGEE_OUTPUT_DIRECTORY = "kagee-output"
     QWEN_OUTPUT_DIRECTORY = "qwen/output"
     QWEN_EDIT_OUTPUT_DIRECTORY = "qwen/edit/output"
     ANIMA_OUTPUT_DIRECTORY = "anima/output"
@@ -37,10 +35,6 @@ class Config:
         self.ace_step_filename_prefix = (
             _optional_text("ACE_STEP_FILENAME_PREFIX") or "music"
         )
-        kagee_timeout = _optional_int("KAGEE_TIMEOUT_SECONDS")
-        if kagee_timeout is not None and kagee_timeout <= 0:
-            raise ValueError("KAGEE_TIMEOUT_SECONDS must be positive.")
-        self.kagee_timeout_seconds = 1800 if kagee_timeout is None else kagee_timeout
         qwen_timeout = _optional_int("QWEN_TIMEOUT_SECONDS")
         if qwen_timeout is not None and qwen_timeout <= 0:
             raise ValueError("QWEN_TIMEOUT_SECONDS must be positive.")
@@ -148,14 +142,6 @@ class Config:
     @property
     def music_spec_directory(self) -> Path:
         return _directory("MUSIC_SPEC_DIRECTORY", self.MUSIC_SPEC_DIRECTORY)
-
-    @property
-    def kagee_spec_directory(self) -> Path:
-        return _directory("KAGEE_SPEC_DIRECTORY", self.KAGEE_SPEC_DIRECTORY)
-
-    @property
-    def kagee_output_directory(self) -> Path:
-        return _directory("KAGEE_OUTPUT_DIRECTORY", self.KAGEE_OUTPUT_DIRECTORY)
 
     @property
     def qwen_spec_directory(self) -> Path:

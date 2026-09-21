@@ -76,7 +76,7 @@ class PodSyncModelsController:
             metavar="NAME",
             help=(
                 "Only models for this command (qwen, qwen-edit, "
-                "qwen-lora-training, anima, anima-lora-training, kagee, "
+                "qwen-lora-training, anima, anima-lora-training, "
                 "animagine, animagine-lora-training). "
                 "Repeatable. Omit to sync every model."
             ),
