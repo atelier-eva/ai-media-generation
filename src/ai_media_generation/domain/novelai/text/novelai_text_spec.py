@@ -16,6 +16,8 @@ class NovelAiTextSpec:
     system_prompt: str = ""
     memory: str = ""
     lorebooks: tuple[NovelAiLorebook, ...] = ()
+    output: str = ""
+    previous: tuple[str, ...] = ()
 
     def assembled_input(self) -> str:
         return _JOIN.join(
@@ -24,12 +26,15 @@ class NovelAiTextSpec:
                 self.system_prompt.strip(),
                 self.memory.strip(),
                 *(lorebook.text.strip() for lorebook in self._active_lorebooks()),
-                self.input.strip(),
+                self.story(),
             )
             if part
         )
 
+    def story(self) -> str:
+        return "".join((self.input.strip(), *self.previous))
+
     def _active_lorebooks(self) -> tuple[NovelAiLorebook, ...]:
         return tuple(
-            lorebook for lorebook in self.lorebooks if lorebook.matches(self.input)
+            lorebook for lorebook in self.lorebooks if lorebook.matches(self.story())
         )

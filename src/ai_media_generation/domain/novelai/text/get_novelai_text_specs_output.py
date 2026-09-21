@@ -9,6 +9,7 @@ class NovelAiTextSpecDto:
     input: str
     model: str
     max_length: int
+    output: str
 
 
 class GetNovelAiTextSpecsOutput:
@@ -22,4 +23,5 @@ class GetNovelAiTextSpecsOutput:
             input=spec.assembled_input(),
             model=spec.model,
             max_length=spec.max_length,
+            output=spec.output,
         )

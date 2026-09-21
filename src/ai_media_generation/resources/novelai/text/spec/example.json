@@ -1,5 +1,6 @@
 {
   "model": "llama-3-erato-v1",
   "input": "Once upon a time, Galena opened the door.",
+  "output": "example",
   "max_length": 100
 }

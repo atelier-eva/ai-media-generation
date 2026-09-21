@@ -6,6 +6,9 @@ from ai_media_generation.domain.novelai.text.get_novelai_text_specs import (
     GetNovelAiTextSpecs,
 )
 from ai_media_generation.infrastructure.novelai import NovelAI
+from ai_media_generation.repository.novelai.text_output_repository import (
+    NovelAiTextOutputRepository,
+)
 
 
 class GenerateNovelAiTextController:
@@ -26,8 +29,13 @@ class GenerateNovelAiTextController:
         config = Config()
         directory = config.novelai_text_output_directory
         novelai = NovelAI()
+        outputs = NovelAiTextOutputRepository()
         for index, spec in enumerate(specs):
-            filename_prefix = spec.id
+            filename_prefix = (
+                outputs.next_filename_prefix(spec.output)
+                if spec.output
+                else spec.id
+            )
             print(f"[{index + 1}/{len(specs)}] {filename_prefix}")
             texts = novelai.generate_text(
                 filename_prefix,

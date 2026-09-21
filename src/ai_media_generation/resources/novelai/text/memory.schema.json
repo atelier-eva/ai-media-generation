@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/novelai/text/memory.schema.json",
   "title": "NovelAI text memory (novelai/text/memory.json)",
-  "description": "Optional sibling of novelai/text/spec/. When present, text is always included in every novelai-text generation. Omit the file to skip. Combined as system_prompt, memory, matching lorebook entries, then spec input, joined by blank lines, and sent as the single /ai/generate input.",
+  "description": "Optional sibling of novelai/text/spec/. When present, text is always included in every novelai-text generation. Omit the file to skip. Combined as system_prompt, memory, matching lorebook entries, then the spec story, joined by blank lines, and sent as the single /ai/generate input.",
   "type": "object",
   "additionalProperties": false,
   "required": ["text"],

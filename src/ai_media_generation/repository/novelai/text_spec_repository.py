@@ -17,6 +17,9 @@ from ai_media_generation.repository.json_io import (
     read_json,
     to_string_tuple,
 )
+from ai_media_generation.repository.novelai.text_output_repository import (
+    NovelAiTextOutputRepository,
+)
 
 
 class NovelAiTextSpecRepository:
@@ -90,6 +93,7 @@ class NovelAiTextSpecRepository:
         if (
             not identifier
             or path.is_absolute()
+            or not path.parts
             or any(part in ("", ".", "..") for part in path.parts)
         ):
             raise ValueError(f"Invalid {label} id: {identifier}")
@@ -106,6 +110,10 @@ class NovelAiTextSpecRepository:
         if not text:
             raise ValueError("input is empty or missing.")
         model = str(data.get("model") or "").strip() or DEFAULT_MODEL
+        output = str(data.get("output") or "").strip().replace("\\", "/")
+        if output:
+            self._validate_id(output, "output")
+            output = Path(output).as_posix()
         return NovelAiTextSpec(
             id=identifier,
             input=text,
@@ -118,6 +126,12 @@ class NovelAiTextSpecRepository:
             system_prompt=system_prompt,
             memory=memory,
             lorebooks=lorebooks,
+            output=output,
+            previous=(
+                NovelAiTextOutputRepository().texts(output)
+                if output
+                else ()
+            ),
         )
 
     def _lorebooks(self, directory: Path) -> tuple[NovelAiLorebook, ...]:
