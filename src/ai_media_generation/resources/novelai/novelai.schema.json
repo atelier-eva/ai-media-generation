@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/novelai/novelai.schema.json",
   "title": "NovelAI (novelai/spec/**/*.json)",
-  "description": "One prompt per JSON file under novelai/spec/, including subfolders. The path relative to novelai/spec/ without .json is the spec id. Output filename_prefix is that id (nested folders preserved). Tag arrays for NovelAI Diffusion txt2img. When omitted, model is nai-diffusion-5-full, sampler is k_euler_ancestral, steps is 28, and scale is 5.",
+  "description": "One prompt per JSON file under novelai/spec/, including subfolders. The path relative to novelai/spec/ without .json is the spec id. Output filename_prefix is that id (nested folders preserved). Tag arrays for NovelAI Diffusion. Omit img2img for txt2img; set it for Image2Image. When omitted, model is nai-diffusion-5-full, sampler is k_euler_ancestral, steps is 28, and scale is 5.",
   "type": "object",
   "additionalProperties": false,
   "required": ["image_size", "positive", "negative"],
@@ -36,7 +36,11 @@
         { "width": 1536, "height": 1024 },
         { "width": 1472, "height": 1472 }
       ],
-      "description": "Output dimensions (width x height). Official Small/Normal/Large presets: Small 512x768, 768x512, 640x640; Normal 832x1216, 1216x832, 1024x1024; Large 1024x1536, 1536x1024, 1472x1472. Opus Anlas-free generations are Normal or smaller, 28 steps or fewer, and one image per request."
+      "description": "Output dimensions (width x height). Official Small/Normal/Large presets: Small 512x768, 768x512, 640x640; Normal 832x1216, 1216x832, 1024x1024; Large 1024x1536, 1536x1024, 1472x1472. Opus Anlas-free generations are Normal or smaller, 28 steps or fewer, and one image per request. Image2Image still uses this size."
+    },
+    "img2img": {
+      "$ref": "#/$defs/img2img",
+      "description": "Image2Image source and Strength/Noise. Omit for txt2img. Official Strength and Noise apply only when a source image is used."
     },
     "positive": {
       "$ref": "#/$defs/tags",
@@ -86,6 +90,30 @@
     "tags": {
       "type": "array",
       "items": { "type": "string", "minLength": 1 }
+    },
+    "img2img": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image"],
+      "properties": {
+        "image": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Source image path for Image2Image. PNG, JPEG, or WEBP. Resolved relative to the process working directory when not absolute."
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "How much the prompt may change the source composition. Lower stays closer to the source. When omitted, 0.7 is used."
+        },
+        "noise": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Extra detail versus artifacts. When omitted, 0 is used."
+        }
+      }
     },
     "character": {
       "type": "object",

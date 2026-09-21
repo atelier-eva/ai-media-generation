@@ -41,6 +41,12 @@ class NovelAI:
         x: float | None = None
         y: float | None = None
 
+    @dataclass
+    class Img2Img:
+        image: Path
+        strength: float = _DEFAULT_I2I_STRENGTH
+        noise: float = _DEFAULT_I2I_NOISE
+
     def __init__(self) -> None:
         config = Config()
         token = config.novelai_api_token
@@ -66,9 +72,7 @@ class NovelAI:
         batch_size: int = 1,
         character_prompts: tuple["NovelAI.CharacterPrompt", ...] = (),
         use_order: bool = True,
-        image: Path | None = None,
-        strength: float | None = None,
-        noise: float | None = None,
+        img2img: "NovelAI.Img2Img | None" = None,
     ) -> tuple["NovelAI.SavedImage", ...]:
         prefix = self._filename_prefix(filename_prefix)
         if width <= 0 or height <= 0:
@@ -96,7 +100,7 @@ class NovelAI:
             character_prompts,
             use_order,
         )
-        parameters.update(self._img2img_parameters(image, strength, noise))
+        parameters.update(self._img2img_parameters(img2img))
         payloads = self._images_from_response(
             self._post(
                 self._image_url,
@@ -104,7 +108,7 @@ class NovelAI:
                 {
                     "input": prompt,
                     "model": model_name,
-                    "action": "img2img" if image is not None else "generate",
+                    "action": "img2img" if img2img is not None else "generate",
                     "parameters": parameters,
                 },
                 "application/json, application/zip",
@@ -247,27 +251,18 @@ class NovelAI:
         }
 
     def _img2img_parameters(
-        self,
-        image: Path | None,
-        strength: float | None,
-        noise: float | None,
+        self, img2img: "NovelAI.Img2Img | None"
     ) -> dict[str, Any]:
-        if image is None:
-            if strength is not None or noise is not None:
-                raise ValueError("strength and noise require image.")
+        if img2img is None:
             return {}
-        strength_value = (
-            _DEFAULT_I2I_STRENGTH if strength is None else float(strength)
-        )
-        noise_value = _DEFAULT_I2I_NOISE if noise is None else float(noise)
-        if not 0 <= strength_value <= 1:
+        if not 0 <= img2img.strength <= 1:
             raise ValueError("strength must be between 0 and 1.")
-        if not 0 <= noise_value <= 1:
+        if not 0 <= img2img.noise <= 1:
             raise ValueError("noise must be between 0 and 1.")
         return {
-            "image": self._encode_source_image(image),
-            "strength": strength_value,
-            "noise": noise_value,
+            "image": self._encode_source_image(img2img.image),
+            "strength": float(img2img.strength),
+            "noise": float(img2img.noise),
         }
 
     def _encode_source_image(self, path: Path) -> str:

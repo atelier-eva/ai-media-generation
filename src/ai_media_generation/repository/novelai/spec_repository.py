@@ -3,12 +3,15 @@ from typing import Any
 
 from ai_media_generation.config import Config
 from ai_media_generation.domain.novelai.spec.novelai_spec import (
+    DEFAULT_I2I_NOISE,
+    DEFAULT_I2I_STRENGTH,
     DEFAULT_MODEL,
     DEFAULT_SAMPLER,
     DEFAULT_SCALE,
     DEFAULT_STEPS,
     DEFAULT_USE_ORDER,
     NovelAiCharacter,
+    NovelAiImg2Img,
     NovelAiSpec,
 )
 from ai_media_generation.repository.json_io import (
@@ -95,7 +98,38 @@ class NovelAiSpecRepository:
                 if data.get("use_order") is None
                 else bool(data["use_order"])
             ),
+            img2img=self._img2img(data.get("img2img")),
         )
+
+    def _img2img(self, value: Any) -> NovelAiImg2Img | None:
+        if value is None:
+            return None
+        if not isinstance(value, dict):
+            raise ValueError("img2img must be an object.")
+        return NovelAiImg2Img(
+            image=self._image_path(value.get("image")),
+            strength=(
+                DEFAULT_I2I_STRENGTH
+                if value.get("strength") is None
+                else float(value["strength"])
+            ),
+            noise=(
+                DEFAULT_I2I_NOISE
+                if value.get("noise") is None
+                else float(value["noise"])
+            ),
+        )
+
+    def _image_path(self, value: Any) -> Path:
+        if not isinstance(value, str):
+            raise ValueError("img2img image must be a path string.")
+        text = value.strip()
+        if not text:
+            raise ValueError("img2img image is empty.")
+        path = Path(text).expanduser().resolve()
+        if not path.is_file():
+            raise FileNotFoundError(f"NovelAI source image not found: {path}")
+        return path
 
     def _characters(self, data: dict[str, Any]) -> tuple[NovelAiCharacter, ...]:
         raw = data.get("characters")

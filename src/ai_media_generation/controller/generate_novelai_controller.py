@@ -52,6 +52,13 @@ class GenerateNovelAiController:
                     for character in spec.characters
                 ),
                 spec.use_order,
+                None
+                if spec.img2img is None
+                else NovelAI.Img2Img(
+                    image=spec.img2img.image,
+                    strength=spec.img2img.strength,
+                    noise=spec.img2img.noise,
+                ),
             )
             written = novelai.write_images(images, directory)
             if written:

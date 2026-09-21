@@ -4,6 +4,11 @@
     "width": 832,
     "height": 1216
   },
+  "img2img": {
+    "image": "example.png",
+    "strength": 0.7,
+    "noise": 0
+  },
   "positive": [
     "2girls",
     "outdoors",

@@ -1,7 +1,9 @@
 from dataclasses import dataclass
+from pathlib import Path
 
 from ai_media_generation.domain.novelai.spec.novelai_spec import (
     NovelAiCharacter,
+    NovelAiImg2Img,
     NovelAiSpec,
 )
 
@@ -12,6 +14,13 @@ class NovelAiCharacterDto:
     negative_prompt: str
     x: float | None
     y: float | None
+
+
+@dataclass
+class NovelAiImg2ImgDto:
+    image: Path
+    strength: float
+    noise: float
 
 
 @dataclass
@@ -27,6 +36,7 @@ class NovelAiSpecDto:
     scale: float
     characters: tuple[NovelAiCharacterDto, ...]
     use_order: bool
+    img2img: NovelAiImg2ImgDto | None
 
 
 class GetNovelAiSpecsOutput:
@@ -49,7 +59,18 @@ class GetNovelAiSpecsOutput:
                 _to_character_dto(character) for character in spec.characters
             ),
             use_order=spec.use_order,
+            img2img=_to_img2img_dto(spec.img2img),
         )
+
+
+def _to_img2img_dto(img2img: NovelAiImg2Img | None) -> NovelAiImg2ImgDto | None:
+    if img2img is None:
+        return None
+    return NovelAiImg2ImgDto(
+        image=img2img.image,
+        strength=img2img.strength,
+        noise=img2img.noise,
+    )
 
 
 def _to_character_dto(character: NovelAiCharacter) -> NovelAiCharacterDto:
