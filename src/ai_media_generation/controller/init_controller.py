@@ -34,6 +34,14 @@ class InitController:
                 f"Animagine spec templates go in {Config.ANIMAGINE_SPEC_DIRECTORY}/. "
                 f"Qwen spec templates go in {Config.QWEN_SPEC_DIRECTORY}/. "
                 f"Anima spec templates go in {Config.ANIMA_SPEC_DIRECTORY}/. "
+                f"NovelAI spec templates go in {Config.NOVELAI_SPEC_DIRECTORY}/. "
+                f"NovelAI text spec templates go in {Config.NOVELAI_TEXT_SPEC_DIRECTORY}/. "
+                f"NovelAI text system prompt goes in "
+                f"{(Path(Config.NOVELAI_TEXT_SPEC_DIRECTORY).parent / Config.NOVELAI_TEXT_SYSTEM_PROMPT_JSON).as_posix()}. "
+                f"NovelAI text memory goes in "
+                f"{(Path(Config.NOVELAI_TEXT_SPEC_DIRECTORY).parent / Config.NOVELAI_TEXT_MEMORY_JSON).as_posix()}. "
+                f"NovelAI text lorebook templates go in "
+                f"{(Path(Config.NOVELAI_TEXT_SPEC_DIRECTORY).parent / Config.NOVELAI_TEXT_LOREBOOK_DIRECTORY).as_posix()}/. "
                 f"Anima LoRA training spec templates go in {Config.ANIMA_LORA_TRAINING_SPEC_DIRECTORY}/. "
                 f"Qwen edit spec templates go in {Config.QWEN_EDIT_SPEC_DIRECTORY}/. "
                 f"Qwen LoRA training spec templates go in {Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY}/. "
@@ -56,6 +64,8 @@ class InitController:
         animagine = path / Config.ANIMAGINE_SPEC_DIRECTORY
         qwen = path / Config.QWEN_SPEC_DIRECTORY
         anima = path / Config.ANIMA_SPEC_DIRECTORY
+        novelai = path / Config.NOVELAI_SPEC_DIRECTORY
+        novelai_text = path / Config.NOVELAI_TEXT_SPEC_DIRECTORY
         anima_lora_training = path / Config.ANIMA_LORA_TRAINING_SPEC_DIRECTORY
         qwen_edit = path / Config.QWEN_EDIT_SPEC_DIRECTORY
         qwen_lora_training = path / Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY
@@ -85,6 +95,33 @@ class InitController:
         self._write_directory(
             (Config.ANIMA_SPEC_DIRECTORY,),
             anima,
+            args.force,
+        )
+        self._write_directory(
+            (Config.NOVELAI_SPEC_DIRECTORY,),
+            novelai,
+            args.force,
+        )
+        self._write_directory(
+            (Config.NOVELAI_TEXT_SPEC_DIRECTORY,),
+            novelai_text,
+            args.force,
+        )
+        text_root = novelai_text.parent
+        self._write_resource(
+            ("novelai", "text", Config.NOVELAI_TEXT_SYSTEM_PROMPT_JSON),
+            text_root / Config.NOVELAI_TEXT_SYSTEM_PROMPT_JSON,
+            args.force,
+        )
+        self._write_resource(
+            ("novelai", "text", Config.NOVELAI_TEXT_MEMORY_JSON),
+            text_root / Config.NOVELAI_TEXT_MEMORY_JSON,
+            args.force,
+        )
+        novelai_text_lorebook = text_root / Config.NOVELAI_TEXT_LOREBOOK_DIRECTORY
+        self._write_directory(
+            ("novelai", "text", Config.NOVELAI_TEXT_LOREBOOK_DIRECTORY),
+            novelai_text_lorebook,
             args.force,
         )
         anima_lora_training.mkdir(parents=True, exist_ok=True)
@@ -126,6 +163,16 @@ class InitController:
         print(f"Animagine spec directory: {animagine}")
         print(f"Qwen spec directory: {qwen}")
         print(f"Anima spec directory: {anima}")
+        print(f"NovelAI spec directory: {novelai}")
+        print(f"NovelAI text spec directory: {novelai_text}")
+        print(
+            "NovelAI text system prompt: "
+            f"{text_root / Config.NOVELAI_TEXT_SYSTEM_PROMPT_JSON}"
+        )
+        print(
+            f"NovelAI text memory: {text_root / Config.NOVELAI_TEXT_MEMORY_JSON}"
+        )
+        print(f"NovelAI text lorebook directory: {novelai_text_lorebook}")
         print(f"Anima LoRA training spec directory: {anima_lora_training}")
         print(f"Qwen edit spec directory: {qwen_edit}")
         print(f"Qwen LoRA training spec directory: {qwen_lora_training}")
@@ -133,8 +180,8 @@ class InitController:
         print(
             "Fill in the JSON, then run: "
             "ai-media-generation animagine-lora-training, animagine, qwen, anima, "
-            "anima-lora-report, anima-lora-training, qwen-edit, qwen-lora-training, "
-            "music, or report"
+            "novelai, novelai-text, anima-lora-report, anima-lora-training, "
+            "qwen-edit, qwen-lora-training, music, or report"
         )
 
     def _write_env(self) -> None:

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/novelai/text/lorebook.schema.json",
+  "title": "NovelAI text lorebook (novelai/text/lorebook/**/*.json)",
+  "description": "One lorebook entry per JSON file under novelai/text/lorebook/, including subfolders. The file stem is always an activation key. Optional keys are extra aliases. An entry is included when any key is a case-insensitive substring of the spec story (input plus numbered output files when output is set). Matching entries are inserted after memory and before that story, in sorted file order, joined by blank lines. Omit the directory to skip. Always-on facts belong in memory.json, not here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["text"],
+  "properties": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Text inserted into the assembled /ai/generate input when this entry activates."
+    },
+    "keys": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Additional activation phrases besides the file stem. Matched as case-insensitive substrings of the spec story. Omit when the file stem is enough."
+    }
+  }
+}

@@ -13,6 +13,27 @@ ANIMAGINE_PROMPT_SCHEMA: SchemaResource = ("animagine", "prompt.schema.json")
 QWEN_SPEC_SCHEMA: SchemaResource = ("qwen", "qwen.schema.json")
 QWEN_EDIT_SPEC_SCHEMA: SchemaResource = ("qwen", "edit", "qwen-edit.schema.json")
 ANIMA_SPEC_SCHEMA: SchemaResource = ("anima", "anima.schema.json")
+NOVELAI_SPEC_SCHEMA: SchemaResource = ("novelai", "novelai.schema.json")
+NOVELAI_TEXT_SPEC_SCHEMA: SchemaResource = (
+    "novelai",
+    "text",
+    "novelai-text.schema.json",
+)
+NOVELAI_TEXT_SYSTEM_PROMPT_SCHEMA: SchemaResource = (
+    "novelai",
+    "text",
+    "system_prompt.schema.json",
+)
+NOVELAI_TEXT_MEMORY_SCHEMA: SchemaResource = (
+    "novelai",
+    "text",
+    "memory.schema.json",
+)
+NOVELAI_TEXT_LOREBOOK_SCHEMA: SchemaResource = (
+    "novelai",
+    "text",
+    "lorebook.schema.json",
+)
 MUSIC_SCHEMA: SchemaResource = ("music.schema.json",)
 
 ANIMAGINE_LORA_SCHEMAS: dict[str, SchemaResource] = {

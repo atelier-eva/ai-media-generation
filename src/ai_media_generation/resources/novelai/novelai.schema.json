@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/novelai/novelai.schema.json",
+  "title": "NovelAI (novelai/spec/**/*.json)",
+  "description": "One prompt per JSON file under novelai/spec/, including subfolders. The path relative to novelai/spec/ without .json is the spec id. Output filename_prefix is that id (nested folders preserved). Tag arrays for NovelAI Diffusion. Omit img2img for txt2img; set it for Image2Image. When omitted, model is nai-diffusion-5-full, sampler is k_euler_ancestral, steps is 28, and scale is 5.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["image_size", "positive", "negative"],
+  "properties": {
+    "model": {
+      "type": "string",
+      "enum": [
+        "nai-diffusion-5-full",
+        "nai-diffusion-5-curated",
+        "nai-diffusion-4-5-full",
+        "nai-diffusion-4-5-curated"
+      ],
+      "description": "NovelAI Diffusion API model name. When omitted, nai-diffusion-5-full is used."
+    },
+    "image_size": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "integer" },
+        "height": { "type": "integer" }
+      },
+      "enum": [
+        { "width": 512, "height": 768 },
+        { "width": 768, "height": 512 },
+        { "width": 640, "height": 640 },
+        { "width": 832, "height": 1216 },
+        { "width": 1216, "height": 832 },
+        { "width": 1024, "height": 1024 },
+        { "width": 1024, "height": 1536 },
+        { "width": 1536, "height": 1024 },
+        { "width": 1472, "height": 1472 }
+      ],
+      "description": "Output dimensions (width x height). Official Small/Normal/Large presets: Small 512x768, 768x512, 640x640; Normal 832x1216, 1216x832, 1024x1024; Large 1024x1536, 1536x1024, 1472x1472. Opus Anlas-free generations are Normal or smaller, 28 steps or fewer, and one image per request. Image2Image still uses this size."
+    },
+    "img2img": {
+      "$ref": "#/$defs/img2img",
+      "description": "Image2Image source and Strength/Noise. Omit for txt2img. Official Strength and Noise apply only when a source image is used."
+    },
+    "positive": {
+      "$ref": "#/$defs/tags",
+      "description": "Base positive prompt tags, joined with ', ' for NovelAI. Scene, style, and count tags such as 2girls. Empty emits no positive tags."
+    },
+    "negative": {
+      "$ref": "#/$defs/tags",
+      "description": "Base negative prompt tags, joined with ', ' for NovelAI. Empty emits no negative tags."
+    },
+    "characters": {
+      "type": "array",
+      "maxItems": 22,
+      "items": { "$ref": "#/$defs/character" },
+      "description": "Character prompts for V4+ multi-character generation. Omitted or empty sends no character prompts. When use_order is true, array order is a placement signal (left to right, top to bottom). Optional x and y (0-1) enable Custom Positions; omit both for AI's Choice. V5 models allow up to 22; V4.5 models allow up to 6. Count tags such as 2girls belong in positive, not here."
+    },
+    "use_order": {
+      "type": "boolean",
+      "description": "When true, character prompt order is a placement signal (left to right, top to bottom). When omitted, true is used. Keep it consistent with x/y when using Custom Positions. Official clients usually leave this true."
+    },
+    "sampler": {
+      "type": "string",
+      "enum": [
+        "k_euler",
+        "k_euler_ancestral",
+        "k_dpmpp_2m",
+        "k_dpmpp_2s_ancestral",
+        "k_dpmpp_sde",
+        "k_dpmpp_2m_sde",
+        "ddim_v3"
+      ],
+      "description": "NovelAI sampler. When omitted, k_euler_ancestral is used."
+    },
+    "steps": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "description": "Sampling steps. When omitted, 28 is used. Opus Anlas-free generations require 28 or fewer."
+    },
+    "scale": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Prompt guidance. When omitted, 5 is used."
+    }
+  },
+  "$defs": {
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "img2img": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image"],
+      "properties": {
+        "image": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Source image path for Image2Image. PNG, JPEG, or WEBP. Resolved relative to the process working directory when not absolute."
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "How much the prompt may change the source composition. Lower stays closer to the source. When omitted, 0.7 is used."
+        },
+        "noise": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Extra detail versus artifacts. When omitted, 0 is used."
+        }
+      }
+    },
+    "character": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive", "negative"],
+      "dependentRequired": {
+        "x": ["y"],
+        "y": ["x"]
+      },
+      "properties": {
+        "positive": {
+          "$ref": "#/$defs/tags",
+          "description": "Character prompt tags, joined with ', ' for NovelAI. Use girl, boy, or other without a count. Empty emits no character tags."
+        },
+        "negative": {
+          "$ref": "#/$defs/tags",
+          "description": "Character undesired-content tags, joined with ', ' for NovelAI. Empty emits no character undesired tags."
+        },
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Horizontal position from 0 (left) to 1 (right). Omit with y for AI's Choice. When set, y is required. V5 is free placement; V4.5 is a 5x5 grid on NovelAI's side."
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Vertical position from 0 (top) to 1 (bottom). Omit with x for AI's Choice. When set, x is required."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/novelai/text/system_prompt.schema.json",
+  "title": "NovelAI text system prompt (novelai/text/system_prompt.json)",
+  "description": "Optional sibling of novelai/text/spec/. When present, text is always prepended to every novelai-text generation. Omit the file to skip. Combined as system_prompt, memory, matching lorebook entries, then the spec story, joined by blank lines, and sent as the single /ai/generate input.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["text"],
+  "properties": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Instructions for how the model should write. Placed at the start of the assembled /ai/generate input."
+    }
+  }
+}
