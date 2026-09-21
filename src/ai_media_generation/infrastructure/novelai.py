@@ -16,6 +16,8 @@ _PNG = b"\x89PNG"
 _JPEG = b"\xff\xd8"
 _DEFAULT_MODEL = "nai-diffusion-5-full"
 _DEFAULT_SAMPLER = "k_euler_ancestral"
+_DEFAULT_I2I_STRENGTH = 0.7
+_DEFAULT_I2I_NOISE = 0.0
 _DEFAULT_TEXT_MODEL = "llama-3-erato-v1"
 _GENERATE_IMAGE_PATH = "/ai/generate-image"
 _GENERATE_TEXT_PATH = "/ai/generate"
@@ -64,6 +66,9 @@ class NovelAI:
         batch_size: int = 1,
         character_prompts: tuple["NovelAI.CharacterPrompt", ...] = (),
         use_order: bool = True,
+        image: Path | None = None,
+        strength: float | None = None,
+        noise: float | None = None,
     ) -> tuple["NovelAI.SavedImage", ...]:
         prefix = self._filename_prefix(filename_prefix)
         if width <= 0 or height <= 0:
@@ -78,6 +83,20 @@ class NovelAI:
             raise ValueError("model is empty.")
         if not sampler_name:
             raise ValueError("sampler is empty.")
+        parameters = self._image_parameters(
+            prompt,
+            negative_prompt,
+            width,
+            height,
+            seed,
+            sampler_name,
+            steps,
+            scale,
+            batch_size,
+            character_prompts,
+            use_order,
+        )
+        parameters.update(self._img2img_parameters(image, strength, noise))
         payloads = self._images_from_response(
             self._post(
                 self._image_url,
@@ -85,20 +104,8 @@ class NovelAI:
                 {
                     "input": prompt,
                     "model": model_name,
-                    "action": "generate",
-                    "parameters": self._image_parameters(
-                        prompt,
-                        negative_prompt,
-                        width,
-                        height,
-                        seed,
-                        sampler_name,
-                        steps,
-                        scale,
-                        batch_size,
-                        character_prompts,
-                        use_order,
-                    ),
+                    "action": "img2img" if image is not None else "generate",
+                    "parameters": parameters,
                 },
                 "application/json, application/zip",
             )
@@ -238,6 +245,41 @@ class NovelAI:
                 use_order,
             ),
         }
+
+    def _img2img_parameters(
+        self,
+        image: Path | None,
+        strength: float | None,
+        noise: float | None,
+    ) -> dict[str, Any]:
+        if image is None:
+            if strength is not None or noise is not None:
+                raise ValueError("strength and noise require image.")
+            return {}
+        strength_value = (
+            _DEFAULT_I2I_STRENGTH if strength is None else float(strength)
+        )
+        noise_value = _DEFAULT_I2I_NOISE if noise is None else float(noise)
+        if not 0 <= strength_value <= 1:
+            raise ValueError("strength must be between 0 and 1.")
+        if not 0 <= noise_value <= 1:
+            raise ValueError("noise must be between 0 and 1.")
+        return {
+            "image": self._encode_source_image(image),
+            "strength": strength_value,
+            "noise": noise_value,
+        }
+
+    def _encode_source_image(self, path: Path) -> str:
+        resolved = path.expanduser().resolve()
+        if not resolved.is_file():
+            raise FileNotFoundError(f"NovelAI source image not found: {resolved}")
+        payload = resolved.read_bytes()
+        if not self._is_image(payload):
+            raise ValueError(
+                f"NovelAI source image is not PNG, JPEG, or WEBP: {resolved}"
+            )
+        return base64.b64encode(payload).decode("ascii")
 
     def _caption(
         self,
