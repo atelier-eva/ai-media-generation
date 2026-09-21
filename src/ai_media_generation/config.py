@@ -10,6 +10,9 @@ class Config:
     ANIMA_SPEC_DIRECTORY = "anima/spec"
     NOVELAI_SPEC_DIRECTORY = "novelai/spec"
     NOVELAI_TEXT_SPEC_DIRECTORY = "novelai/text/spec"
+    NOVELAI_TEXT_SYSTEM_PROMPT_JSON = "system_prompt.json"
+    NOVELAI_TEXT_MEMORY_JSON = "memory.json"
+    NOVELAI_TEXT_LOREBOOK_DIRECTORY = "lorebook"
     ANIMAGINE_OUTPUT_DIRECTORY = "animagine/output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     QWEN_OUTPUT_DIRECTORY = "qwen/output"
@@ -200,6 +203,22 @@ class Config:
     def novelai_text_spec_directory(self) -> Path:
         return _directory(
             "NOVELAI_TEXT_SPEC_DIRECTORY", self.NOVELAI_TEXT_SPEC_DIRECTORY
+        )
+
+    @property
+    def novelai_text_system_prompt_json(self) -> Path:
+        return (
+            self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_SYSTEM_PROMPT_JSON
+        )
+
+    @property
+    def novelai_text_memory_json(self) -> Path:
+        return self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_MEMORY_JSON
+
+    @property
+    def novelai_text_lorebook_directory(self) -> Path:
+        return (
+            self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_LOREBOOK_DIRECTORY
         )
 
     @property

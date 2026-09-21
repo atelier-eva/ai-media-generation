@@ -19,7 +19,7 @@ class GetNovelAiTextSpecsOutput:
     def _to_dto(spec: NovelAiTextSpec) -> NovelAiTextSpecDto:
         return NovelAiTextSpecDto(
             id=spec.id,
-            input=spec.input,
+            input=spec.assembled_input(),
             model=spec.model,
             max_length=spec.max_length,
         )
