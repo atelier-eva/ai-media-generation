@@ -8,11 +8,15 @@ class Config:
     QWEN_SPEC_DIRECTORY = "qwen/spec"
     QWEN_EDIT_SPEC_DIRECTORY = "qwen/edit/spec"
     ANIMA_SPEC_DIRECTORY = "anima/spec"
+    NOVELAI_SPEC_DIRECTORY = "novelai/spec"
+    NOVELAI_TEXT_SPEC_DIRECTORY = "novelai/text/spec"
     ANIMAGINE_OUTPUT_DIRECTORY = "animagine/output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     QWEN_OUTPUT_DIRECTORY = "qwen/output"
     QWEN_EDIT_OUTPUT_DIRECTORY = "qwen/edit/output"
     ANIMA_OUTPUT_DIRECTORY = "anima/output"
+    NOVELAI_OUTPUT_DIRECTORY = "novelai/output"
+    NOVELAI_TEXT_OUTPUT_DIRECTORY = "novelai/text/output"
     ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY = "animagine/lora_dataset"
     ANIMAGINE_LORA_TRAINING_GENERATIONS_JSONL = (
         "animagine-lora-training-generations.jsonl"
@@ -65,6 +69,21 @@ class Config:
         if runpod_timeout is not None and runpod_timeout <= 0:
             raise ValueError("RUNPOD_TIMEOUT_SECONDS must be positive.")
         self.runpod_timeout_seconds = 600 if runpod_timeout is None else runpod_timeout
+        self.novelai_api_token = _optional_text("NOVELAI_API_TOKEN")
+        image_url = _optional_text("NOVELAI_IMAGE_URL")
+        self.novelai_image_url = (
+            image_url.rstrip("/") if image_url else "https://image.novelai.net"
+        )
+        text_url = _optional_text("NOVELAI_TEXT_URL")
+        self.novelai_text_url = (
+            text_url.rstrip("/") if text_url else "https://text.novelai.net"
+        )
+        novelai_timeout = _optional_int("NOVELAI_TIMEOUT_SECONDS")
+        if novelai_timeout is not None and novelai_timeout <= 0:
+            raise ValueError("NOVELAI_TIMEOUT_SECONDS must be positive.")
+        self.novelai_timeout_seconds = (
+            120 if novelai_timeout is None else novelai_timeout
+        )
         precision = _optional_text("QWEN_PRECISION")
         if precision is None:
             precision = "fp8"
@@ -168,6 +187,26 @@ class Config:
     @property
     def anima_output_directory(self) -> Path:
         return _directory("ANIMA_OUTPUT_DIRECTORY", self.ANIMA_OUTPUT_DIRECTORY)
+
+    @property
+    def novelai_spec_directory(self) -> Path:
+        return _directory("NOVELAI_SPEC_DIRECTORY", self.NOVELAI_SPEC_DIRECTORY)
+
+    @property
+    def novelai_output_directory(self) -> Path:
+        return _directory("NOVELAI_OUTPUT_DIRECTORY", self.NOVELAI_OUTPUT_DIRECTORY)
+
+    @property
+    def novelai_text_spec_directory(self) -> Path:
+        return _directory(
+            "NOVELAI_TEXT_SPEC_DIRECTORY", self.NOVELAI_TEXT_SPEC_DIRECTORY
+        )
+
+    @property
+    def novelai_text_output_directory(self) -> Path:
+        return _directory(
+            "NOVELAI_TEXT_OUTPUT_DIRECTORY", self.NOVELAI_TEXT_OUTPUT_DIRECTORY
+        )
 
     @property
     def anima_lora_training_spec_directory(self) -> Path:

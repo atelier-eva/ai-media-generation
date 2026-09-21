@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec/novelai/text/novelai-text.schema.json",
+  "title": "NovelAI text (novelai/text/spec/**/*.json)",
+  "description": "One prompt per JSON file under novelai/text/spec/, including subfolders. The path relative to novelai/text/spec/ without .json is the spec id. Output filename is that id with .txt (nested folders preserved). When omitted, model is llama-3-erato-v1 and max_length is 100. Trial accounts may only use kayra-v1. Tablet and Scroll cap max_length at 150; Opus at 250.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["input"],
+  "properties": {
+    "input": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Prompt sent to NovelAI /ai/generate. The saved file is the generated continuation, not this input."
+    },
+    "model": {
+      "type": "string",
+      "enum": ["llama-3-erato-v1", "kayra-v1"],
+      "description": "NovelAI text model. When omitted, llama-3-erato-v1 is used."
+    },
+    "max_length": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 250,
+      "description": "Maximum generation length in tokens. When omitted, 100 is used."
+    }
+  }
+}

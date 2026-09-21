@@ -22,6 +22,12 @@ from ai_media_generation.controller.generate_animagine_lora_training_images_cont
 from ai_media_generation.controller.generate_music_controller import (
     GenerateMusicController,
 )
+from ai_media_generation.controller.generate_novelai_controller import (
+    GenerateNovelAiController,
+)
+from ai_media_generation.controller.generate_novelai_text_controller import (
+    GenerateNovelAiTextController,
+)
 from ai_media_generation.controller.generate_qwen_controller import (
     GenerateQwenController,
 )
@@ -83,6 +89,12 @@ def _run() -> None:
         return
     if command == "anima":
         GenerateAnimaController().execute(_command_parser("anima"))
+        return
+    if command == "novelai":
+        GenerateNovelAiController().execute(_command_parser("novelai"))
+        return
+    if command == "novelai-text":
+        GenerateNovelAiTextController().execute(_command_parser("novelai-text"))
         return
     if command == "anima-lora-report":
         ReportAnimaLoraTrainingPatternsController().execute(
@@ -163,6 +175,14 @@ def _parser() -> ArgumentParser:
     subparsers.add_parser(
         "anima",
         help="Generate images from anima JSON specs with Anima Aesthetic v1.1 (nested folders allowed).",
+    )
+    subparsers.add_parser(
+        "novelai",
+        help="Generate images from novelai JSON specs with NovelAI Diffusion (nested folders allowed).",
+    )
+    subparsers.add_parser(
+        "novelai-text",
+        help="Generate text from novelai-text JSON specs with NovelAI (nested folders allowed).",
     )
     subparsers.add_parser(
         "anima-lora-report",

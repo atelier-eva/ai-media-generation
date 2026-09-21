@@ -1,0 +1,5 @@
+{
+  "model": "llama-3-erato-v1",
+  "input": "Once upon a time,",
+  "max_length": 100
+}

@@ -1,0 +1,12 @@
+{
+  "model": "nai-diffusion-5-full",
+  "image_size": {
+    "width": 832,
+    "height": 1216
+  },
+  "positive": [],
+  "negative": [],
+  "sampler": "k_euler_ancestral",
+  "steps": 28,
+  "scale": 5
+}
