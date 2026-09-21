@@ -5,14 +5,14 @@
       "hub_path": "split_files/diffusion_models/qwen_image_edit_2511_fp8mixed.safetensors",
       "path": "models/diffusion_models/qwen_image_edit_2511_fp8mixed.safetensors",
       "precision": "fp8",
-      "profiles": ["qwen-lora-training", "kagee", "qwen-edit"]
+      "profiles": ["qwen-lora-training", "qwen-edit"]
     },
     {
       "repo": "Comfy-Org/Qwen-Image-Edit_ComfyUI",
       "hub_path": "split_files/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
       "path": "models/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
       "precision": "bf16",
-      "profiles": ["qwen-lora-training", "kagee", "qwen-edit"]
+      "profiles": ["qwen-lora-training", "qwen-edit"]
     },
     {
       "repo": "Comfy-Org/Qwen-Image_ComfyUI",
@@ -32,13 +32,13 @@
       "repo": "Comfy-Org/Qwen-Image_ComfyUI",
       "hub_path": "split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
       "path": "models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
-      "profiles": ["qwen", "qwen-lora-training", "kagee", "qwen-edit"]
+      "profiles": ["qwen", "qwen-lora-training", "qwen-edit"]
     },
     {
       "repo": "Comfy-Org/Qwen-Image_ComfyUI",
       "hub_path": "split_files/vae/qwen_image_vae.safetensors",
       "path": "models/vae/qwen_image_vae.safetensors",
-      "profiles": ["qwen", "qwen-lora-training", "kagee", "qwen-edit", "anima", "anima-lora-training"]
+      "profiles": ["qwen", "qwen-lora-training", "qwen-edit", "anima", "anima-lora-training"]
     },
     {
       "repo": "circlestone-labs/Anima",
@@ -68,7 +68,7 @@
       "repo": "lightx2v/Qwen-Image-Edit-2511-Lightning",
       "hub_path": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
       "path": "models/loras/Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
-      "profiles": ["qwen-lora-training", "kagee", "qwen-edit"]
+      "profiles": ["qwen-lora-training", "qwen-edit"]
     },
     {
       "repo": "thibaud/controlnet-openpose-sdxl-1.0",

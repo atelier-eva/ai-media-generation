@@ -8,3 +8,4 @@ class QwenEditSpec:
     images: tuple[Path, ...]
     prompt: str
     negative: str = ""
+    seed: int | None = None

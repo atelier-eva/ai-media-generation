@@ -56,7 +56,7 @@ class GenerateQwenEditController:
         comfy_ui = ComfyUi(url)
         for index, spec in enumerate(specs):
             filename_prefix = spec.id
-            seed = base_seed + index
+            seed = spec.seed if spec.seed is not None else base_seed + index
             print(f"[{index + 1}/{len(specs)}] {filename_prefix} seed={seed}")
             images = comfy_ui.generate_qwen_edit(
                 filename_prefix,

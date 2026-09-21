@@ -37,7 +37,6 @@ class InitController:
                 f"Anima LoRA training spec templates go in {Config.ANIMA_LORA_TRAINING_SPEC_DIRECTORY}/. "
                 f"Qwen edit spec templates go in {Config.QWEN_EDIT_SPEC_DIRECTORY}/. "
                 f"Qwen LoRA training spec templates go in {Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY}/. "
-                f"Kagee spec templates go in {Config.KAGEE_SPEC_DIRECTORY}/. "
                 f"Music spec templates go in {Config.MUSIC_SPEC_DIRECTORY}/. "
                 "Defaults to the current directory."
             ),
@@ -60,7 +59,6 @@ class InitController:
         anima_lora_training = path / Config.ANIMA_LORA_TRAINING_SPEC_DIRECTORY
         qwen_edit = path / Config.QWEN_EDIT_SPEC_DIRECTORY
         qwen_lora_training = path / Config.QWEN_LORA_TRAINING_SPEC_DIRECTORY
-        kagee = path / Config.KAGEE_SPEC_DIRECTORY
         music = path / Config.MUSIC_SPEC_DIRECTORY
         animagine_lora_training.mkdir(parents=True, exist_ok=True)
         for name in _JSON_FILES:
@@ -119,11 +117,6 @@ class InitController:
             args.force,
         )
         self._write_directory(
-            (Config.KAGEE_SPEC_DIRECTORY,),
-            kagee,
-            args.force,
-        )
-        self._write_directory(
             (Config.MUSIC_SPEC_DIRECTORY,),
             music,
             args.force,
@@ -136,13 +129,12 @@ class InitController:
         print(f"Anima LoRA training spec directory: {anima_lora_training}")
         print(f"Qwen edit spec directory: {qwen_edit}")
         print(f"Qwen LoRA training spec directory: {qwen_lora_training}")
-        print(f"Kagee spec directory: {kagee}")
         print(f"Music spec directory: {music}")
         print(
             "Fill in the JSON, then run: "
             "ai-media-generation animagine-lora-training, animagine, qwen, anima, "
             "anima-lora-report, anima-lora-training, qwen-edit, qwen-lora-training, "
-            "kagee, music, or report"
+            "music, or report"
         )
 
     def _write_env(self) -> None:

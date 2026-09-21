@@ -19,9 +19,6 @@ from ai_media_generation.controller.generate_animagine_controller import (
 from ai_media_generation.controller.generate_animagine_lora_training_images_controller import (
     GenerateAnimagineLoraTrainingImagesController,
 )
-from ai_media_generation.controller.generate_kagee_controller import (
-    GenerateKageeController,
-)
 from ai_media_generation.controller.generate_music_controller import (
     GenerateMusicController,
 )
@@ -105,9 +102,6 @@ def _run() -> None:
             _command_parser("qwen-lora-training")
         )
         return
-    if command == "kagee":
-        GenerateKageeController().execute(_command_parser("kagee"))
-        return
     if command == "music":
         GenerateMusicController().execute(_command_parser("music"))
         return
@@ -180,15 +174,11 @@ def _parser() -> ArgumentParser:
     )
     subparsers.add_parser(
         "qwen-edit",
-        help="Generate illustrations from qwen-edit JSON specs with Qwen-Image-Edit-2511 (nested folders allowed).",
+        help="Generate images from qwen-edit JSON specs with Qwen-Image-Edit-2511 (nested folders allowed).",
     )
     subparsers.add_parser(
         "qwen-lora-training",
         help="Generate LoRA training images with Qwen-Image-Edit-2511.",
-    )
-    subparsers.add_parser(
-        "kagee",
-        help="Convert images to kagee from kagee JSON specs (nested folders allowed).",
     )
     subparsers.add_parser(
         "music",
