@@ -7,6 +7,8 @@ from ai_media_generation.domain.novelai.spec.novelai_spec import (
     DEFAULT_SAMPLER,
     DEFAULT_SCALE,
     DEFAULT_STEPS,
+    DEFAULT_USE_ORDER,
+    NovelAiCharacter,
     NovelAiSpec,
 )
 from ai_media_generation.repository.json_io import (
@@ -87,4 +89,30 @@ class NovelAiSpecRepository:
             sampler=sampler,
             steps=DEFAULT_STEPS if data.get("steps") is None else int(data["steps"]),
             scale=DEFAULT_SCALE if data.get("scale") is None else float(data["scale"]),
+            characters=self._characters(data),
+            use_order=(
+                DEFAULT_USE_ORDER
+                if data.get("use_order") is None
+                else bool(data["use_order"])
+            ),
         )
+
+    def _characters(self, data: dict[str, Any]) -> tuple[NovelAiCharacter, ...]:
+        raw = data.get("characters")
+        if not raw:
+            return ()
+        return tuple(
+            NovelAiCharacter(
+                positive=to_string_tuple(item.get("positive")),
+                negative=to_string_tuple(item.get("negative")),
+                x=_optional_float(item.get("x")),
+                y=_optional_float(item.get("y")),
+            )
+            for item in raw
+        )
+
+
+def _optional_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    return float(value)

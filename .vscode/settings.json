@@ -111,6 +111,10 @@
       "url": "./src/ai_media_generation/resources/qwen/edit/qwen-edit.schema.json"
     },
     {
+      "fileMatch": ["**/novelai/spec/*.json", "**/novelai/spec/**/*.json"],
+      "url": "./src/ai_media_generation/resources/novelai/novelai.schema.json"
+    },
+    {
       "fileMatch": ["**/music/*.json"],
       "url": "./src/ai_media_generation/resources/music.schema.json"
     }

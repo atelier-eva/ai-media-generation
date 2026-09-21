@@ -4,8 +4,48 @@
     "width": 832,
     "height": 1216
   },
-  "positive": [],
-  "negative": [],
+  "positive": [
+    "2girls",
+    "outdoors",
+    "park",
+    "very aesthetic",
+    "masterpiece",
+    "no text"
+  ],
+  "negative": [
+    "lowres",
+    "artistic error",
+    "film grain",
+    "scan artifacts",
+    "worst quality",
+    "bad quality",
+    "jpeg artifacts",
+    "very displeasing",
+    "chromatic aberration",
+    "dithering",
+    "halftone",
+    "screentone",
+    "multiple views",
+    "logo",
+    "too many watermarks",
+    "negative space",
+    "blank page"
+  ],
+  "characters": [
+    {
+      "positive": ["girl", "black hair"],
+      "negative": [],
+      "x": 0.3,
+      "y": 0.5
+    },
+    {
+      "positive": ["girl", "blonde hair"],
+      "negative": [],
+      "x": 0.7,
+      "y": 0.5
+    }
+  ],
+  "use_order": true,
   "sampler": "k_euler_ancestral",
   "steps": 28,
   "scale": 5

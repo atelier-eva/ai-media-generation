@@ -32,6 +32,13 @@ class NovelAI:
         filename: str
         text: str
 
+    @dataclass
+    class CharacterPrompt:
+        positive: str
+        negative: str
+        x: float | None = None
+        y: float | None = None
+
     def __init__(self) -> None:
         config = Config()
         token = config.novelai_api_token
@@ -55,6 +62,8 @@ class NovelAI:
         steps: int = 28,
         scale: float = 5.0,
         batch_size: int = 1,
+        character_prompts: tuple["NovelAI.CharacterPrompt", ...] = (),
+        use_order: bool = True,
     ) -> tuple["NovelAI.SavedImage", ...]:
         prefix = self._filename_prefix(filename_prefix)
         if width <= 0 or height <= 0:
@@ -87,6 +96,8 @@ class NovelAI:
                         steps,
                         scale,
                         batch_size,
+                        character_prompts,
+                        use_order,
                     ),
                 },
                 "application/json, application/zip",
@@ -200,6 +211,8 @@ class NovelAI:
         steps: int,
         scale: float,
         batch_size: int,
+        character_prompts: tuple["NovelAI.CharacterPrompt", ...],
+        use_order: bool,
     ) -> dict[str, Any]:
         return {
             "params_version": 4,
@@ -212,19 +225,53 @@ class NovelAI:
             "n_samples": batch_size,
             "prompt": prompt,
             "negative_prompt": negative_prompt,
-            "v4_prompt": self._v4_condition(prompt),
-            "v4_negative_prompt": self._v4_condition(negative_prompt),
+            "v4_prompt": self._caption(
+                prompt,
+                tuple(item.positive for item in character_prompts),
+                character_prompts,
+                use_order,
+            ),
+            "v4_negative_prompt": self._caption(
+                negative_prompt,
+                tuple(item.negative for item in character_prompts),
+                character_prompts,
+                use_order,
+            ),
         }
 
-    def _v4_condition(self, caption: str) -> dict[str, Any]:
+    def _caption(
+        self,
+        base_caption: str,
+        char_captions: tuple[str, ...] = (),
+        character_prompts: tuple["NovelAI.CharacterPrompt", ...] = (),
+        use_order: bool = True,
+    ) -> dict[str, Any]:
+        use_coords = any(
+            item.x is not None and item.y is not None for item in character_prompts
+        )
         return {
             "caption": {
-                "base_caption": caption,
-                "char_captions": [],
+                "base_caption": base_caption,
+                "char_captions": [
+                    {
+                        "char_caption": text,
+                        "centers": [self._character_center(item)],
+                    }
+                    for text, item in zip(
+                        char_captions, character_prompts, strict=True
+                    )
+                ],
             },
-            "use_coords": False,
-            "use_order": True,
+            "use_coords": use_coords,
+            "use_order": use_order,
         }
+
+    def _character_center(
+        self, item: "NovelAI.CharacterPrompt"
+    ) -> dict[str, float]:
+        if item.x is not None and item.y is not None:
+            return {"x": item.x, "y": item.y}
+        return {"x": 0.5, "y": 0.5}
 
     def _post(
         self,

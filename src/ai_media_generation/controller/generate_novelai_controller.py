@@ -42,6 +42,16 @@ class GenerateNovelAiController:
                 spec.steps,
                 spec.scale,
                 args.batch_size,
+                tuple(
+                    NovelAI.CharacterPrompt(
+                        positive=character.positive_prompt,
+                        negative=character.negative_prompt,
+                        x=character.x,
+                        y=character.y,
+                    )
+                    for character in spec.characters
+                ),
+                spec.use_order,
             )
             written = novelai.write_images(images, directory)
             if written:

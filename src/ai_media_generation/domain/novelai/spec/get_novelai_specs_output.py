@@ -1,6 +1,17 @@
 from dataclasses import dataclass
 
-from ai_media_generation.domain.novelai.spec.novelai_spec import NovelAiSpec
+from ai_media_generation.domain.novelai.spec.novelai_spec import (
+    NovelAiCharacter,
+    NovelAiSpec,
+)
+
+
+@dataclass
+class NovelAiCharacterDto:
+    positive_prompt: str
+    negative_prompt: str
+    x: float | None
+    y: float | None
 
 
 @dataclass
@@ -14,6 +25,8 @@ class NovelAiSpecDto:
     sampler: str
     steps: int
     scale: float
+    characters: tuple[NovelAiCharacterDto, ...]
+    use_order: bool
 
 
 class GetNovelAiSpecsOutput:
@@ -32,7 +45,20 @@ class GetNovelAiSpecsOutput:
             sampler=spec.sampler,
             steps=spec.steps,
             scale=spec.scale,
+            characters=tuple(
+                _to_character_dto(character) for character in spec.characters
+            ),
+            use_order=spec.use_order,
         )
+
+
+def _to_character_dto(character: NovelAiCharacter) -> NovelAiCharacterDto:
+    return NovelAiCharacterDto(
+        positive_prompt=_join(character.positive),
+        negative_prompt=_join(character.negative),
+        x=character.x,
+        y=character.y,
+    )
 
 
 def _join(tags: tuple[str, ...]) -> str:
