@@ -10,9 +10,11 @@ class Config:
     ANIMA_SPEC_DIRECTORY = "anima/spec"
     NOVELAI_SPEC_DIRECTORY = "novelai/spec"
     NOVELAI_TEXT_SPEC_DIRECTORY = "novelai/text/spec"
-    NOVELAI_TEXT_SYSTEM_PROMPT_JSON = "system_prompt.json"
-    NOVELAI_TEXT_MEMORY_JSON = "memory.json"
+    NOVELAI_TEXT_SYSTEM_PROMPT = "system_prompt.txt"
+    NOVELAI_TEXT_MEMORY = "memory.txt"
     NOVELAI_TEXT_LOREBOOK_DIRECTORY = "lorebook"
+    NOVELAI_IMAGE_URL = "https://image.novelai.net"
+    NOVELAI_TEXT_URL = "https://text.novelai.net"
     ANIMAGINE_OUTPUT_DIRECTORY = "animagine/output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     QWEN_OUTPUT_DIRECTORY = "qwen/output"
@@ -73,14 +75,6 @@ class Config:
             raise ValueError("RUNPOD_TIMEOUT_SECONDS must be positive.")
         self.runpod_timeout_seconds = 600 if runpod_timeout is None else runpod_timeout
         self.novelai_api_token = _optional_text("NOVELAI_API_TOKEN")
-        image_url = _optional_text("NOVELAI_IMAGE_URL")
-        self.novelai_image_url = (
-            image_url.rstrip("/") if image_url else "https://image.novelai.net"
-        )
-        text_url = _optional_text("NOVELAI_TEXT_URL")
-        self.novelai_text_url = (
-            text_url.rstrip("/") if text_url else "https://text.novelai.net"
-        )
         novelai_timeout = _optional_int("NOVELAI_TIMEOUT_SECONDS")
         if novelai_timeout is not None and novelai_timeout <= 0:
             raise ValueError("NOVELAI_TIMEOUT_SECONDS must be positive.")
@@ -206,14 +200,12 @@ class Config:
         )
 
     @property
-    def novelai_text_system_prompt_json(self) -> Path:
-        return (
-            self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_SYSTEM_PROMPT_JSON
-        )
+    def novelai_text_system_prompt(self) -> Path:
+        return self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_SYSTEM_PROMPT
 
     @property
-    def novelai_text_memory_json(self) -> Path:
-        return self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_MEMORY_JSON
+    def novelai_text_memory(self) -> Path:
+        return self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_MEMORY
 
     @property
     def novelai_text_lorebook_directory(self) -> Path:

@@ -10,10 +10,7 @@ from ai_media_generation.domain.novelai.text.novelai_text_spec import (
 )
 from ai_media_generation.repository.json_io import (
     NOVELAI_TEXT_LOREBOOK_SCHEMA,
-    NOVELAI_TEXT_MEMORY_SCHEMA,
     NOVELAI_TEXT_SPEC_SCHEMA,
-    NOVELAI_TEXT_SYSTEM_PROMPT_SCHEMA,
-    SchemaResource,
     read_json,
     to_string_tuple,
 )
@@ -28,19 +25,18 @@ class NovelAiTextSpecRepository:
         directory = self._text_directory()
         paths = self._paths_for(directory, ids) if ids else self._json_paths(directory)
         system_prompt = self._context_text(
-            config.novelai_text_system_prompt_json,
-            NOVELAI_TEXT_SYSTEM_PROMPT_SCHEMA,
+            config.novelai_text_system_prompt,
             "system_prompt",
         )
         memory = self._context_text(
-            config.novelai_text_memory_json,
-            NOVELAI_TEXT_MEMORY_SCHEMA,
+            config.novelai_text_memory,
             "memory",
         )
         lorebooks = self._lorebooks(config.novelai_text_lorebook_directory)
         return tuple(
             self._to_text_spec(
                 read_json(path, NOVELAI_TEXT_SPEC_SCHEMA),
+                path,
                 self._id_for(directory, path),
                 system_prompt,
                 memory,
@@ -101,14 +97,20 @@ class NovelAiTextSpecRepository:
     def _to_text_spec(
         self,
         data: dict[str, Any],
+        path: Path,
         identifier: str,
         system_prompt: str,
         memory: str,
         lorebooks: tuple[NovelAiLorebook, ...],
     ) -> NovelAiTextSpec:
-        text = str(data.get("input") or "").strip()
+        text_path = path.with_suffix(".txt")
+        if not text_path.is_file():
+            raise FileNotFoundError(
+                f"NovelAI text opening not found: {identifier}.txt"
+            )
+        text = text_path.read_text(encoding="utf-8").strip()
         if not text:
-            raise ValueError("input is empty or missing.")
+            raise ValueError(f"NovelAI text {identifier} opening is empty.")
         model = str(data.get("model") or "").strip() or DEFAULT_MODEL
         output = str(data.get("output") or "").strip().replace("\\", "/")
         if output:
@@ -152,7 +154,12 @@ class NovelAiTextSpecRepository:
         identifier = self._id_for(directory, path)
         self._validate_id(identifier, "lorebook")
         data = read_json(path, NOVELAI_TEXT_LOREBOOK_SCHEMA)
-        text = str(data.get("text") or "").strip()
+        text_path = path.with_suffix(".txt")
+        if not text_path.is_file():
+            raise FileNotFoundError(
+                f"NovelAI lorebook text not found: {identifier}.txt"
+            )
+        text = text_path.read_text(encoding="utf-8").strip()
         if not text:
             raise ValueError(f"NovelAI lorebook {identifier} text is empty.")
         return NovelAiLorebook(
@@ -161,15 +168,13 @@ class NovelAiTextSpecRepository:
             keys=to_string_tuple(data.get("keys")),
         )
 
-    def _context_text(
-        self, path: Path, schema: SchemaResource, label: str
-    ) -> str:
+    def _context_text(self, path: Path, label: str) -> str:
         resolved = path.expanduser().resolve()
         if not resolved.exists():
             return ""
         if not resolved.is_file():
             raise ValueError(f"NovelAI {label} is not a file: {resolved}")
-        text = str(read_json(resolved, schema).get("text") or "").strip()
+        text = resolved.read_text(encoding="utf-8").strip()
         if not text:
             raise ValueError(f"NovelAI {label} text is empty.")
         return text

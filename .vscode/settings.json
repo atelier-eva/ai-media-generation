@@ -119,14 +119,6 @@
       "url": "./src/ai_media_generation/resources/novelai/text/novelai-text.schema.json"
     },
     {
-      "fileMatch": ["**/novelai/text/system_prompt.json"],
-      "url": "./src/ai_media_generation/resources/novelai/text/system_prompt.schema.json"
-    },
-    {
-      "fileMatch": ["**/novelai/text/memory.json"],
-      "url": "./src/ai_media_generation/resources/novelai/text/memory.schema.json"
-    },
-    {
       "fileMatch": [
         "**/novelai/text/lorebook/*.json",
         "**/novelai/text/lorebook/**/*.json"

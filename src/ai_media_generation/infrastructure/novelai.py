@@ -53,8 +53,8 @@ class NovelAI:
         if not token:
             raise ValueError("NOVELAI_API_TOKEN is not set.")
         self._token = token
-        self._image_url = config.novelai_image_url
-        self._text_url = config.novelai_text_url
+        self._image_url = Config.NOVELAI_IMAGE_URL
+        self._text_url = Config.NOVELAI_TEXT_URL
         self._timeout_seconds = config.novelai_timeout_seconds
 
     def generate_image(
