@@ -30,8 +30,6 @@ class NovelAiTextSpec:
             if (text := lorebook.text.strip())
         )
         parts = [part for part in (self.memory.strip(), *lore) if part]
-        if lore:
-            parts.append("***")
         return _JOIN.join(parts)
 
     def story(self) -> str:
