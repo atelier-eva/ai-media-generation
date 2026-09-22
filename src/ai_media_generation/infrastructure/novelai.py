@@ -24,6 +24,8 @@ _GENERATE_TEXT_PATH = "/ai/generate"
 
 
 class NovelAI:
+    _USER_AGENT = "ai-media-generation"
+
     @dataclass
     class SavedImage:
         filename: str
@@ -325,6 +327,7 @@ class NovelAI:
                 "Authorization": f"Bearer {self._token}",
                 "Content-Type": "application/json; charset=utf-8",
                 "Accept": accept,
+                "User-Agent": self._USER_AGENT,
                 "x-correlation-id": uuid4().hex[:6],
             },
             method="POST",
