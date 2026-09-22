@@ -18,7 +18,9 @@ class GenerateNovelAiTextController:
             nargs="*",
             help=(
                 "NovelAI text JSON paths under novelai/text/spec/, relative, "
-                "nested allowed (e.g. chapter/opening.json). Omit to generate every file."
+                "nested allowed (e.g. chapter/opening.json). "
+                "Each JSON requires a sibling .txt opening. "
+                "Omit to generate every file."
             ),
         )
         args = parser.parse_args(argv[2:])
