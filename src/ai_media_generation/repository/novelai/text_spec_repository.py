@@ -24,22 +24,12 @@ class NovelAiTextSpecRepository:
         config = Config()
         directory = self._text_directory()
         paths = self._paths_for(directory, ids) if ids else self._json_paths(directory)
-        system_prompt = self._context_text(
-            config.novelai_text_system_prompt,
-            "system_prompt",
-        )
-        memory = self._context_text(
-            config.novelai_text_memory,
-            "memory",
-        )
         lorebooks = self._lorebooks(config.novelai_text_lorebook_directory)
         return tuple(
             self._to_text_spec(
                 read_json(path, NOVELAI_TEXT_SPEC_SCHEMA),
                 path,
                 self._id_for(directory, path),
-                system_prompt,
-                memory,
                 lorebooks,
             )
             for path in paths
@@ -99,8 +89,6 @@ class NovelAiTextSpecRepository:
         data: dict[str, Any],
         path: Path,
         identifier: str,
-        system_prompt: str,
-        memory: str,
         lorebooks: tuple[NovelAiLorebook, ...],
     ) -> NovelAiTextSpec:
         text_path = path.with_suffix(".txt")
@@ -125,8 +113,8 @@ class NovelAiTextSpecRepository:
                 if data.get("max_length") is None
                 else int(data["max_length"])
             ),
-            system_prompt=system_prompt,
-            memory=memory,
+            system_prompt=self._system_prompt(model),
+            memory=self._memory(model),
             lorebooks=lorebooks,
             output=output,
             previous=(
@@ -167,6 +155,18 @@ class NovelAiTextSpecRepository:
             text=text,
             keys=to_string_tuple(data.get("keys")),
         )
+
+    def _memory(self, model: str) -> str:
+        return self._context_text(
+            Config().novelai_text_memory(model),
+            "memory",
+        )
+
+    def _system_prompt(self, model: str) -> str:
+        path = Config().novelai_text_system_prompt(model)
+        if path is None:
+            return ""
+        return self._context_text(path, "system_prompt")
 
     def _context_text(self, path: Path, label: str) -> str:
         resolved = path.expanduser().resolve()
