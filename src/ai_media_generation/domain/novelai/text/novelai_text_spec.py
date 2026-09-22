@@ -13,6 +13,7 @@ class NovelAiTextSpec:
     input: str
     model: str = DEFAULT_MODEL
     max_length: int = DEFAULT_MAX_LENGTH
+    stop: tuple[str, ...] = ()
     system_prompt: str = ""
     memory: str = ""
     lorebooks: tuple[NovelAiLorebook, ...] = ()
@@ -20,8 +21,6 @@ class NovelAiTextSpec:
     previous: tuple[str, ...] = ()
 
     def system_prompt_text(self) -> str:
-        if self.model == "xialong-v1":
-            return ""
         return self.system_prompt.strip()
 
     def assembled_input(self) -> str:
@@ -36,7 +35,7 @@ class NovelAiTextSpec:
         )
 
     def story(self) -> str:
-        return "".join((self.input.strip(), *self.previous))
+        return "".join((self.input, *self.previous))
 
     def _active_lorebooks(self) -> tuple[NovelAiLorebook, ...]:
         return tuple(

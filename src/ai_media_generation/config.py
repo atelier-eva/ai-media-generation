@@ -10,7 +10,6 @@ class Config:
     ANIMA_SPEC_DIRECTORY = "anima/spec"
     NOVELAI_SPEC_DIRECTORY = "novelai/spec"
     NOVELAI_TEXT_SPEC_DIRECTORY = "novelai/text/spec"
-    NOVELAI_TEXT_SYSTEM_PROMPT = "system_prompt.glm-4-6.txt"
     NOVELAI_TEXT_LOREBOOK_DIRECTORY = "lorebook"
     NOVELAI_IMAGE_URL = "https://image.novelai.net"
     NOVELAI_TEXT_URL = "https://text.novelai.net"

@@ -14,6 +14,10 @@ _JSON_FILES = (
     "scene.json",
 )
 _CHARACTERS_DIRECTORY = "characters"
+_NOVELAI_TEXT_SYSTEM_PROMPTS = (
+    "system_prompt.xialong-v1.txt",
+    "system_prompt.glm-4-6.txt",
+)
 _NOVELAI_TEXT_MEMORY_EXAMPLES = (
     "memory.xialong-v1.example",
     "memory.glm-4-6.example",
@@ -40,8 +44,8 @@ class InitController:
                 f"Anima spec templates go in {Config.ANIMA_SPEC_DIRECTORY}/. "
                 f"NovelAI spec templates go in {Config.NOVELAI_SPEC_DIRECTORY}/. "
                 f"NovelAI text spec templates go in {Config.NOVELAI_TEXT_SPEC_DIRECTORY}/. "
-                "NovelAI text system prompt for glm-4-6 goes in "
-                f"{(Path(Config.NOVELAI_TEXT_SPEC_DIRECTORY).parent / Config.NOVELAI_TEXT_SYSTEM_PROMPT).as_posix()}. "
+                "NovelAI text system prompts go in "
+                f"{Path(Config.NOVELAI_TEXT_SPEC_DIRECTORY).parent.as_posix()}/system_prompt.<model>.txt. "
                 "NovelAI text memory goes in "
                 f"{Path(Config.NOVELAI_TEXT_SPEC_DIRECTORY).parent.as_posix()}/memory.<model>.example. "
                 f"NovelAI text lorebook templates go in "
@@ -112,11 +116,12 @@ class InitController:
             args.force,
         )
         text_root = novelai_text.parent
-        self._write_resource(
-            ("novelai", "text", Config.NOVELAI_TEXT_SYSTEM_PROMPT),
-            text_root / Config.NOVELAI_TEXT_SYSTEM_PROMPT,
-            args.force,
-        )
+        for name in _NOVELAI_TEXT_SYSTEM_PROMPTS:
+            self._write_resource(
+                ("novelai", "text", name),
+                text_root / name,
+                args.force,
+            )
         for name in _NOVELAI_TEXT_MEMORY_EXAMPLES:
             self._write_resource(
                 ("novelai", "text", name),
@@ -170,10 +175,7 @@ class InitController:
         print(f"Anima spec directory: {anima}")
         print(f"NovelAI spec directory: {novelai}")
         print(f"NovelAI text spec directory: {novelai_text}")
-        print(
-            "NovelAI text system prompt: "
-            f"{text_root / Config.NOVELAI_TEXT_SYSTEM_PROMPT}"
-        )
+        print(f"NovelAI text system prompt: {text_root}/system_prompt.<model>.txt")
         print(f"NovelAI text memory: {text_root}/memory.<model>.example")
         print(f"NovelAI text lorebook directory: {novelai_text_lorebook}")
         print(f"Anima LoRA training spec directory: {anima_lora_training}")

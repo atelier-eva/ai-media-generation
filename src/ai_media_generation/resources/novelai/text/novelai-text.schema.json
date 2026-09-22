@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/novelai/text/novelai-text.schema.json",
   "title": "NovelAI text (novelai/text/spec/**/*.json)",
-  "description": "One settings JSON per entry under novelai/text/spec/, including subfolders. Opening story text is the sibling .txt with the same stem (required). The path relative to novelai/text/spec/ without .json is the spec id. When output is omitted, the saved filename is that id with .txt (nested folders preserved). When output is set, numbered files 001.txt, 002.txt, ... are written under that relative directory of novelai/text/output/ without overwriting, and existing numbered files are concatenated after the opening .txt without separators as the story. The request model is this JSON object's model. When model is glm-4-6, novelai/text/system_prompt.glm-4-6.txt is sent as a system message when non-empty. A missing or empty file is omitted. Other models send no system message. novelai/text/memory.<model>.example, when non-empty, matching novelai/text/lorebook/ entries, and the story are joined by blank lines and sent as one user message to /oa/v1/chat/completions. A missing or empty memory file is omitted. Lorebook files activate when the file stem or keys are a case-insensitive substring of that story. When omitted, model is xialong-v1 and max_length is 300. Requests send temperature 0.85 and enable_thinking false. The spec sample for a model is novelai/text/spec/example.<model>.json with the sibling .txt. <model> is this object's model, or xialong-v1 when model is omitted.",
+  "description": "One settings JSON per entry under novelai/text/spec/, including subfolders. Opening story text is the sibling .txt with the same stem (required). The path relative to novelai/text/spec/ without .json is the spec id. When output is omitted, the saved filename is that id with .txt (nested folders preserved). When output is set, numbered files 001.txt, 002.txt, ... are written under that relative directory of novelai/text/output/ without overwriting, and existing numbered files are concatenated after the opening .txt without separators as the story, keeping the opening .txt trailing whitespace. The request model is this JSON object's model. novelai/text/system_prompt.<model>.txt is the system prompt when non-empty. A missing or empty file uses the built-in Xialong default for xialong-v1, and sends no system prompt text for glm-4-6. novelai/text/memory.<model>.example, when non-empty, matching novelai/text/lorebook/ entries, and the story are joined by blank lines. A missing or empty memory file is omitted. The request is POST /oa/v1/completions. The prompt is [gMASK]<|system|>, the system prompt, <|user|>, /nothink<|assistant|>, then that joined text at the end. The new text is choices[0].text. The prompt is rejected above 28672 characters. A leading <think> block in that text is omitted. Lorebook files activate when a key is a case-insensitive substring of that story. When omitted, model is xialong-v1 and max_length is 300. Requests send temperature 0.85 for xialong-v1 and 1.0 for glm-4-6. stop, when non-empty, is sent as stop. The spec sample for a model is novelai/text/spec/example.<model>.json with the sibling .txt. <model> is this object's model, or xialong-v1 when model is omitted.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -16,10 +16,16 @@
       "minimum": 1,
       "description": "Maximum generation length in tokens, sent as max_tokens. When omitted, 300 is used."
     },
+    "stop": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "description": "Stop sequences, sent as stop. Generation stops when one appears. Omit to send no stop."
+    },
     "output": {
       "type": "string",
       "minLength": 1,
-      "description": "Relative directory under novelai/text/output/ (or NOVELAI_TEXT_OUTPUT_DIRECTORY). Nested folders allowed. Absolute paths and .. are invalid. Existing numbered files 001.txt, 002.txt, ... are concatenated after the opening .txt without separators. The new file is only this run's continuation and does not overwrite earlier numbers. When omitted, the saved filename is the spec id with .txt (nested folders preserved), overwritten each run."
+      "description": "Relative directory under novelai/text/output/ (or NOVELAI_TEXT_OUTPUT_DIRECTORY). Nested folders allowed. Absolute paths and .. are invalid. Existing numbered files 001.txt, 002.txt, ... are concatenated after the opening .txt without separators, keeping the opening .txt trailing whitespace. The new file is only this run's continuation and does not overwrite earlier numbers. When omitted, the saved filename is the spec id with .txt (nested folders preserved), overwritten each run."
     }
   }
 }

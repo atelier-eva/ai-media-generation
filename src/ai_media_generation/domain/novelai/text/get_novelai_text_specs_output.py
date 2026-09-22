@@ -11,6 +11,7 @@ class NovelAiTextSpecDto:
     max_length: int
     output: str
     system_prompt: str = ""
+    stop: tuple[str, ...] = ()
 
 
 class GetNovelAiTextSpecsOutput:
@@ -26,4 +27,5 @@ class GetNovelAiTextSpecsOutput:
             max_length=spec.max_length,
             output=spec.output,
             system_prompt=spec.system_prompt_text(),
+            stop=spec.stop,
         )

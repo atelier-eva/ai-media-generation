@@ -96,8 +96,8 @@ class NovelAiTextSpecRepository:
             raise FileNotFoundError(
                 f"NovelAI text opening not found: {identifier}.txt"
             )
-        text = text_path.read_text(encoding="utf-8").strip()
-        if not text:
+        text = text_path.read_text(encoding="utf-8").lstrip()
+        if not text.strip():
             raise ValueError(f"NovelAI text {identifier} opening is empty.")
         model = str(data.get("model") or "").strip() or DEFAULT_MODEL
         output = str(data.get("output") or "").strip().replace("\\", "/")
@@ -113,6 +113,7 @@ class NovelAiTextSpecRepository:
                 if data.get("max_length") is None
                 else int(data["max_length"])
             ),
+            stop=to_string_tuple(data.get("stop")),
             system_prompt=self._system_prompt(model),
             memory=self._memory(model),
             lorebooks=lorebooks,

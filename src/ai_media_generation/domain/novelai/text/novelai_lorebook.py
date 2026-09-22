@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from pathlib import Path
 
 
 @dataclass
@@ -9,12 +8,11 @@ class NovelAiLorebook:
     keys: tuple[str, ...] = ()
 
     def activation_keys(self) -> tuple[str, ...]:
-        stem = Path(self.id).name
-        keys = [stem]
-        seen = {stem.casefold()}
+        keys: list[str] = []
+        seen: set[str] = set()
         for key in self.keys:
             folded = key.casefold()
-            if folded in seen:
+            if not folded or folded in seen:
                 continue
             seen.add(folded)
             keys.append(key)
