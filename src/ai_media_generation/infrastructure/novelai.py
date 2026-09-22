@@ -153,6 +153,7 @@ class NovelAI:
         prompt: str,
         model: str = _DEFAULT_TEXT_MODEL,
         max_length: int = 100,
+        system_prompt: str = "",
     ) -> tuple["NovelAI.SavedText", ...]:
         prefix = self._filename_prefix(filename_prefix)
         text = prompt.strip()
@@ -169,7 +170,7 @@ class NovelAI:
                 _GENERATE_TEXT_PATH,
                 {
                     "model": model_name,
-                    "messages": [{"role": "user", "content": text}],
+                    "messages": self._text_messages(text, system_prompt),
                     "max_tokens": max_length,
                     "stream": False,
                 },
@@ -180,6 +181,15 @@ class NovelAI:
                 "NovelAI generation succeeded without text."
             )
         return (NovelAI.SavedText(filename=f"{prefix}.txt", text=output),)
+
+    @staticmethod
+    def _text_messages(prompt: str, system_prompt: str) -> list[dict[str, str]]:
+        system = system_prompt.strip()
+        messages: list[dict[str, str]] = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt})
+        return messages
 
     def write_text(
         self, texts: tuple["NovelAI.SavedText", ...], directory: Path

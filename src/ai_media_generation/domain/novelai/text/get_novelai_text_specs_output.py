@@ -10,6 +10,7 @@ class NovelAiTextSpecDto:
     model: str
     max_length: int
     output: str
+    system_prompt: str = ""
 
 
 class GetNovelAiTextSpecsOutput:
@@ -24,4 +25,5 @@ class GetNovelAiTextSpecsOutput:
             model=spec.model,
             max_length=spec.max_length,
             output=spec.output,
+            system_prompt=spec.system_prompt_text(),
         )

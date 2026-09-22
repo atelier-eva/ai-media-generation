@@ -44,6 +44,7 @@ class GenerateNovelAiTextController:
                 spec.input,
                 spec.model,
                 spec.max_length,
+                spec.system_prompt,
             )
             written = novelai.write_text(texts, directory)
             if written:

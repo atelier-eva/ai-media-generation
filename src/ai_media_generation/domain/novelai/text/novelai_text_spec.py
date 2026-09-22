@@ -19,11 +19,13 @@ class NovelAiTextSpec:
     output: str = ""
     previous: tuple[str, ...] = ()
 
+    def system_prompt_text(self) -> str:
+        return self.system_prompt.strip()
+
     def assembled_input(self) -> str:
         return _JOIN.join(
             part
             for part in (
-                self.system_prompt.strip(),
                 self.memory.strip(),
                 *(lorebook.text.strip() for lorebook in self._active_lorebooks()),
                 self.story(),
