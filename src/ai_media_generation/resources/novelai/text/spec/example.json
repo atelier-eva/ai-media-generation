@@ -1,5 +1,5 @@
 {
   "model": "xialong-v1",
   "output": "example",
-  "max_length": 100
+  "max_length": 300
 }

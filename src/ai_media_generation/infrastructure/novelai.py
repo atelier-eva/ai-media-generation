@@ -19,6 +19,8 @@ _DEFAULT_SAMPLER = "k_euler_ancestral"
 _DEFAULT_I2I_STRENGTH = 0.7
 _DEFAULT_I2I_NOISE = 0.0
 _DEFAULT_TEXT_MODEL = "xialong-v1"
+_DEFAULT_TEXT_MAX_LENGTH = 300
+_DEFAULT_TEXT_TEMPERATURE = 0.85
 _GENERATE_IMAGE_PATH = "/ai/generate-image"
 _GENERATE_TEXT_PATH = "/oa/v1/chat/completions"
 
@@ -152,7 +154,7 @@ class NovelAI:
         filename_prefix: str,
         prompt: str,
         model: str = _DEFAULT_TEXT_MODEL,
-        max_length: int = 100,
+        max_length: int = _DEFAULT_TEXT_MAX_LENGTH,
         system_prompt: str = "",
     ) -> tuple["NovelAI.SavedText", ...]:
         prefix = self._filename_prefix(filename_prefix)
@@ -172,6 +174,8 @@ class NovelAI:
                     "model": model_name,
                     "messages": self._text_messages(text, system_prompt),
                     "max_tokens": max_length,
+                    "temperature": _DEFAULT_TEXT_TEMPERATURE,
+                    "enable_thinking": False,
                     "stream": False,
                 },
             )

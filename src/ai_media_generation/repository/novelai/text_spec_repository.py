@@ -174,7 +174,4 @@ class NovelAiTextSpecRepository:
             return ""
         if not resolved.is_file():
             raise ValueError(f"NovelAI {label} is not a file: {resolved}")
-        text = resolved.read_text(encoding="utf-8").strip()
-        if not text:
-            raise ValueError(f"NovelAI {label} text is empty.")
-        return text
+        return resolved.read_text(encoding="utf-8").strip()

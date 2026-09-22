@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from ai_media_generation.domain.novelai.text.novelai_lorebook import NovelAiLorebook
 
 DEFAULT_MODEL = "xialong-v1"
-DEFAULT_MAX_LENGTH = 100
+DEFAULT_MAX_LENGTH = 300
 _JOIN = "\n\n"
 
 
