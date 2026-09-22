@@ -166,6 +166,7 @@ class NovelAI:
         max_length: int = _DEFAULT_TEXT_MAX_LENGTH,
         system_prompt: str = "",
         stop: tuple[str, ...] = (),
+        context: str = "",
     ) -> tuple["NovelAI.SavedText", ...]:
         prefix = self._filename_prefix(filename_prefix)
         if not prompt.strip():
@@ -179,7 +180,9 @@ class NovelAI:
         sequences = self._stop_sequences(stop)
         body: dict[str, Any] = {
             "model": model_name,
-            "prompt": self._completion_prompt(text, system_prompt, model_name),
+            "prompt": self._completion_prompt(
+                text, context, system_prompt, model_name
+            ),
             "max_tokens": max_length,
             "temperature": self._text_temperature(model_name),
             "stream": False,
@@ -197,13 +200,18 @@ class NovelAI:
         return (NovelAI.SavedText(filename=f"{prefix}.txt", text=output),)
 
     @staticmethod
-    def _completion_prompt(story: str, system_prompt: str, model: str) -> str:
+    def _completion_prompt(
+        story: str, context: str, system_prompt: str, model: str
+    ) -> str:
         system = system_prompt.strip()
         if not system and model != _GLM_TEXT_MODEL:
             system = _XIALONG_SYSTEM_PROMPT
+        user = context.strip()
+        user_block = f"{user}\n" if user else ""
         return (
-            "[gMASK]<|system|>\n"
+            "[gMASK]<sop><|system|>\n"
             f"{system}<|user|>\n"
+            f"{user_block}"
             "/nothink<|assistant|>\n"
             f"{story}"
         )

@@ -12,6 +12,7 @@ class NovelAiTextSpecDto:
     output: str
     system_prompt: str = ""
     stop: tuple[str, ...] = ()
+    context: str = ""
 
 
 class GetNovelAiTextSpecsOutput:
@@ -22,10 +23,11 @@ class GetNovelAiTextSpecsOutput:
     def _to_dto(spec: NovelAiTextSpec) -> NovelAiTextSpecDto:
         return NovelAiTextSpecDto(
             id=spec.id,
-            input=spec.assembled_input(),
+            input=spec.story(),
             model=spec.model,
             max_length=spec.max_length,
             output=spec.output,
             system_prompt=spec.system_prompt_text(),
             stop=spec.stop,
+            context=spec.context(),
         )

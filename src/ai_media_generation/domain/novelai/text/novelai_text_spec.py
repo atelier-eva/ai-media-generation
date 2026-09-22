@@ -23,16 +23,16 @@ class NovelAiTextSpec:
     def system_prompt_text(self) -> str:
         return self.system_prompt.strip()
 
-    def assembled_input(self) -> str:
-        return _JOIN.join(
-            part
-            for part in (
-                self.memory.strip(),
-                *(lorebook.text.strip() for lorebook in self._active_lorebooks()),
-                self.story(),
-            )
-            if part
+    def context(self) -> str:
+        lore = tuple(
+            text
+            for lorebook in self._active_lorebooks()
+            if (text := lorebook.text.strip())
         )
+        parts = [part for part in (self.memory.strip(), *lore) if part]
+        if lore:
+            parts.append("***")
+        return _JOIN.join(parts)
 
     def story(self) -> str:
         return "".join((self.input, *self.previous))

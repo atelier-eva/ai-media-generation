@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/novelai/text/lorebook.schema.json",
   "title": "NovelAI text lorebook (novelai/text/lorebook/**/*.json)",
-  "description": "One lorebook entry per JSON file under novelai/text/lorebook/, including subfolders. Body text is the sibling .txt with the same stem (required). Activation uses keys only. An entry is included when any key is a case-insensitive substring of the spec story (opening .txt plus numbered output files when output is set). An entry with no keys is never included. Matching entries are inserted after memory and before that story, in sorted file order, joined by blank lines. Omit the directory to skip. Always-on facts belong in memory.<model>.example, not here.",
+  "description": "One lorebook entry per JSON file under novelai/text/lorebook/, including subfolders. Body text is the sibling .txt with the same stem (required). Activation uses keys only. An entry is included when any key is a case-insensitive substring of the spec story (opening .txt plus numbered output files when output is set). An entry with no keys is never included. Matching entries are placed after memory in the user block, before ***, in sorted file order, joined by blank lines. The story follows /nothink<|assistant|>. Omit the directory to skip. Always-on facts belong in memory.<model>.example, not here.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
