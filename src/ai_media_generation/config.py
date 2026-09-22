@@ -13,6 +13,8 @@ class Config:
     NOVELAI_TEXT_SYSTEM_PROMPT = "system_prompt.txt"
     NOVELAI_TEXT_MEMORY = "memory.txt"
     NOVELAI_TEXT_LOREBOOK_DIRECTORY = "lorebook"
+    NOVELAI_IMAGE_URL = "https://image.novelai.net"
+    NOVELAI_TEXT_URL = "https://text.novelai.net"
     ANIMAGINE_OUTPUT_DIRECTORY = "animagine/output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     QWEN_OUTPUT_DIRECTORY = "qwen/output"
@@ -73,14 +75,6 @@ class Config:
             raise ValueError("RUNPOD_TIMEOUT_SECONDS must be positive.")
         self.runpod_timeout_seconds = 600 if runpod_timeout is None else runpod_timeout
         self.novelai_api_token = _optional_text("NOVELAI_API_TOKEN")
-        image_url = _optional_text("NOVELAI_IMAGE_URL")
-        self.novelai_image_url = (
-            image_url.rstrip("/") if image_url else "https://image.novelai.net"
-        )
-        text_url = _optional_text("NOVELAI_TEXT_URL")
-        self.novelai_text_url = (
-            text_url.rstrip("/") if text_url else "https://text.novelai.net"
-        )
         novelai_timeout = _optional_int("NOVELAI_TIMEOUT_SECONDS")
         if novelai_timeout is not None and novelai_timeout <= 0:
             raise ValueError("NOVELAI_TIMEOUT_SECONDS must be positive.")
