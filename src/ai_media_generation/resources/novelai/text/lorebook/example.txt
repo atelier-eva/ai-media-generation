@@ -1,1 +1,7 @@
-Galena is the Witch of the Tower.
+xialong-v1
+----
+Characters:
+ガレナは塔の魔女である。
+
+glm-4-6
+ガレナは塔の魔女である。
