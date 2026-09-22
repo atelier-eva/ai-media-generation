@@ -18,9 +18,20 @@ _DEFAULT_MODEL = "nai-diffusion-5-full"
 _DEFAULT_SAMPLER = "k_euler_ancestral"
 _DEFAULT_I2I_STRENGTH = 0.7
 _DEFAULT_I2I_NOISE = 0.0
-_DEFAULT_TEXT_MODEL = "llama-3-erato-v1"
+_DEFAULT_TEXT_MODEL = "xialong-v1"
+_DEFAULT_TEXT_MAX_LENGTH = 300
+_DEFAULT_TEXT_TEMPERATURE = 0.85
+_GLM_TEXT_MODEL = "glm-4-6"
+_GLM_TEXT_TEMPERATURE = 1.0
+_XIALONG_SYSTEM_PROMPT = (
+    "You are Xialong (夏龍), an AI model finetuned by Anlatan. "
+    "You follow the user's instructions precisely while bringing creativity, "
+    "nuance, and depth to every response. Adapt your voice and style to match "
+    "what the task demands."
+)
+_TEXT_CONTEXT_CHARACTERS = 28672
 _GENERATE_IMAGE_PATH = "/ai/generate-image"
-_GENERATE_TEXT_PATH = "/ai/generate"
+_GENERATE_TEXT_PATH = "/oa/v1/completions"
 
 
 class NovelAI:
@@ -152,37 +163,80 @@ class NovelAI:
         filename_prefix: str,
         prompt: str,
         model: str = _DEFAULT_TEXT_MODEL,
-        max_length: int = 100,
+        max_length: int = _DEFAULT_TEXT_MAX_LENGTH,
+        system_prompt: str = "",
+        stop: tuple[str, ...] = (),
+        context: str = "",
     ) -> tuple["NovelAI.SavedText", ...]:
         prefix = self._filename_prefix(filename_prefix)
-        text = prompt.strip()
-        if not text:
+        if not prompt.strip():
             raise ValueError("input is empty.")
+        text = prompt.lstrip()
         model_name = model.strip()
         if not model_name:
             raise ValueError("model is empty.")
         if max_length <= 0:
             raise ValueError("max_length must be positive.")
+        sequences = self._stop_sequences(stop)
+        body: dict[str, Any] = {
+            "model": model_name,
+            "prompt": self._completion_prompt(
+                text, context, system_prompt, model_name
+            ),
+            "max_tokens": max_length,
+            "temperature": self._text_temperature(model_name),
+            "stream": False,
+        }
+        if sequences:
+            body["stop"] = list(sequences)
+        self._require_text_context(str(body["prompt"]))
         output = self._text_from_response(
-            self._post(
-                self._text_url,
-                _GENERATE_TEXT_PATH,
-                {
-                    "input": text,
-                    "model": model_name,
-                    "parameters": {
-                        "logit_bias_exp": [],
-                        "max_length": max_length,
-                        "use_string": True,
-                    },
-                },
-            )
+            self._post(self._text_url, _GENERATE_TEXT_PATH, body)
         )
         if not output.strip():
             raise InfrastructureError(
                 "NovelAI generation succeeded without text."
             )
         return (NovelAI.SavedText(filename=f"{prefix}.txt", text=output),)
+
+    @staticmethod
+    def _completion_prompt(
+        story: str, context: str, system_prompt: str, model: str
+    ) -> str:
+        system = system_prompt.strip()
+        if not system and model != _GLM_TEXT_MODEL:
+            system = _XIALONG_SYSTEM_PROMPT
+        user = context.strip()
+        user_block = f"{user}\n" if user else ""
+        return (
+            "[gMASK]<sop><|system|>\n"
+            f"{system}<|user|>\n"
+            f"{user_block}"
+            "/nothink<|assistant|>\n"
+            f"{story}"
+        )
+
+    @staticmethod
+    def _require_text_context(prompt: str) -> None:
+        count = len(prompt)
+        if count > _TEXT_CONTEXT_CHARACTERS:
+            raise ValueError(
+                f"NovelAI text prompt is {count} characters. "
+                f"The limit is {_TEXT_CONTEXT_CHARACTERS}."
+            )
+
+    @staticmethod
+    def _text_temperature(model: str) -> float:
+        if model == _GLM_TEXT_MODEL:
+            return _GLM_TEXT_TEMPERATURE
+        return _DEFAULT_TEXT_TEMPERATURE
+
+    @staticmethod
+    def _stop_sequences(stop: tuple[str, ...]) -> tuple[str, ...]:
+        sequences = tuple(item.strip() for item in stop)
+        if any(not item for item in sequences):
+            raise ValueError("stop sequence is empty.")
+        return sequences
 
     def write_text(
         self, texts: tuple["NovelAI.SavedText", ...], directory: Path
@@ -359,18 +413,38 @@ class NovelAI:
             loaded = json.loads(payload.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
             raise InfrastructureError(
-                "NovelAI /ai/generate did not return JSON."
+                "NovelAI /oa/v1/completions did not return JSON."
             ) from error
         if not isinstance(loaded, dict):
             raise InfrastructureError(
-                "NovelAI /ai/generate did not return an object."
+                "NovelAI /oa/v1/completions did not return an object."
             )
-        output = loaded.get("output")
-        if not isinstance(output, str):
+        choices = loaded.get("choices")
+        if not isinstance(choices, list) or not choices:
             raise InfrastructureError(
-                "NovelAI /ai/generate JSON did not include output."
+                "NovelAI /oa/v1/completions JSON did not include choices."
             )
-        return output
+        choice = choices[0]
+        if not isinstance(choice, dict):
+            raise InfrastructureError(
+                "NovelAI /oa/v1/completions JSON choice was not an object."
+            )
+        content = choice.get("text")
+        if not isinstance(content, str):
+            raise InfrastructureError(
+                "NovelAI /oa/v1/completions JSON did not include text."
+            )
+        return self._without_thinking(content)
+
+    @staticmethod
+    def _without_thinking(text: str) -> str:
+        stripped = text.lstrip()
+        if not stripped.startswith("<think>"):
+            return text
+        end = stripped.find("</think>")
+        if end < 0:
+            return text
+        return stripped[end + len("</think>") :].lstrip("\n")
 
     def _images_from_response(self, payload: bytes) -> tuple[bytes, ...]:
         if payload.startswith(b"{") or payload.startswith(b"["):

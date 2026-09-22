@@ -1,1 +1,3 @@
-Galena is the Witch of the Tower.
+----
+Characters:
+ガレナは塔の魔女である。

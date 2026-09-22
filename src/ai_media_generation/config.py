@@ -10,8 +10,6 @@ class Config:
     ANIMA_SPEC_DIRECTORY = "anima/spec"
     NOVELAI_SPEC_DIRECTORY = "novelai/spec"
     NOVELAI_TEXT_SPEC_DIRECTORY = "novelai/text/spec"
-    NOVELAI_TEXT_SYSTEM_PROMPT = "system_prompt.txt"
-    NOVELAI_TEXT_MEMORY = "memory.txt"
     NOVELAI_TEXT_LOREBOOK_DIRECTORY = "lorebook"
     NOVELAI_IMAGE_URL = "https://image.novelai.net"
     NOVELAI_TEXT_URL = "https://text.novelai.net"
@@ -199,13 +197,11 @@ class Config:
             "NOVELAI_TEXT_SPEC_DIRECTORY", self.NOVELAI_TEXT_SPEC_DIRECTORY
         )
 
-    @property
-    def novelai_text_system_prompt(self) -> Path:
-        return self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_SYSTEM_PROMPT
+    def novelai_text_system_prompt(self, model: str) -> Path:
+        return self.novelai_text_spec_directory.parent / f"system_prompt.{model}.txt"
 
-    @property
-    def novelai_text_memory(self) -> Path:
-        return self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_MEMORY
+    def novelai_text_memory(self, model: str) -> Path:
+        return self.novelai_text_spec_directory.parent / f"memory.{model}.example"
 
     @property
     def novelai_text_lorebook_directory(self) -> Path:
