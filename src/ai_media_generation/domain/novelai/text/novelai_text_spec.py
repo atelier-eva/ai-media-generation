@@ -20,6 +20,8 @@ class NovelAiTextSpec:
     previous: tuple[str, ...] = ()
 
     def system_prompt_text(self) -> str:
+        if self.model == "xialong-v1":
+            return ""
         return self.system_prompt.strip()
 
     def assembled_input(self) -> str:

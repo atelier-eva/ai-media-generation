@@ -163,10 +163,10 @@ class NovelAiTextSpecRepository:
         )
 
     def _system_prompt(self, model: str) -> str:
-        path = Config().novelai_text_system_prompt(model)
-        if path is None:
-            return ""
-        return self._context_text(path, "system_prompt")
+        return self._context_text(
+            Config().novelai_text_system_prompt(model),
+            "system_prompt",
+        )
 
     def _context_text(self, path: Path, label: str) -> str:
         resolved = path.expanduser().resolve()

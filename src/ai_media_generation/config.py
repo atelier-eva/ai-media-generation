@@ -198,10 +198,8 @@ class Config:
             "NOVELAI_TEXT_SPEC_DIRECTORY", self.NOVELAI_TEXT_SPEC_DIRECTORY
         )
 
-    def novelai_text_system_prompt(self, model: str) -> Path | None:
-        if model != "glm-4-6":
-            return None
-        return self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_SYSTEM_PROMPT
+    def novelai_text_system_prompt(self, model: str) -> Path:
+        return self.novelai_text_spec_directory.parent / f"system_prompt.{model}.txt"
 
     def novelai_text_memory(self, model: str) -> Path:
         return self.novelai_text_spec_directory.parent / f"memory.{model}.example"
