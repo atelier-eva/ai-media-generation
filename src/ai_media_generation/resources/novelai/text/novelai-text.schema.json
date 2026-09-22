@@ -2,20 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://local.spec/novelai/text/novelai-text.schema.json",
   "title": "NovelAI text (novelai/text/spec/**/*.json)",
-  "description": "One settings JSON per entry under novelai/text/spec/, including subfolders. Opening story text is the sibling .txt with the same stem (required). The path relative to novelai/text/spec/ without .json is the spec id. When output is omitted, the saved filename is that id with .txt (nested folders preserved). When output is set, numbered files 001.txt, 002.txt, ... are written under that relative directory of novelai/text/output/ without overwriting, and existing numbered files are concatenated after the opening .txt without separators as the story. Optional novelai/text/system_prompt.txt, novelai/text/memory.txt, and matching novelai/text/lorebook/ entries are prepended in that order, joined by blank lines, and sent as the single /ai/generate input. Lorebook files activate when the file stem or keys are a case-insensitive substring of that story. When omitted, model is llama-3-erato-v1 and max_length is 100. Trial accounts may only use kayra-v1. Tablet and Scroll cap max_length at 150; Opus at 250.",
+  "description": "One settings JSON per entry under novelai/text/spec/, including subfolders. Opening story text is the sibling .txt with the same stem (required). The path relative to novelai/text/spec/ without .json is the spec id. When output is omitted, the saved filename is that id with .txt (nested folders preserved). When output is set, numbered files 001.txt, 002.txt, ... are written under that relative directory of novelai/text/output/ without overwriting, and existing numbered files are concatenated after the opening .txt without separators as the story. Optional novelai/text/system_prompt.txt, novelai/text/memory.txt, and matching novelai/text/lorebook/ entries are prepended in that order, joined by blank lines, and sent as one user message to /oa/v1/chat/completions. Lorebook files activate when the file stem or keys are a case-insensitive substring of that story. When omitted, model is xialong-v1 and max_length is 100. xialong-v1 is Opus only; glm-4-6 is available on every tier.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "model": {
       "type": "string",
-      "enum": ["llama-3-erato-v1", "kayra-v1"],
-      "description": "NovelAI text model. When omitted, llama-3-erato-v1 is used."
+      "enum": ["xialong-v1", "glm-4-6"],
+      "description": "NovelAI text model. When omitted, xialong-v1 is used. xialong-v1 requires Opus."
     },
     "max_length": {
       "type": "integer",
       "minimum": 1,
-      "maximum": 250,
-      "description": "Maximum generation length in tokens. When omitted, 100 is used."
+      "description": "Maximum generation length in tokens, sent as max_tokens. When omitted, 100 is used."
     },
     "output": {
       "type": "string",

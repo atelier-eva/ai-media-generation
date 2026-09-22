@@ -18,9 +18,9 @@ _DEFAULT_MODEL = "nai-diffusion-5-full"
 _DEFAULT_SAMPLER = "k_euler_ancestral"
 _DEFAULT_I2I_STRENGTH = 0.7
 _DEFAULT_I2I_NOISE = 0.0
-_DEFAULT_TEXT_MODEL = "llama-3-erato-v1"
+_DEFAULT_TEXT_MODEL = "xialong-v1"
 _GENERATE_IMAGE_PATH = "/ai/generate-image"
-_GENERATE_TEXT_PATH = "/ai/generate"
+_GENERATE_TEXT_PATH = "/oa/v1/chat/completions"
 
 
 class NovelAI:
@@ -168,13 +168,10 @@ class NovelAI:
                 self._text_url,
                 _GENERATE_TEXT_PATH,
                 {
-                    "input": text,
                     "model": model_name,
-                    "parameters": {
-                        "logit_bias_exp": [],
-                        "max_length": max_length,
-                        "use_string": True,
-                    },
+                    "messages": [{"role": "user", "content": text}],
+                    "max_tokens": max_length,
+                    "stream": False,
                 },
             )
         )
@@ -359,18 +356,33 @@ class NovelAI:
             loaded = json.loads(payload.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
             raise InfrastructureError(
-                "NovelAI /ai/generate did not return JSON."
+                "NovelAI /oa/v1/chat/completions did not return JSON."
             ) from error
         if not isinstance(loaded, dict):
             raise InfrastructureError(
-                "NovelAI /ai/generate did not return an object."
+                "NovelAI /oa/v1/chat/completions did not return an object."
             )
-        output = loaded.get("output")
-        if not isinstance(output, str):
+        choices = loaded.get("choices")
+        if not isinstance(choices, list) or not choices:
             raise InfrastructureError(
-                "NovelAI /ai/generate JSON did not include output."
+                "NovelAI /oa/v1/chat/completions JSON did not include choices."
             )
-        return output
+        choice = choices[0]
+        if not isinstance(choice, dict):
+            raise InfrastructureError(
+                "NovelAI /oa/v1/chat/completions JSON choice was not an object."
+            )
+        message = choice.get("message")
+        if not isinstance(message, dict):
+            raise InfrastructureError(
+                "NovelAI /oa/v1/chat/completions JSON did not include message."
+            )
+        content = message.get("content")
+        if not isinstance(content, str):
+            raise InfrastructureError(
+                "NovelAI /oa/v1/chat/completions JSON did not include content."
+            )
+        return content
 
     def _images_from_response(self, payload: bytes) -> tuple[bytes, ...]:
         if payload.startswith(b"{") or payload.startswith(b"["):

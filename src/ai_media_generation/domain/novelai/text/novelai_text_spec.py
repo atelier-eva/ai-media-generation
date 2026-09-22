@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from ai_media_generation.domain.novelai.text.novelai_lorebook import NovelAiLorebook
 
-DEFAULT_MODEL = "llama-3-erato-v1"
+DEFAULT_MODEL = "xialong-v1"
 DEFAULT_MAX_LENGTH = 100
 _JOIN = "\n\n"
 
