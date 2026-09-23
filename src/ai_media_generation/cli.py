@@ -25,9 +25,6 @@ from ai_media_generation.controller.generate_music_controller import (
 from ai_media_generation.controller.generate_novelai_controller import (
     GenerateNovelAiController,
 )
-from ai_media_generation.controller.generate_novelai_text_controller import (
-    GenerateNovelAiTextController,
-)
 from ai_media_generation.controller.generate_qwen_controller import (
     GenerateQwenController,
 )
@@ -93,9 +90,6 @@ def _run() -> None:
     if command == "novelai":
         GenerateNovelAiController().execute(_command_parser("novelai"))
         return
-    if command == "novelai-text":
-        GenerateNovelAiTextController().execute(_command_parser("novelai-text"))
-        return
     if command == "anima-lora-report":
         ReportAnimaLoraTrainingPatternsController().execute(
             _command_parser("anima-lora-report")
@@ -137,6 +131,15 @@ def _run() -> None:
             _command_parser("report")
         )
         return
+    if command == "novelai-text":
+        print(
+            "ai-media-generation: novelai-text was removed.\n"
+            "It does not reproduce the NovelAI editor context, so its output "
+            "does not match the browser. Reproducing that context is out of scope.\n"
+            "Image generation with `ai-media-generation novelai` is unchanged.",
+            file=stderr,
+        )
+        raise SystemExit(1)
     if command == "see-through":
         print(
             "ai-media-generation: see-through was removed.\n"
@@ -179,10 +182,6 @@ def _parser() -> ArgumentParser:
     subparsers.add_parser(
         "novelai",
         help="Generate images from novelai JSON specs with NovelAI Diffusion (nested folders allowed).",
-    )
-    subparsers.add_parser(
-        "novelai-text",
-        help="Generate text from novelai-text JSON specs with NovelAI (nested folders allowed).",
     )
     subparsers.add_parser(
         "anima-lora-report",
