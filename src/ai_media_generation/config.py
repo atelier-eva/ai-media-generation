@@ -9,17 +9,13 @@ class Config:
     QWEN_EDIT_SPEC_DIRECTORY = "qwen/edit/spec"
     ANIMA_SPEC_DIRECTORY = "anima/spec"
     NOVELAI_SPEC_DIRECTORY = "novelai/spec"
-    NOVELAI_TEXT_SPEC_DIRECTORY = "novelai/text/spec"
-    NOVELAI_TEXT_LOREBOOK_DIRECTORY = "lorebook"
     NOVELAI_IMAGE_URL = "https://image.novelai.net"
-    NOVELAI_TEXT_URL = "https://text.novelai.net"
     ANIMAGINE_OUTPUT_DIRECTORY = "animagine/output"
     MUSIC_OUTPUT_DIRECTORY = "music-output"
     QWEN_OUTPUT_DIRECTORY = "qwen/output"
     QWEN_EDIT_OUTPUT_DIRECTORY = "qwen/edit/output"
     ANIMA_OUTPUT_DIRECTORY = "anima/output"
     NOVELAI_OUTPUT_DIRECTORY = "novelai/output"
-    NOVELAI_TEXT_OUTPUT_DIRECTORY = "novelai/text/output"
     ANIMAGINE_LORA_TRAINING_SPEC_DIRECTORY = "animagine/lora_dataset"
     ANIMAGINE_LORA_TRAINING_GENERATIONS_JSONL = (
         "animagine-lora-training-generations.jsonl"
@@ -190,30 +186,6 @@ class Config:
     @property
     def novelai_output_directory(self) -> Path:
         return _directory("NOVELAI_OUTPUT_DIRECTORY", self.NOVELAI_OUTPUT_DIRECTORY)
-
-    @property
-    def novelai_text_spec_directory(self) -> Path:
-        return _directory(
-            "NOVELAI_TEXT_SPEC_DIRECTORY", self.NOVELAI_TEXT_SPEC_DIRECTORY
-        )
-
-    def novelai_text_system_prompt(self, model: str) -> Path:
-        return self.novelai_text_spec_directory.parent / f"system_prompt.{model}.txt"
-
-    def novelai_text_memory(self, model: str) -> Path:
-        return self.novelai_text_spec_directory.parent / f"memory.{model}.example"
-
-    @property
-    def novelai_text_lorebook_directory(self) -> Path:
-        return (
-            self.novelai_text_spec_directory.parent / self.NOVELAI_TEXT_LOREBOOK_DIRECTORY
-        )
-
-    @property
-    def novelai_text_output_directory(self) -> Path:
-        return _directory(
-            "NOVELAI_TEXT_OUTPUT_DIRECTORY", self.NOVELAI_TEXT_OUTPUT_DIRECTORY
-        )
 
     @property
     def anima_lora_training_spec_directory(self) -> Path:

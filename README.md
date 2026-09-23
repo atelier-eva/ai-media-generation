@@ -17,7 +17,6 @@ ai-media-generation qwen --remote
 ai-media-generation anima
 ai-media-generation anima --remote
 ai-media-generation novelai
-ai-media-generation novelai-text
 ai-media-generation anima-lora-report
 ai-media-generation anima-lora-training
 ai-media-generation anima-lora-training --remote
